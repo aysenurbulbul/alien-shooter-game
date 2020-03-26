@@ -1,4 +1,4 @@
-package com.example.server.models;
+package com.example.server.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,4 +32,5 @@ public class Player {
     @NotBlank
     @Column(name = "password")
     private String password;
+
 }
