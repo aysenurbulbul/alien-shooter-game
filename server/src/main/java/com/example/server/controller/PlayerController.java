@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,7 +23,7 @@ public class PlayerController {
     }
 
     @PostMapping("/registration")
-    public Player registerPlayer(@RequestBody final Player player){
+    public Player registerPlayer(@Valid @RequestBody final Player player){
         return playerService.addPlayer(player);
     }
 
