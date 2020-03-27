@@ -23,16 +23,19 @@ public class Leaderboard {
     @Column(name = "id")
     private Long id;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "leaderboard_id")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "leaderboard_idone")
+    @OrderBy("score DESC")
     private List<Game> lastSevenDaysHighestScores;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "leaderboard_id")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "leaderboard_idtwo")
+    @OrderBy("score DESC")
     private List<Game> lastThirtyDaysHighestScores;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "leaderboard_id")
+    @OrderBy("score DESC")
     private List<Game> allTimeHighestScores;
 
 }

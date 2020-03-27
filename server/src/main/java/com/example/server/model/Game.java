@@ -34,5 +34,4 @@ public class Game {
     @NotNull
     @Column(name = "score_date")
     private LocalDateTime finishDateTime;
-
 }

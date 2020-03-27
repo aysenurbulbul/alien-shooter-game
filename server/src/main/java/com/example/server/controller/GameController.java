@@ -21,4 +21,12 @@ public class GameController {
     public Game addGame(@RequestBody final Game game){
         return gameService.addGame(game);
     }
+
+    @GetMapping("/getAllGames")
+    public List<Game> getAllGames(){
+        return gameService.getAllGames();
+    }
+
+    @DeleteMapping("/delete")
+    public void deleteAll(){ gameService.clearAll();}
 }
