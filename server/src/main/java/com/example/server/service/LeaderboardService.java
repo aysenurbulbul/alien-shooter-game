@@ -4,10 +4,13 @@ import com.example.server.model.Game;
 import com.example.server.model.Leaderboard;
 import com.example.server.repository.LeaderboardRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -31,14 +34,13 @@ public class LeaderboardService {
 
     private void updateLeaderboard(List<Game> leaderboardList, Game game){
 
-        int allTimeHighestListSize = leaderboardList.size();
-        for(Game iteratedGame: leaderboardList){
-            if(game.getScore() > iteratedGame.getScore() && allTimeHighestListSize <= 20){
-                leaderboardList.add(game);
-                return;
-            }
+        int listSize = leaderboardList.size();
+        int lastGameIndex = listSize -1;
+        if(listSize<=20){
+            leaderboardList.add(game);
         }
-        if(allTimeHighestListSize<=20){
+        else if(leaderboardList.get(lastGameIndex).getScore()< game.getScore()){
+            leaderboardList.remove(lastGameIndex);
             leaderboardList.add(game);
         }
     }
@@ -70,4 +72,43 @@ public class LeaderboardService {
 
     public void clearAll(){ leaderboardRepository.deleteAll();}
 
+    @Scheduled( cron = "0 1 * * *")
+    public void deleteExpiredLeaderboardEntities(){
+        Leaderboard leaderboard = leaderboardRepository.findAll().get(0);
+        LocalDateTime now = LocalDateTime.now();
+        Iterator<Game> gameIterator = leaderboard.getLastThirtyDaysHighestScores().iterator();
+        while (gameIterator.hasNext()) {
+            Game game = gameIterator.next();
+            if(game.getFinishDateTime().isBefore(now.minusDays(30   ))){
+                gameIterator.remove();
+            }
+        }
+        gameIterator = leaderboard.getLastSevenDaysHighestScores().iterator();
+        while (gameIterator.hasNext()) {
+            Game game = gameIterator.next();
+            if(game.getFinishDateTime().isBefore(now.minusDays(7))){
+                gameIterator.remove();
+            }
+        }
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
