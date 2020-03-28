@@ -72,7 +72,7 @@ public class LeaderboardService {
 
     public void clearAll(){ leaderboardRepository.deleteAll();}
 
-    @Scheduled( cron = "0 1 * * *")
+    @Scheduled( cron = "0 1 * * * *")
     public void deleteExpiredLeaderboardEntities(){
         Leaderboard leaderboard = leaderboardRepository.findAll().get(0);
         LocalDateTime now = LocalDateTime.now();
