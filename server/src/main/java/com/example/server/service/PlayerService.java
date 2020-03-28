@@ -18,7 +18,7 @@ public class PlayerService {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public Player addPlayer(Player player){
+    public Player addPlayer(final Player player){
         player.setPassword(bCryptPasswordEncoder.encode(player.getPassword()));
         return playerRepository.save(player);
     }
@@ -29,5 +29,13 @@ public class PlayerService {
 
     public List<Player> getAllPlayers(){
         return playerRepository.findAll();
+    }
+
+    public void deleteAllPlayers(){
+        playerRepository.deleteAll();
+    }
+
+    public void deletePlayer(final Long playerId){
+        playerRepository.deleteById(playerId);
     }
 }

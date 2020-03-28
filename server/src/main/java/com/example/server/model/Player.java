@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Entity
@@ -21,15 +22,16 @@ public class Player {
     @GeneratedValue
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "Username cannot be blank")
     @Column(unique = true, name = "username")
     private String username;
 
-    @NotBlank
+    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Please enter a valid e-mail")
     @Column(name = "email")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "Password cannot be blank")
     @Column(name = "password")
     private String password;
 
