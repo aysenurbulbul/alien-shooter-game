@@ -1,9 +1,7 @@
 package com.example.server.service;
 
 import com.example.server.model.Game;
-import com.example.server.model.Leaderboard;
 import com.example.server.repository.GameRepository;
-import com.example.server.repository.LeaderboardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

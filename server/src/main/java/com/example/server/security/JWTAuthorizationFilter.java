@@ -19,6 +19,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         super(authenticationManager);
     }
 
+    //if needs authorization get header separate parts check token
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String header = request.getHeader("Authorization");
@@ -38,6 +39,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         chain.doFilter(request, response);
     }
 
+    //check if token is valid
     private UsernamePasswordAuthenticationToken doAuthentication(HttpServletRequest request){
         String token = request.getHeader("Authorization");
         if(token != null){

@@ -25,6 +25,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
 
+    // get token from header
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
@@ -41,10 +42,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
     }
 
+    // Create a token for successful authenticated user
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         String token = Jwts.builder().setSubject(((User) authResult.getPrincipal()).getUsername())
-                .setExpiration(new Date(System.currentTimeMillis() + 18_000_000)) //5 hours
+                .setExpiration(new Date(System.currentTimeMillis() + 864_000_000 )) //10 days
                 .signWith(SignatureAlgorithm.HS512, "secret".getBytes())
                 .compact();
         response.addHeader("Authorization", "Bearer " + token);
