@@ -27,6 +27,7 @@ public class SwaggerConfig {
                 .apiInfo(someInfo());
     }
 
+    // customize swagger
     private ApiInfo someInfo(){
         Contact contact = new Contact("Ayşenur Bülbül & Zeynep Erdoğan", "http://144.122.71.144:8080/aysenur.bulbul/group21",
                 "aysenur.bulbul@metu.edu.tr");

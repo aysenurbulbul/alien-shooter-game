@@ -2,7 +2,6 @@ package com.example.server.controller;
 
 
 import com.example.server.model.Game;
-import com.example.server.model.Leaderboard;
 import com.example.server.service.LeaderboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
