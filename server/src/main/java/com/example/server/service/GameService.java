@@ -17,7 +17,10 @@ public class GameService {
     private final GameRepository gameRepository;
     private final LeaderboardService leaderboardService;
 
+
     public Game addGame(Game game){
+
+        //updates the leaderboard if neccesarry.
         leaderboardService.updateAllLeaderboards(game);
         return gameRepository.save(game);
     }

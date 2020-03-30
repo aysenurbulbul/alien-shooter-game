@@ -18,21 +18,27 @@ public class LeaderboardController {
 
     private final LeaderboardService leaderboardService;
 
+    //gets last seven days highest scores.
     @GetMapping("/getLastSevenDays")
     public List<Game> getLastSevenDays(){
         return leaderboardService.getLastSevenDays();
     }
 
+    //gets last thirty days highest scores.
     @GetMapping("/getLastThirtyDays")
     public List<Game> getLastThirtyDays(){
         return leaderboardService.getLastThirtyDays();
     }
 
+    //gets all times highest scores.
     @GetMapping("/getAllTimes")
     public List<Game> getAllTimes(){
         return leaderboardService.getAllTimes();
     }
 
+    //deletes all the leadboards.
+    //written for testing purposes.
+    //users will not be able to use this.
     @DeleteMapping("/delete")
     public void deleteAll(){ leaderboardService.clearAll();}
 }

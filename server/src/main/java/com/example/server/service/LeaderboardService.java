@@ -21,7 +21,11 @@ public class LeaderboardService {
 
     private final LeaderboardRepository leaderboardRepository;
 
-    private void updateEmptyLeaderboard(Game game){
+
+    //this function is only called if leaderboard is empty
+    //first creates leaderboard,
+    //then adds the given game to all lists
+    public void updateEmptyLeaderboard(Game game){
 
         Leaderboard leaderboard = new Leaderboard();
         List<Game> temp = new ArrayList<>();
@@ -32,7 +36,15 @@ public class LeaderboardService {
         leaderboardRepository.save(leaderboard);
     }
 
-    private void updateLeaderboard(List<Game> leaderboardList, Game game){
+    //updates the given leaderboard list.
+    //If the leaderboard is not bigger then 20 directly adds it.
+    //If the leaderboard list is not bigger than 20,
+        //First checks, the smallest score then if it biggerst then that,
+        //removes the smallest score and adds the current one.
+    //Since all the Leaderboard list kept in the database ordered by their
+    //scores see(package com.example.server.model.Leaderboard -> @OrderBy("score DESC"))
+    // inserting to right place is not an issue.
+    public void updateLeaderboard(List<Game> leaderboardList, Game game){
 
         int listSize = leaderboardList.size();
         int lastGameIndex = listSize -1;
@@ -45,11 +57,13 @@ public class LeaderboardService {
         }
     }
 
-    void updateAllLeaderboards(Game game){
+    public void updateAllLeaderboards(Game game){
 
+        //if the leaderboard is empty aka the first game is played.
         if(leaderboardRepository.findAll().isEmpty()){
             updateEmptyLeaderboard(game);
         }
+        //if the leaderboard is not empty checks all of the 3 leaderboard lists if it can make it.
         else{
             Leaderboard leaderboard = leaderboardRepository.findAll().get(0);
             updateLeaderboard(leaderboard.getAllTimeHighestScores(), game);
@@ -72,6 +86,10 @@ public class LeaderboardService {
 
     public void clearAll(){ leaderboardRepository.deleteAll();}
 
+
+    //This function is called everyday on 00.00 am
+    //It deletes the expired entities from Leaderboard's lastSevenDaysHighestScores and
+    //lastThirtyDaysHighestScores.
     @Scheduled( cron = "0 0 * * * *")
     public void deleteExpiredLeaderboardEntities(){
         Leaderboard leaderboard = leaderboardRepository.findAll().get(0);

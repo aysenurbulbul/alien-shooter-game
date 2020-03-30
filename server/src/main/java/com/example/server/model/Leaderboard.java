@@ -8,6 +8,10 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.List;
 
+//In this table there will be only one entry.
+//which will kept the leaderboard lists separately.
+//It will be update everyday on 00.00am and
+//after every match if necessary.
 @Entity
 @Getter
 @Setter

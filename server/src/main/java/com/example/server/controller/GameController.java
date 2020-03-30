@@ -6,6 +6,8 @@ import com.example.server.service.GameService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -23,9 +25,10 @@ public class GameController {
     private final GameService gameService;
 
     //add the game from given json
-    @PostMapping("/addGame")
-    public Game addGame(@Valid @RequestBody final Game game){
-        return gameService.addGame(game);
+    @PostMapping(value = "/addGame",  produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> addGame(@Valid @RequestBody final Game game){
+        gameService.addGame(game);
+        return ResponseEntity.ok("Game successfully added");
     }
 
     //get all games in the database
@@ -35,9 +38,13 @@ public class GameController {
     }
 
     //delete all games in the database
+    //written for testing purposes.
+    //users will not be able to use this.
     @DeleteMapping("/delete")
     public void deleteAll(){ gameService.clearAll();}
 
+    //sends bad request response if in addGame function the request body is not valid.
+    //checks the validation according to validation tags (ex. @NotNull) in the related entity.
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(
