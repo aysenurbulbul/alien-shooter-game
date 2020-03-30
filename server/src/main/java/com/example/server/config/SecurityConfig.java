@@ -40,12 +40,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return authenticationManager();
     }
 
-    //authentication configuration
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception{
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-    }
-
     //http configs, arrange paths according to authentication
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -71,7 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-        auth.inMemoryAuthentication().withUser("group21").password("group21").roles("ADMIN");
+        auth.inMemoryAuthentication().withUser("group21").password(bCryptPasswordEncoder().encode("group21")).roles("ADMIN");
     }
 
     // to enable swagger paths
