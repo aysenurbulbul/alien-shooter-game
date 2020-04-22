@@ -47,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().and()
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers("/players/**", "/registration/**", "/login/**", "/leaderboard/**", "/game/**").permitAll()
+                    .antMatchers("/players/**", "/registration/**", "/login/**").permitAll()
                     .antMatchers(HttpMethod.DELETE,"/delete/**","/deletePlayers").permitAll()
                     .anyRequest().authenticated()
                     .and()

@@ -25,7 +25,7 @@ public class LeaderboardService {
     //this function is only called if leaderboard is empty
     //first creates leaderboard,
     //then adds the given game to all lists
-    public void updateEmptyLeaderboard(Game game){
+    void updateEmptyLeaderboard(Game game){
 
         Leaderboard leaderboard = new Leaderboard();
         List<Game> temp = new ArrayList<>();
@@ -44,7 +44,7 @@ public class LeaderboardService {
     //Since all the Leaderboard list kept in the database ordered by their
     //scores see(package com.example.server.model.Leaderboard -> @OrderBy("score DESC"))
     // inserting to right place is not an issue.
-    public void updateLeaderboard(List<Game> leaderboardList, Game game){
+    void updateLeaderboard(List<Game> leaderboardList, Game game){
 
         int listSize = leaderboardList.size();
         int lastGameIndex = listSize -1;
@@ -57,7 +57,7 @@ public class LeaderboardService {
         }
     }
 
-    public void updateAllLeaderboards(Game game){
+    void updateAllLeaderboards(Game game){
 
         //if the leaderboard is empty aka the first game is played.
         if(leaderboardRepository.findAll().isEmpty()){
