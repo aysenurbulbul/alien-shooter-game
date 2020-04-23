@@ -4,16 +4,29 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
 <GridPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.client.controller.MainMenuController"
-            alignment="CENTER"
-            hgap="7" vgap="7">
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="com.example.client.controller.MainMenuController"
+          alignment="CENTER"
+          hgap="7" vgap="7">
     <columnConstraints>
         <ColumnConstraints/>
         <ColumnConstraints/>
         <ColumnConstraints/>
     </columnConstraints>
+
+    <!-- Header -->
+    <Label text="Main Menu" GridPane.columnIndex="1"
+           GridPane.rowIndex="0" GridPane.columnSpan="2"
+           GridPane.rowSpan="1" GridPane.halignment="CENTER">
+        <font>
+            <Font size="25"/>
+        </font>
+        <GridPane.margin>
+            <Insets top="20" bottom="20"/>
+        </GridPane.margin>
+    </Label>
 
     <!--Login button-->
     <Button text="LOGIN" fx:id="login"
