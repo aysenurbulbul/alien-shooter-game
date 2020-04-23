@@ -14,12 +14,18 @@ import java.io.IOException;
 
 @Component
 public class StageInitializer implements ApplicationListener<UiApplication.StageReadyEvent> {
-    @Value("classpath:/fxml/ui.fxml") //tells spring to where to find the file
+    @Value("classpath:/fxml/MainMenu.fxml") //tells spring to where to find the file
     private Resource uiResource;
-    @Value("${spring.application.ui.windowWidth}") private int windowWidth;
-    @Value("${spring.application.ui.windowHeight}") private int windowHeight;
+
+    @Value("${spring.application.ui.windowWidth}")
+    private int windowWidth;
+
+    @Value("${spring.application.ui.windowHeight}")
+    private int windowHeight;
+
     private String applicationTitle;
     private ApplicationContext applicationContext;
+    public static Stage parentStage;
 
     public StageInitializer(@Value("${spring.application.ui.title}") String applicationTitle, ApplicationContext applicationContext) {
         this.applicationTitle = applicationTitle;
@@ -33,6 +39,7 @@ public class StageInitializer implements ApplicationListener<UiApplication.Stage
             fxmlLoader.setControllerFactory(aClass -> applicationContext.getBean(aClass));
             Parent parent = fxmlLoader.load();
             Stage stage = stageReadyEvent.getStage();
+            parentStage = stage;
             stage.setScene(new Scene(parent, windowWidth, windowHeight));
             stage.setTitle(applicationTitle);
             stage.show();

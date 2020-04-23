@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="com.example.client.controller.LeaderBoardController"
+          alignment="CENTER"
+          hgap="7" vgap="7">
+    <columnConstraints>
+        <ColumnConstraints/>
+        <ColumnConstraints/>
+    </columnConstraints>
+
+    <!--back to main menu button-->
+    <Button text="Back to Menu" fx:id="backMenu"
+            prefHeight="30" prefWidth="100" defaultButton="true"
+            GridPane.columnIndex="0" GridPane.rowIndex="5"
+            GridPane.columnSpan="2" GridPane.rowSpan="1"
+            GridPane.halignment="CENTER"
+            onAction="#loadMainMenu">
+        <GridPane.margin>
+            <Insets top="10" bottom="20"/>
+        </GridPane.margin>
+    </Button>
+</GridPane>

@@ -9,20 +9,16 @@
 <?import javafx.scene.text.Font?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
-          fx:controller="com.example.client.controller.UiController"
+          fx:controller="com.example.client.controller.LoginController"
           alignment="CENTER"
           hgap="7" vgap="7">
     <columnConstraints>
-        <ColumnConstraints>
-
-        </ColumnConstraints>
-        <ColumnConstraints>
-
-        </ColumnConstraints>
+        <ColumnConstraints/>
+        <ColumnConstraints/>
     </columnConstraints>
 
     <!-- Header -->
-    <Label text="Register" GridPane.columnIndex="0"
+    <Label text="Login" GridPane.columnIndex="0"
            GridPane.rowIndex="0" GridPane.columnSpan="2"
            GridPane.rowSpan="1" GridPane.halignment="CENTER">
         <font>
@@ -40,28 +36,34 @@
     <TextField fx:id="username" prefHeight="30"
                GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-    <!--email-->
-    <Label text="Email: " GridPane.columnIndex="0"
-           GridPane.rowIndex="2">
-    </Label>
-    <TextField fx:id="email" prefHeight="30"
-               GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
     <!--password-->
     <Label text="Password: " GridPane.columnIndex="0"
            GridPane.rowIndex="3">
     </Label>
-    <TextField fx:id="password" prefHeight="30"
-               GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+    <PasswordField fx:id="password" prefHeight="30"
+                   GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
     <!--submit button-->
-    <Button text="Submit" fx:id="submit"
+    <Button text="Login" fx:id="login"
             prefHeight="30" prefWidth="100" defaultButton="true"
             GridPane.columnIndex="0" GridPane.rowIndex="4"
             GridPane.columnSpan="2" GridPane.rowSpan="1"
             GridPane.halignment="CENTER">
         <GridPane.margin>
-            <Insets top="20" bottom="20"/>
+            <Insets top="20" bottom="10"/>
+        </GridPane.margin>
+    </Button>
+
+    <!--back to main menu button-->
+    <Button text="Back to Menu" fx:id="backMenu"
+            prefHeight="30" prefWidth="100" defaultButton="true"
+            GridPane.columnIndex="0" GridPane.rowIndex="5"
+            GridPane.columnSpan="2" GridPane.rowSpan="1"
+            GridPane.halignment="CENTER"
+            onAction="#loadMainMenu">
+        <GridPane.margin>
+            <Insets top="10" bottom="20"/>
         </GridPane.margin>
     </Button>
 </GridPane>

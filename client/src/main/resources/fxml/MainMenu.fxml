@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<GridPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.client.controller.MainMenuController"
+            alignment="CENTER"
+            hgap="7" vgap="7">
+    <columnConstraints>
+        <ColumnConstraints/>
+        <ColumnConstraints/>
+        <ColumnConstraints/>
+    </columnConstraints>
+
+    <!--Login button-->
+    <Button text="LOGIN" fx:id="login"
+            prefHeight="30" prefWidth="100" defaultButton="true"
+            GridPane.columnIndex="1" GridPane.rowIndex="2"
+            GridPane.columnSpan="2" GridPane.rowSpan="1"
+            GridPane.halignment="CENTER"
+            onAction="#loadLogin">
+        <GridPane.margin>
+            <Insets top="20" bottom="20"/>
+        </GridPane.margin>
+    </Button>
+
+    <!--Register button-->
+    <Button text="REGISTER" fx:id="register"
+            prefHeight="30" prefWidth="100" defaultButton="true"
+            GridPane.columnIndex="1" GridPane.rowIndex="3"
+            GridPane.columnSpan="2" GridPane.rowSpan="1"
+            GridPane.halignment="CENTER"
+            onAction="#loadRegister">
+        <GridPane.margin>
+            <Insets top="20" bottom="20"/>
+        </GridPane.margin>
+    </Button>
+
+    <!--leaderBoard button-->
+    <Button text="LEADER BOARD" fx:id="leaderBoard"
+            prefHeight="30" prefWidth="100" defaultButton="true"
+            GridPane.columnIndex="1" GridPane.rowIndex="4"
+            GridPane.columnSpan="2" GridPane.rowSpan="1"
+            GridPane.halignment="CENTER"
+            onAction="#loadLeaderBoard">
+        <GridPane.margin>
+            <Insets top="20" bottom="20"/>
+        </GridPane.margin>
+    </Button>
+
+</GridPane>
