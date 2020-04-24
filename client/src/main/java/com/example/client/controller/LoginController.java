@@ -1,6 +1,7 @@
 package com.example.client.controller;
 
 import com.example.client.StageInitializer;
+import com.example.client.view.GameView;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -66,6 +68,8 @@ public class LoginController implements Initializable {
                     httpEntity,
                     String.class);
             messageAlert(Alert.AlertType.CONFIRMATION,"Successfully logged in!", "Hello " + username + "!");
+            GameView gameView = new GameView();
+            gameView.gameStart();
         } catch (RestClientException e){
             messageAlert(Alert.AlertType.ERROR, "Error", "Wrong credentials");
         }
