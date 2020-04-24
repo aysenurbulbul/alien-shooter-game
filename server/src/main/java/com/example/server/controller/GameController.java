@@ -25,9 +25,10 @@ public class GameController {
     private final GameService gameService;
 
     //add the game from given json
-    @PostMapping(value = "/addGame",  produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addGame(@Valid @RequestBody final Game game){
-        gameService.addGame(game);
+    @PostMapping(value = "/addGame/{username}",  produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> addGame(@PathVariable (value = "username") String username,
+                                          @Valid @RequestBody Game game){
+        gameService.addGame(username,game);
         return ResponseEntity.ok("Game successfully added");
     }
 

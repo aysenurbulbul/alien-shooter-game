@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 @Component
@@ -111,7 +112,7 @@ public class LeaderBoardController implements Initializable {
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<>() {});
-        lastSevenDaysLeaderboard.setItems(FXCollections.observableList(response.getBody()));
+        lastSevenDaysLeaderboard.setItems(FXCollections.observableList(Objects.requireNonNull(response.getBody())));
     }
     private void loadThirtyDaysLeaderboard(){
         String address = apiAddress + "/leaderboard/getLastSevenDays";
@@ -120,7 +121,7 @@ public class LeaderBoardController implements Initializable {
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<>() {});
-        lastThirtyDaysLeaderboard.setItems(FXCollections.observableList(response.getBody()));
+        lastThirtyDaysLeaderboard.setItems(FXCollections.observableList(Objects.requireNonNull(response.getBody())));
     }
     private void loadAllTimesLeaderboard(){
         String address = apiAddress + "/leaderboard/getAllTimes";
@@ -130,7 +131,7 @@ public class LeaderBoardController implements Initializable {
                 null,
                 new ParameterizedTypeReference<>() {});
 
-        allTimesLeaderboard.setItems(FXCollections.observableList(response.getBody()));
+        allTimesLeaderboard.setItems(FXCollections.observableList(Objects.requireNonNull(response.getBody())));
     }
 
 }
