@@ -5,4 +5,8 @@ public class Player {
     private String username;
     private String email;
     private String password;
+
+    public String getUsername() {
+        return username;
+    }
 }
