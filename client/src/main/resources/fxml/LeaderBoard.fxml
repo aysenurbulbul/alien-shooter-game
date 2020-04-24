@@ -27,4 +27,25 @@
             <Insets top="10" bottom="20"/>
         </GridPane.margin>
     </Button>
+    <TableView fx:id="lastSevenDaysLeaderboard" prefHeight="487.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="usernameColumnSeven" prefWidth="75.0" style="-fx-alignment: CENTER;" text="username"/>
+            <TableColumn fx:id="scoreColumnSeven" prefWidth="75.0" style="-fx-alignment: CENTER;" text="score"/>
+            <TableColumn fx:id="dateColumnSeven" prefWidth="75.0" style="-fx-alignment: CENTER;" text="Surname"/>
+        </columns>
+    </TableView>
+    <TableView fx:id="lastThirtyDaysLeaderboard" prefHeight="487.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="usernameColumnThirty" prefWidth="75.0" style="-fx-alignment: CENTER;" text="username"/>
+            <TableColumn fx:id="scoreColumnThirty" prefWidth="75.0" style="-fx-alignment: CENTER;" text="score"/>
+            <TableColumn fx:id="dateColumnThirty" prefWidth="75.0" style="-fx-alignment: CENTER;" text="Surname"/>
+        </columns>
+    </TableView>
+    <TableView fx:id="allTimesLeaderboard" prefHeight="487.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="usernameColumnAll" prefWidth="75.0" style="-fx-alignment: CENTER;" text="username"/>
+            <TableColumn fx:id="scoreColumnAll" prefWidth="75.0" style="-fx-alignment: CENTER;" text="score"/>
+            <TableColumn fx:id="dateColumnAll" prefWidth="75.0" style="-fx-alignment: CENTER;" text="Surname"/>
+        </columns>
+    </TableView>
 </GridPane>
