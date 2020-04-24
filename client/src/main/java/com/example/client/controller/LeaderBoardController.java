@@ -101,37 +101,17 @@ public class LeaderBoardController implements Initializable {
     }
 
     private void loadLeaderboards(){
-        loadAllTimesLeaderboard();
-        loadLastSevenDaysLeaderboard();
-        loadThirtyDaysLeaderboard();
+        loadLeaderboard(lastSevenDaysLeaderboard, "/getLastSevenDays");
+        loadLeaderboard(lastThirtyDaysLeaderboard, "/getLastThirtyDays");
+        loadLeaderboard(allTimesLeaderboard, "/getAllTimes");
     }
-    private void loadLastSevenDaysLeaderboard(){
-        String address = apiAddress + "/leaderboard/getLastSevenDays";
+    private void loadLeaderboard(TableView<Game> leaderboard, String getLeaderboard){
+        String address = apiAddress + "/leaderboard" + getLeaderboard;
         ResponseEntity<List<Game>> response = restTemplate.exchange(
                 address,
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<>() {});
-        lastSevenDaysLeaderboard.setItems(FXCollections.observableList(Objects.requireNonNull(response.getBody())));
+        leaderboard.setItems(FXCollections.observableList(Objects.requireNonNull(response.getBody())));
     }
-    private void loadThirtyDaysLeaderboard(){
-        String address = apiAddress + "/leaderboard/getLastSevenDays";
-        ResponseEntity<List<Game>> response = restTemplate.exchange(
-                address,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<>() {});
-        lastThirtyDaysLeaderboard.setItems(FXCollections.observableList(Objects.requireNonNull(response.getBody())));
-    }
-    private void loadAllTimesLeaderboard(){
-        String address = apiAddress + "/leaderboard/getAllTimes";
-        ResponseEntity<List<Game>> response = restTemplate.exchange(
-                address,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<>() {});
-
-        allTimesLeaderboard.setItems(FXCollections.observableList(Objects.requireNonNull(response.getBody())));
-    }
-
 }
