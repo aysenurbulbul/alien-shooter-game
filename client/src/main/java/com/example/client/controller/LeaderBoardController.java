@@ -2,6 +2,7 @@ package com.example.client.controller;
 
 import com.example.client.StageInitializer;
 import com.example.client.model.Game;
+import com.example.client.model.Player;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,15 +36,15 @@ public class LeaderBoardController implements Initializable {
     public Button backMenu;
 
     @FXML public TableView<Game> lastSevenDaysLeaderboard;
-    @FXML public TableColumn<Game, String> usernameColumnSeven;
+    @FXML public TableColumn<Player, String> usernameColumnSeven;
     @FXML public TableColumn<Game, Integer> scoreColumnSeven;
     @FXML public TableColumn<Game, LocalDateTime> dateColumnSeven;
     @FXML public TableView<Game> lastThirtyDaysLeaderboard;
-    @FXML public TableColumn<Game, String> usernameColumnThirty;
+    @FXML public TableColumn<Player, String> usernameColumnThirty;
     @FXML public TableColumn<Game, Integer> scoreColumnThirty;
     @FXML public TableColumn<Game, LocalDateTime> dateColumnThirty;
     @FXML public TableView<Game> allTimesLeaderboard;
-    @FXML public TableColumn<Game, String> usernameColumnAll;
+    @FXML public TableColumn<Player, String> usernameColumnAll;
     @FXML public TableColumn<Game, Integer> scoreColumnAll;
     @FXML public TableColumn<Game, LocalDateTime> dateColumnAll;
 
@@ -73,7 +74,7 @@ public class LeaderBoardController implements Initializable {
 
         usernameColumnSeven.setCellValueFactory(new PropertyValueFactory<>("username"));
         scoreColumnSeven.setCellValueFactory(new PropertyValueFactory<>("score"));
-        dateColumnSeven.setCellValueFactory(new PropertyValueFactory<>("date"));
+        dateColumnSeven.setCellValueFactory(new PropertyValueFactory<>("finishDateTime"));
     }
     private void initializeLastThirtyDaysLeaderboard(){
 
@@ -84,7 +85,7 @@ public class LeaderBoardController implements Initializable {
 
         usernameColumnThirty.setCellValueFactory(new PropertyValueFactory<>("username"));
         scoreColumnThirty.setCellValueFactory(new PropertyValueFactory<>("score"));
-        dateColumnThirty.setCellValueFactory(new PropertyValueFactory<>("username"));
+        dateColumnThirty.setCellValueFactory(new PropertyValueFactory<>("finishDateTime"));
     }
     private void initializeAllTimesLeaderboard(){
 
@@ -95,7 +96,7 @@ public class LeaderBoardController implements Initializable {
 
         usernameColumnAll.setCellValueFactory(new PropertyValueFactory<>("username"));
         scoreColumnAll.setCellValueFactory(new PropertyValueFactory<>("score"));
-        dateColumnAll.setCellValueFactory(new PropertyValueFactory<>("username"));
+        dateColumnAll.setCellValueFactory(new PropertyValueFactory<>("finishDateTime"));
     }
 
     private void loadLeaderboards(){
@@ -120,7 +121,6 @@ public class LeaderBoardController implements Initializable {
                 null,
                 new ParameterizedTypeReference<>() {});
         lastThirtyDaysLeaderboard.setItems(FXCollections.observableList(response.getBody()));
-
     }
     private void loadAllTimesLeaderboard(){
         String address = apiAddress + "/leaderboard/getAllTimes";
@@ -129,6 +129,7 @@ public class LeaderBoardController implements Initializable {
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<>() {});
+
         allTimesLeaderboard.setItems(FXCollections.observableList(response.getBody()));
     }
 
