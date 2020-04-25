@@ -27,10 +27,12 @@ public class Bullet {
 
     public void setPositionX(double positionX) {
         this.positionX = positionX;
+        this.imageView.setTranslateX(positionX);
     }
 
     public void setPositionY(double positionY) {
         this.positionY = positionY;
+        this.imageView.setTranslateY(positionY);
     }
 
     public void setImagePath(String imagePath) {
@@ -38,14 +40,19 @@ public class Bullet {
     }
 
     public double getPositionX() {
-        return positionX;
+        return imageView.getLayoutX();
+
     }
 
     public double getPositionY() {
-        return positionY;
+        return imageView.getTranslateY();
     }
 
     public String getImagePath() {
         return imagePath;
+    }
+
+    public void moveUp(){
+        imageView.setTranslateY(imageView.getTranslateY()-30);
     }
 }

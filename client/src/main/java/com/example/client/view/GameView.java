@@ -4,12 +4,14 @@ import com.example.client.StageInitializer;
 import com.example.client.model.Bullet;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -27,6 +29,7 @@ public class GameView {
     private final String gameBackground = "/static/purple.png";
     private AnimationTimer animationTimer;
     private List<Bullet> bullets;
+    private double t = 0;
 
     public GameView(){
         anchorPane = new AnchorPane();
@@ -34,6 +37,7 @@ public class GameView {
         gameStage = new Stage();
         bullets = new ArrayList<>();
     }
+
 
     private void createBackground(String backgroundImagePath){
         Image background = new Image(backgroundImagePath, 256,256,false, true);
@@ -45,7 +49,7 @@ public class GameView {
         animationTimer = new AnimationTimer() {
             @Override
             public void handle(long l) {
-                //update();
+                update();
             }
         };
 
@@ -53,14 +57,44 @@ public class GameView {
     }
 
     private void update(){
-        anchorPane.setOnMouseMoved(new EventHandler<MouseEvent>() {
+        t += 0.016;
+        if(t>2){
+            fireClicked();
+            bullets.forEach(Bullet::moveUp);
+            t = 0;
+        }
+        anchorPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                Bullet bullet = new Bullet(mouseEvent.getSceneX() + 11.5, mouseEvent.getSceneY() - 35, "/static/laserBlue03.png");
+                Bullet bullet = new Bullet(mouseEvent.getSceneX() + 11.5, mouseEvent.getSceneY() - 40, "/static/laserBlue03.png");
+                bullets.add(bullet);
                 anchorPane.getChildren().add(bullet.getImageView());
-
             }
         });
+        // mouse moved dediğinde sadece mouse movelarsa atıyor durursa atmıyor
+
+        /*anchorPane.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if(t>2){
+                    Bullet bullet = new Bullet(mouseEvent.getSceneX() + 11.5, mouseEvent.getSceneY() - 40, "/static/laserBlue03.png");
+                    bullets.add(bullet);
+                    anchorPane.getChildren().add(bullet.getImageView());
+                    t = 0;
+                }
+
+
+            }
+        });*/
+
+
+
+    }
+
+    private void fireClicked(){
+        Event.fireEvent(anchorPane, new MouseEvent(MouseEvent.MOUSE_CLICKED, 0,
+                0, 0, 0, MouseButton.PRIMARY, 1, true, true, true, true,
+                true, true, true, true, true, true, null));
     }
 
     public void gameStart() {
@@ -69,7 +103,7 @@ public class GameView {
         Image cursorImage = new Image(playerShipPath);
         gameScene.setCursor(new ImageCursor(cursorImage));
         createBackground(gameBackground);
-        update();
+        gameLoop();
     }
 
     public Stage getGameStage() {
