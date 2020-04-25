@@ -11,7 +11,6 @@ import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
-import javafx.scene.ImageCursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -34,6 +33,7 @@ public class GameView {
     private final String playerShipPath = "/static/playerShip1_red.png";
     private final String gameBackground = "/static/purple.png";
     private final String scoreString = "SCORE: ";
+    private final String levelString = "LEVEL: ";
     private AnimationTimer animationTimer;
     private double t = 0;
     private List<AbstractLevel> levels;
@@ -41,9 +41,9 @@ public class GameView {
     private double mousePositionX;
     private double mousePositionY;
     private Ship playerShip;
-    private InfoLabel infoLabel;
+    private InfoLabel scoreboard;
+    private InfoLabel levelLabel;
     private List<ImageView> shipHealthImages;
-    private int shipHealth;
     private int score;
 
     public GameView(AnchorPane anchorPane, Scene gameScene, Stage gameStage){
@@ -51,12 +51,14 @@ public class GameView {
         this.gameScene = gameScene;
         this.gameStage = gameStage;
         playerShip = new Ship(playerShipPath);
-        infoLabel = new InfoLabel("SCORE: 000");
-        infoLabel.setLayoutX(660);
-        infoLabel.setLayoutY(10);
+        scoreboard = new InfoLabel("SCORE: 000");
+        scoreboard.setLayoutX(660);
+        scoreboard.setLayoutY(10);
+        levelLabel = new InfoLabel("LEVEL: 1");
+        levelLabel.setLayoutX(0);
+        levelLabel.setLayoutY(10);
         score = 0;
         shipHealthImages = new ArrayList<>();
-        shipHealth = playerShip.getHealth()-1;
         for(int i=0; i< playerShip.getHealth(); i++){
             ImageView imageView = new ImageView("/static/playerLife1_red.png");
             imageView.setFitWidth(20);
@@ -109,6 +111,7 @@ public class GameView {
                     updatePlayerBullet();
                     alienShoot();
                     isLevelFinished();
+                    writeLabels();
                     t = 0;
                 }
                 updateShipPosition();
@@ -119,6 +122,9 @@ public class GameView {
 
     private boolean isOnSamePosition(Alien alien, Bullet bullet){
         return bullet.getImageView().getBoundsInParent().intersects(alien.getImageView().getBoundsInParent());
+    }
+    private boolean isOnSamePosition(Ship playerShip, Bullet bullet){
+        return bullet.getImageView().getBoundsInParent().intersects(playerShip.getShipImage().getBoundsInParent());
     }
 
     private void addNewPlayerBullet(){
@@ -135,7 +141,6 @@ public class GameView {
             Iterator<Alien> alienIterator = levels.get(level).getAliens().iterator();
             while(alienIterator.hasNext()){
                 Alien alien = alienIterator.next();
-                alienBulletShoot(alien);
                 if(isOnSamePosition(alien, bullet)){
                     anchorPane.getChildren().remove(bullet.getImageView());
                     bulletIterator.remove();
@@ -146,7 +151,6 @@ public class GameView {
                         });
                         anchorPane.getChildren().remove(alien.getImageView());
                         score++;
-                        writeScore();
                         alienIterator.remove();
                     }
                     break;
@@ -155,36 +159,38 @@ public class GameView {
         }
     }
 
-    private void writeScore(){
+    private void writeLabels(){
         if(score<10){
-            infoLabel.setText(scoreString + "00" + score);
+            scoreboard.setText(scoreString + "00" + score);
         } else if(score>10 && score<100){
-            infoLabel.setText(scoreString + "0" + score);
+            scoreboard.setText(scoreString + "0" + score);
         } else {
-            infoLabel.setText(scoreString + score);
+            scoreboard.setText(scoreString + score);
         }
+        levelLabel.setText(levelString + (level+1));
     }
 
     private void alienBulletShoot(Alien alien){
-        alien.getBullets().forEach(bullet -> {
-            if(bullet.getImageView().getBoundsInParent().intersects(playerShip.getShipImage().getBoundsInParent())){
+        Iterator<Bullet> bulletIterator = alien.getBullets().iterator();
+        while(bulletIterator.hasNext()){
+            Bullet bullet = bulletIterator.next();
+            if(isOnSamePosition(playerShip, bullet)){
                 anchorPane.getChildren().remove(bullet.getImageView());
+                bulletIterator.remove();
                 playerShip.setHealth(playerShip.getHealth()-1);
-                System.out.println(shipHealth);
+                int shipHealth = playerShip.getHealth();
                 if(shipHealth>0){
                     anchorPane.getChildren().remove(shipHealthImages.get(shipHealth));
                 }
-                shipHealth--;
-                if(playerShip.getHealth()<=0){
+                else{
                     // buraya game over açıcaz
                     animationTimer.stop();
-                    backToGameController();
                     anchorPane.getChildren().remove(playerShip.getShipImage());
                     gameScene.setCursor(Cursor.DEFAULT);
-                    //animationTimer.stop();
+                    backToGameController();
                 }
             }
-        });
+        }
     }
 
     private void updateShipPosition(){
@@ -209,6 +215,7 @@ public class GameView {
                     anchorPane.getChildren().add(bullet.getImageView());
                 }
                 alien.getBullets().forEach(Bullet::moveDown);
+                alienBulletShoot(alien);
             }
         });
     }
@@ -238,7 +245,8 @@ public class GameView {
         gameStage = StageInitializer.parentStage;
         gameStage.setScene(gameScene);
         gameScene.setCursor(Cursor.NONE);
-        anchorPane.getChildren().add(infoLabel);
+        anchorPane.getChildren().add(scoreboard);
+        anchorPane.getChildren().add(levelLabel);
         anchorPane.getChildren().add(playerShip.getShipImage());
         moveCursor();
         createBackground(gameBackground);
