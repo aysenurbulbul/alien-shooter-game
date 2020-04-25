@@ -3,7 +3,8 @@ package com.example.client.view;
 import com.example.client.StageInitializer;
 import com.example.client.model.Alien;
 import com.example.client.model.Bullet;
-import com.example.client.model.level.*;
+import com.example.client.model.level.AbstractLevel;
+import com.example.client.model.level.Level1;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -60,22 +61,18 @@ public class GameView {
     private boolean isOnSamePosition(Alien alien, Bullet bullet){
 
         if(bullet.getImageView().getBoundsInParent().intersects(alien.getImageView().getBoundsInParent())){
-            anchorPane.getChildren().remove(alien.getImageView());
-            anchorPane.getChildren().remove(bullet.getImageView());
             return true;
         }
         return false;
-
-
     }
 
-    private void addNewBullet(){
-        Bullet newBullet = new Bullet("PLAYER", mousePositionX + 11.5, mousePositionY - 10, "/static/laserBlue03.png");
+    private void addNewPlayerBullet(){
+        Bullet newBullet = new Bullet("PLAYER", mousePositionX, mousePositionY -20, "/static/laserBlue03.png");
         bullets.add(newBullet);
         anchorPane.getChildren().add(newBullet.getImageView());
     }
 
-    private void updateBullet(){
+    private void updatePlayerBullet(){
         Iterator<Bullet> bulletIterator = bullets.iterator();
         while (bulletIterator.hasNext()) {
             Bullet bullet = bulletIterator.next();
@@ -85,9 +82,11 @@ public class GameView {
                 Alien alien = alienIterator.next();
                 if(isOnSamePosition(alien, bullet)){
                     System.out.println("SAME");
+                    anchorPane.getChildren().remove(bullet.getImageView());
                     bulletIterator.remove();
                     alien.decreaseHealth();
                     if(alien.getHealth()<= 0){
+                        anchorPane.getChildren().remove(alien.getImageView());
                         alienIterator.remove();
                     }
                     break;
@@ -100,8 +99,8 @@ public class GameView {
     private void update(){
         t += 0.05;
         if(t>2){
-            addNewBullet();
-            updateBullet();
+            addNewPlayerBullet();
+            updatePlayerBullet();
             alienShoot();
             t = 0;
         }
@@ -141,7 +140,7 @@ public class GameView {
         moveCursor();
         gameScene.setCursor(new ImageCursor(cursorImage));
         createBackground(gameBackground);
-        Level4 level1 = new Level4();
+        Level1 level1 = new Level1();
         level1.getAliens().forEach(alien -> {anchorPane.getChildren().add(alien.getImageView());});
         level = level1;
         gameLoop();
