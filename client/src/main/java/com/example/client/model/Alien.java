@@ -13,8 +13,10 @@ public class Alien {
     private ImageView imageView;
     private boolean canShoot;
     private List<Bullet> bullets;
+    private String type;
 
-    public Alien(int health, double positionX, double positionY, boolean canShoot, String imagePath) {
+    public Alien(String type, int health, double positionX, double positionY, boolean canShoot, String imagePath) {
+        this.type = type;
         this.health = health;
         this.positionX = positionX;
         this.positionY = positionY;
@@ -75,6 +77,14 @@ public class Alien {
 
     public void setCanShoot(boolean canShoot) {
         this.canShoot = canShoot;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public List<Bullet> getBullets() {
