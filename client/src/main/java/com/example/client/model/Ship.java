@@ -10,7 +10,7 @@ public class Ship {
         shipImage = new ImageView(imagePath);
         shipImage.setFitHeight(50);
         shipImage.setFitWidth(50);
-        health = 1;
+        health = 3;
     }
 
     public ImageView getShipImage() {

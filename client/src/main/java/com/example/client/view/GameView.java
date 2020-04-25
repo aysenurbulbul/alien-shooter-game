@@ -3,6 +3,7 @@ package com.example.client.view;
 import com.example.client.StageInitializer;
 import com.example.client.model.Alien;
 import com.example.client.model.Bullet;
+import com.example.client.model.InfoLabel;
 import com.example.client.model.Ship;
 import com.example.client.model.level.*;
 import javafx.animation.AnimationTimer;
@@ -32,6 +33,7 @@ public class GameView {
     private Stage gameStage;
     private final String playerShipPath = "/static/playerShip1_red.png";
     private final String gameBackground = "/static/purple.png";
+    private final String scoreString = "SCORE: ";
     private AnimationTimer animationTimer;
     private List<Bullet> bullets;
     private double t = 0;
@@ -39,7 +41,11 @@ public class GameView {
     private int level;
     private double mousePositionX;
     private double mousePositionY;
-    Ship playerShip;
+    private Ship playerShip;
+    private InfoLabel infoLabel;
+    private List<ImageView> shipHealthImages;
+    private int shipHealth;
+    private int score;
 
     public GameView(AnchorPane anchorPane, Scene gameScene, Stage gameStage){
         this.anchorPane = anchorPane;
@@ -47,6 +53,21 @@ public class GameView {
         this.gameStage = gameStage;
         bullets = new ArrayList<>();
         playerShip = new Ship(playerShipPath);
+        infoLabel = new InfoLabel("SCORE: 000");
+        infoLabel.setLayoutX(660);
+        infoLabel.setLayoutY(10);
+        score = 0;
+        shipHealthImages = new ArrayList<>();
+        shipHealth = playerShip.getHealth()-1;
+        for(int i=0; i< playerShip.getHealth(); i++){
+            ImageView imageView = new ImageView("/static/playerLife1_red.png");
+            imageView.setFitWidth(20);
+            imageView.setFitHeight(20);
+            imageView.setLayoutX(665 + i * 30);
+            imageView.setLayoutY(55);
+            shipHealthImages.add(imageView);
+            anchorPane.getChildren().add(imageView);
+        }
     }
 
     private void backToGameController(){
@@ -118,7 +139,6 @@ public class GameView {
                 Alien alien = alienIterator.next();
                 alienBulletShoot(alien);
                 if(isOnSamePosition(alien, bullet)){
-                    System.out.println("SAME");
                     anchorPane.getChildren().remove(bullet.getImageView());
                     bulletIterator.remove();
                     alien.decreaseHealth();
@@ -127,6 +147,8 @@ public class GameView {
                             anchorPane.getChildren().remove(alienBullet.getImageView());
                         });
                         anchorPane.getChildren().remove(alien.getImageView());
+                        score++;
+                        writeScore();
                         alienIterator.remove();
                     }
                     break;
@@ -135,17 +157,33 @@ public class GameView {
         }
     }
 
+    private void writeScore(){
+        if(score<10){
+            infoLabel.setText(scoreString + "00" + score);
+        } else if(score>10 && score<100){
+            infoLabel.setText(scoreString + "0" + score);
+        } else {
+            infoLabel.setText(scoreString + score);
+        }
+    }
+
     private void alienBulletShoot(Alien alien){
         alien.getBullets().forEach(bullet -> {
             if(bullet.getImageView().getBoundsInParent().intersects(playerShip.getShipImage().getBoundsInParent())){
                 anchorPane.getChildren().remove(bullet.getImageView());
                 playerShip.setHealth(playerShip.getHealth()-1);
+                System.out.println(shipHealth);
+                if(shipHealth>0){
+                    anchorPane.getChildren().remove(shipHealthImages.get(shipHealth));
+                }
+                shipHealth--;
                 if(playerShip.getHealth()<=0){
                     // buraya game over açıcaz
                     animationTimer.stop();
                     backToGameController();
                     anchorPane.getChildren().remove(playerShip.getShipImage());
                     gameScene.setCursor(Cursor.DEFAULT);
+                    //animationTimer.stop();
                 }
             }
         });
@@ -202,6 +240,7 @@ public class GameView {
         gameStage = StageInitializer.parentStage;
         gameStage.setScene(gameScene);
         gameScene.setCursor(Cursor.NONE);
+        anchorPane.getChildren().add(infoLabel);
         anchorPane.getChildren().add(playerShip.getShipImage());
         moveCursor();
         createBackground(gameBackground);
