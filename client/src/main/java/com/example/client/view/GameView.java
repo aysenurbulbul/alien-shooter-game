@@ -7,15 +7,10 @@ import com.example.client.model.level.AbstractLevel;
 import com.example.client.model.level.Level1;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.robot.Robot;
@@ -31,7 +26,6 @@ public class GameView {
     private Scene gameScene;
     private Stage gameStage;
     private final String playerShipPath = "/static/playerShip1_red.png";
-    private final String startButtonBackground = "/static/darkPurple.png";
     private final String gameBackground = "/static/purple.png";
     private AnimationTimer animationTimer;
     private List<Bullet> bullets;
@@ -66,10 +60,10 @@ public class GameView {
 
     private boolean isOnSamePosition(Alien alien, Bullet bullet){
 
-        if(alien.getPositionX()-100<=bullet.getPositionX() && bullet.getPositionX()<=alien.getPositionX()+100){
-            System.out.println("alienX: "+alien.getPositionX() + "bulletX: "+bullet.getPositionX());
-            System.out.println("alienY: "+alien.getPositionY() + "bulletY: "+bullet.getPositionY());
-            if(alien.getPositionY()-50<=bullet.getPositionY() && bullet.getPositionY()<=alien.getPositionY()+50){
+        if(alien.getPositionX()-100<=bullet.getImagePositionX() && bullet.getImagePositionX()<=alien.getPositionX()+100){
+            System.out.println("alienX: "+alien.getPositionX() + " bulletX: "+bullet.getImagePositionX());
+            System.out.println("alienY: "+alien.getPositionY() + " bulletY: "+bullet.getImagePositionY());
+            if(alien.getPositionY()-50<=bullet.getImagePositionY() && bullet.getImagePositionY()<=alien.getPositionY()+50){
                 return true;
             }
         }
@@ -121,7 +115,7 @@ public class GameView {
         });
     }
 
-    void alienShoot(){
+    private void alienShoot(){
         level.getAliens().forEach(alien -> {
             if(alien.isCanShoot()){
                 if(Math.random()<0.3){
@@ -152,6 +146,7 @@ public class GameView {
         level1.getAliens().forEach(alien -> {anchorPane.getChildren().add(alien.getImageView());});
         level = level1;
         gameLoop();
+
     }
 
     public Stage getGameStage() {

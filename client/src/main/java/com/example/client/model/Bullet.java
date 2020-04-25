@@ -42,7 +42,7 @@ public class Bullet {
     }
 
     public double getPositionX() {
-        return imageView.getLayoutX();
+        return imageView.getTranslateX();
 
     }
 
@@ -60,6 +60,14 @@ public class Bullet {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public double getImagePositionX(){
+        return imageView.getLayoutX();
+    }
+
+    public double getImagePositionY(){
+        return imageView.getLayoutY();
     }
 
     public void moveUp(){
