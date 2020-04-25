@@ -56,7 +56,7 @@ public class GameView {
         anchorPane.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                Bullet bullet = new Bullet(mouseEvent.getSceneX(), mouseEvent.getSceneY() - 5, "/static/laserBlue03.png");
+                Bullet bullet = new Bullet(mouseEvent.getSceneX() + 11.5, mouseEvent.getSceneY() - 35, "/static/laserBlue03.png");
                 anchorPane.getChildren().add(bullet.getImageView());
 
             }
@@ -66,21 +66,10 @@ public class GameView {
     public void gameStart() {
         gameStage = StageInitializer.parentStage;
         gameStage.setScene(gameScene);
-        Button startButton = new Button("START THE GAME");
-        anchorPane.getChildren().add(startButton);
-        startButton.setLayoutX(350);
-        startButton.setLayoutY(450);
-        createBackground(startButtonBackground);
-        startButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                Image cursorImage = new Image(playerShipPath);
-                gameScene.setCursor(new ImageCursor(cursorImage));
-                anchorPane.getChildren().remove(startButton);
-                createBackground(gameBackground);
-                update();
-            }
-        });
+        Image cursorImage = new Image(playerShipPath);
+        gameScene.setCursor(new ImageCursor(cursorImage));
+        createBackground(gameBackground);
+        update();
     }
 
     public Stage getGameStage() {

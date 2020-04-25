@@ -35,7 +35,7 @@ public class GameController implements Initializable {
         mainStage.getScene().setRoot(parent);
     }
     @FXML
-    private void startGame() throws IOException {
+    private void startGame(){
         GameView gameView = new GameView();
         gameView.gameStart();
     }
@@ -44,8 +44,6 @@ public class GameController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         restTemplate = new RestTemplate();
-        GameView gameView = new GameView();
-        gameView.gameStart();
     }
 
     private void addGame(){
