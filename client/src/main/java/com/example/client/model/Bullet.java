@@ -63,11 +63,11 @@ public class Bullet {
     }
 
     public double getImagePositionX(){
-        return imageView.getLayoutX();
+        return imageView.getTranslateX()+0;
     }
 
     public double getImagePositionY(){
-        return imageView.getLayoutY();
+        return imageView.getTranslateY()+0;
     }
 
     public void moveUp(){
