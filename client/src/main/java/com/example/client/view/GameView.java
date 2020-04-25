@@ -35,7 +35,6 @@ public class GameView {
     private final String gameBackground = "/static/purple.png";
     private final String scoreString = "SCORE: ";
     private AnimationTimer animationTimer;
-    private List<Bullet> bullets;
     private double t = 0;
     private List<AbstractLevel> levels;
     private int level;
@@ -51,7 +50,6 @@ public class GameView {
         this.anchorPane = anchorPane;
         this.gameScene = gameScene;
         this.gameStage = gameStage;
-        bullets = new ArrayList<>();
         playerShip = new Ship(playerShipPath);
         infoLabel = new InfoLabel("SCORE: 000");
         infoLabel.setLayoutX(660);
@@ -91,8 +89,8 @@ public class GameView {
             ++level;
             if(level<4){
                 levels.get(level).getAliens().forEach(alien -> {anchorPane.getChildren().add(alien.getImageView());});
-                bullets.forEach(bullet -> anchorPane.getChildren().remove(bullet.getImageView()));
-                bullets.clear();
+                playerShip.getBullets().forEach(bullet -> anchorPane.getChildren().remove(bullet.getImageView()));
+                playerShip.clearBullets();
             }
             else{
                 animationTimer.stop();
@@ -125,12 +123,12 @@ public class GameView {
 
     private void addNewPlayerBullet(){
         Bullet newBullet = new Bullet("PLAYER", mousePositionX + 20, mousePositionY -10, "/static/laserBlue03.png");
-        bullets.add(newBullet);
+        playerShip.addBullet(newBullet);
         anchorPane.getChildren().add(newBullet.getImageView());
     }
 
     private void updatePlayerBullet(){
-        Iterator<Bullet> bulletIterator = bullets.iterator();
+        Iterator<Bullet> bulletIterator = playerShip.getBullets().iterator();
         while (bulletIterator.hasNext()) {
             Bullet bullet = bulletIterator.next();
             bullet.moveUp();
