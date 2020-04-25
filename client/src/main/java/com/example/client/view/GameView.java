@@ -3,8 +3,7 @@ package com.example.client.view;
 import com.example.client.StageInitializer;
 import com.example.client.model.Alien;
 import com.example.client.model.Bullet;
-import com.example.client.model.level.AbstractLevel;
-import com.example.client.model.level.Level1;
+import com.example.client.model.level.*;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -30,7 +29,8 @@ public class GameView {
     private AnimationTimer animationTimer;
     private List<Bullet> bullets;
     private double t = 0;
-    private AbstractLevel level;
+    private List<AbstractLevel> levels;
+    private int level;
     private double mousePositionX;
     private double mousePositionY;
 
@@ -48,11 +48,26 @@ public class GameView {
         anchorPane.setBackground(new Background(backgroundImage));
     }
 
+    private void isLevelFinished(){
+        if(levels.get(level).getAliens().size() == 0){
+            ++level;
+            if(level<3){
+                levels.get(level).getAliens().forEach(alien -> {anchorPane.getChildren().add(alien.getImageView());});
+                bullets.forEach(bullet -> anchorPane.getChildren().remove(bullet.getImageView()));
+                bullets.clear();
+            }
+            else{
+
+            }
+        }
+    }
+
     private void gameLoop(){
         animationTimer = new AnimationTimer() {
             @Override
             public void handle(long l) {
                 update();
+                isLevelFinished();
             }
         };
         animationTimer.start();
@@ -67,7 +82,7 @@ public class GameView {
     }
 
     private void addNewPlayerBullet(){
-        Bullet newBullet = new Bullet("PLAYER", mousePositionX, mousePositionY -20, "/static/laserBlue03.png");
+        Bullet newBullet = new Bullet("PLAYER", mousePositionX + 11.5, mousePositionY -10, "/static/laserBlue03.png");
         bullets.add(newBullet);
         anchorPane.getChildren().add(newBullet.getImageView());
     }
@@ -77,7 +92,7 @@ public class GameView {
         while (bulletIterator.hasNext()) {
             Bullet bullet = bulletIterator.next();
             bullet.moveUp();
-            Iterator<Alien> alienIterator = level.getAliens().iterator();
+            Iterator<Alien> alienIterator = levels.get(level).getAliens().iterator();
             while(alienIterator.hasNext()){
                 Alien alien = alienIterator.next();
                 if(isOnSamePosition(alien, bullet)){
@@ -114,7 +129,7 @@ public class GameView {
     }
 
     private void alienShoot(){
-        level.getAliens().forEach(alien -> {
+        levels.get(level).getAliens().forEach(alien -> {
             if(alien.isCanShoot()){
                 if(Math.random()<0.3){
                     Bullet bullet = new Bullet("ENEMY",alien.getPositionX()+21.5, alien.getPositionY()+20, "/static/laserRed03.png");
@@ -133,6 +148,20 @@ public class GameView {
         });
     }
 
+    private void initLevels(){
+        levels = new ArrayList<>();
+        Level1 level1 = new Level1();
+        levels.add(level1);
+        Level2 level2 = new Level2();
+        levels.add(level2);
+        Level3 level3 = new Level3();
+        levels.add(level3);
+        Level4 level4 = new Level4();
+        levels.add(level4);
+        level = 0;
+        level1.getAliens().forEach(alien -> {anchorPane.getChildren().add(alien.getImageView());});
+    }
+
     public void gameStart() {
         gameStage = StageInitializer.parentStage;
         gameStage.setScene(gameScene);
@@ -140,11 +169,8 @@ public class GameView {
         moveCursor();
         gameScene.setCursor(new ImageCursor(cursorImage));
         createBackground(gameBackground);
-        Level1 level1 = new Level1();
-        level1.getAliens().forEach(alien -> {anchorPane.getChildren().add(alien.getImageView());});
-        level = level1;
+        initLevels();
         gameLoop();
-
     }
 
     public Stage getGameStage() {
