@@ -45,7 +45,7 @@ public class LoginController implements Initializable {
 
     private static Player player;
 
-    public static Player getPlayer(){
+    static Player getPlayer(){
         return player;
     }
 
@@ -56,8 +56,32 @@ public class LoginController implements Initializable {
         mainStage.getScene().setRoot(parent);
     }
 
+    private void loadGame() throws IOException {
+        Parent parent = FXMLLoader.load(getClass().getResource("/fxml/Game.fxml"));
+        Stage mainStage = StageInitializer.parentStage;
+        mainStage.getScene().setRoot(parent);
+    }
+
+    //gets player's info with the given username and sets player jwt token.
+    private void loadPlayer(String token, String username){
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        //set jwt token as a header since this request needs authentication
+        httpHeaders.set("Authorization", token);
+        HttpEntity<String> httpEntity = new HttpEntity<>("body", httpHeaders);
+        //make a request to server with the given username and get player.
+        ResponseEntity<Player> playerResponse = restTemplate.exchange(
+                "http://localhost:8080/players/" + username,
+                HttpMethod.GET,
+                httpEntity,
+                new ParameterizedTypeReference<>() {});
+        //set player's authorization token to given jwt token for making further requests.
+        player = playerResponse.getBody();
+        player.setJwt(token);
+    }
+
     @FXML
-    private void login() throws IOException {
+    private void login()  {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
@@ -70,24 +94,20 @@ public class LoginController implements Initializable {
         HttpEntity<String> httpEntity = new HttpEntity<>(jsonString, httpHeaders);
 
         try {
+            // on successful login this request returns a jwt token.
             ResponseEntity<String> tokenResponse = restTemplate.exchange("http://localhost:8080/login",
                     HttpMethod.POST,
                     httpEntity,
                     String.class);
             String token = "Bearer " + tokenResponse.getBody();
-            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-            httpHeaders.set("Authorization", token);
-            httpEntity = new HttpEntity<>("body", httpHeaders);
-            ResponseEntity<Player> playerResponse = restTemplate.exchange(
-                    "http://localhost:8080/players/" + username,
-                    HttpMethod.GET,
-                    httpEntity,
-                    new ParameterizedTypeReference<>() {});
-            player = playerResponse.getBody();
-            player.setJwt(token);
-            Parent parent = FXMLLoader.load(getClass().getResource("/fxml/Game.fxml"));
-            Stage mainStage = StageInitializer.parentStage;
-            mainStage.getScene().setRoot(parent);
+            //load player's info and
+            loadPlayer(token, username);
+            //load game page
+            try{
+                loadGame();
+            } catch (IOException e){
+                messageAlert(Alert.AlertType.ERROR, "Error", "Cannot open game page at the moment");
+            }
         } catch (RestClientException e){
             messageAlert(Alert.AlertType.ERROR, "Error", "Wrong credentials");
         }
