@@ -85,4 +85,8 @@ public class Alien {
         bullets.add(bullet);
     }
 
+    public void decreaseHealth(){
+        health = health -1;
+    }
+
 }

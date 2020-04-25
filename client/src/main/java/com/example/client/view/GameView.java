@@ -1,6 +1,7 @@
 package com.example.client.view;
 
 import com.example.client.StageInitializer;
+import com.example.client.model.Alien;
 import com.example.client.model.Bullet;
 import com.example.client.model.level.AbstractLevel;
 import com.example.client.model.level.Level1;
@@ -21,6 +22,7 @@ import javafx.scene.robot.Robot;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class GameView {
@@ -62,13 +64,51 @@ public class GameView {
         animationTimer.start();
     }
 
+    private boolean isOnSamePosition(Alien alien, Bullet bullet){
+
+        if(alien.getPositionX()-100<=bullet.getPositionX() && bullet.getPositionX()<=alien.getPositionX()+100){
+            System.out.println("alienX: "+alien.getPositionX() + "bulletX: "+bullet.getPositionX());
+            System.out.println("alienY: "+alien.getPositionY() + "bulletY: "+bullet.getPositionY());
+            if(alien.getPositionY()-50<=bullet.getPositionY() && bullet.getPositionY()<=alien.getPositionY()+50){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void addNewBullet(){
+        Bullet newBullet = new Bullet("PLAYER", mousePositionX, mousePositionY -40, "/static/laserBlue03.png");
+        bullets.add(newBullet);
+        anchorPane.getChildren().add(newBullet.getImageView());
+    }
+
+    private void updateBullet(){
+        Iterator<Bullet> bulletIterator = bullets.iterator();
+        while (bulletIterator.hasNext()) {
+            Bullet bullet = bulletIterator.next();
+            bullet.moveUp();
+            Iterator<Alien> alienIterator = level.getAliens().iterator();
+            while(alienIterator.hasNext()){
+                Alien alien = alienIterator.next();
+                if(isOnSamePosition(alien, bullet)){
+                    System.out.println("SAME");
+                    bulletIterator.remove();
+                    alien.decreaseHealth();
+                    if(alien.getHealth()<= 0){
+                        alienIterator.remove();
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+
     private void update(){
         t += 0.05;
         if(t>2){
-            Bullet bullet = new Bullet("PLAYER",mousePositionX + 11.5, mousePositionY -10, "/static/laserBlue03.png");
-            bullets.add(bullet);
-            anchorPane.getChildren().add(bullet.getImageView());
-            bullets.forEach(Bullet::moveUp);
+            addNewBullet();
+            updateBullet();
             alienShoot();
             t = 0;
         }
@@ -90,7 +130,6 @@ public class GameView {
                     anchorPane.getChildren().add(bullet.getImageView());
                 }
                 alien.getBullets().forEach(Bullet::moveDown);
-
             }
         });
     }
@@ -99,7 +138,6 @@ public class GameView {
         Platform.runLater(() -> {
             Robot robot = new Robot();
             robot.mouseMove(robot.getMouseX(), robot.getMouseY()+200);
-
         });
     }
 
@@ -111,8 +149,8 @@ public class GameView {
         gameScene.setCursor(new ImageCursor(cursorImage));
         createBackground(gameBackground);
         Level1 level1 = new Level1();
+        level1.getAliens().forEach(alien -> {anchorPane.getChildren().add(alien.getImageView());});
         level = level1;
-        level.getAliens().forEach(alien -> {anchorPane.getChildren().add(alien.getImageView());});
         gameLoop();
     }
 
