@@ -8,8 +8,10 @@ import com.example.client.model.level.*;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,6 +20,7 @@ import javafx.scene.layout.*;
 import javafx.scene.robot.Robot;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -38,14 +41,23 @@ public class GameView {
     private double mousePositionY;
     Ship playerShip;
 
-    public GameView(){
-        anchorPane = new AnchorPane();
-        gameScene = new Scene(anchorPane, 800, 600);
-        gameStage = new Stage();
+    public GameView(AnchorPane anchorPane, Scene gameScene, Stage gameStage){
+        this.anchorPane = anchorPane;
+        this.gameScene = gameScene;
+        this.gameStage = gameStage;
         bullets = new ArrayList<>();
         playerShip = new Ship(playerShipPath);
     }
 
+    private void backToGameController(){
+        try{
+            Parent parent = FXMLLoader.load(getClass().getResource("/fxml/Game.fxml"));
+            Stage mainStage = StageInitializer.parentStage;
+            mainStage.getScene().setRoot(parent);
+        } catch (IOException e){
+
+        }
+    }
 
     private void createBackground(String backgroundImagePath){
         Image background = new Image(backgroundImagePath, 256,256,false, true);
@@ -53,7 +65,7 @@ public class GameView {
         anchorPane.setBackground(new Background(backgroundImage));
     }
 
-    private void isLevelFinished(){
+    private void isLevelFinished()  {
         if(levels.get(level).getAliens().size() == 0){
             ++level;
             if(level<4){
@@ -62,7 +74,8 @@ public class GameView {
                 bullets.clear();
             }
             else{
-                gameStage.close();
+                animationTimer.stop();
+                backToGameController();
             }
         }
     }
@@ -122,6 +135,8 @@ public class GameView {
                 playerShip.setHealth(playerShip.getHealth()-1);
                 if(playerShip.getHealth()<=0){
                     // buraya game over açıcaz
+                    animationTimer.stop();
+                    backToGameController();
                     anchorPane.getChildren().remove(playerShip.getShipImage());
                     gameScene.setCursor(Cursor.DEFAULT);
                 }

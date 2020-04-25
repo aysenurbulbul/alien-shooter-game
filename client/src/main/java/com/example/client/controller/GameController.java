@@ -7,8 +7,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.json.JSONObject;
 import org.springframework.http.*;
@@ -17,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class GameController implements Initializable {
@@ -39,7 +42,10 @@ public class GameController implements Initializable {
     }
     @FXML
     private void startGame(){
-        GameView gameView = new GameView();
+        AnchorPane anchorPane = new AnchorPane();
+        Scene gameScene = new Scene(anchorPane, 800, 600);
+        Stage gameStage = new Stage();
+        GameView gameView = new GameView(anchorPane, gameScene, gameStage);
         gameView.gameStart();
     }
 
