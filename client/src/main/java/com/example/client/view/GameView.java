@@ -84,8 +84,15 @@ public class GameView {
         animationTimer = new AnimationTimer() {
             @Override
             public void handle(long l) {
-                update();
-                isLevelFinished();
+                t += 0.05;
+                if(t>2){
+                    addNewPlayerBullet();
+                    updatePlayerBullet();
+                    alienShoot();
+                    isLevelFinished();
+                    t = 0;
+                }
+                updateShipPosition();
             }
         };
         animationTimer.start();
@@ -144,14 +151,8 @@ public class GameView {
         });
     }
 
-    private void update(){
-        t += 0.05;
-        if(t>2){
-            addNewPlayerBullet();
-            updatePlayerBullet();
-            alienShoot();
-            t = 0;
-        }
+    private void updateShipPosition(){
+
         anchorPane.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {

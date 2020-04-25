@@ -1,6 +1,7 @@
 package com.example.client.controller;
 
 import com.example.client.StageInitializer;
+import com.example.client.model.Game;
 import com.example.client.model.Player;
 import com.example.client.view.GameView;
 import javafx.fxml.FXML;
@@ -13,12 +14,14 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.json.JSONObject;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -33,6 +36,12 @@ public class GameController implements Initializable {
     public Button startGame;
 
     private Player player;
+
+    private static Long score;
+
+    public static void setScore(Long value){
+        score = value;
+    }
 
     @FXML
     private void loadMainMenu() throws IOException {
@@ -57,6 +66,24 @@ public class GameController implements Initializable {
     }
 
     private void addGame(){
+        String username = player.getUsername();
+        LocalDateTime date = LocalDateTime.now();
+        String token = player.getJwt();
 
+        String jsonString = new JSONObject()
+                .put("score", score)
+                .put("finishDateTime", date).toString();
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        //set jwt token as a header since this request needs authentication
+        httpHeaders.set("Authorization", token);
+        HttpEntity<String> httpEntity = new HttpEntity<>("body", httpHeaders);
+        //make a request to server with the given username and get player.
+        ResponseEntity<Player> playerResponse = restTemplate.exchange(
+                "http://localhost:8080/game/addGame/" + username,
+                HttpMethod.GET,
+                httpEntity,
+                new ParameterizedTypeReference<>() {});
     }
 }
