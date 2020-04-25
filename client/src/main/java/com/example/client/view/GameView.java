@@ -51,13 +51,13 @@ public class GameView {
     private void isLevelFinished(){
         if(levels.get(level).getAliens().size() == 0){
             ++level;
-            if(level<3){
+            if(level<4){
                 levels.get(level).getAliens().forEach(alien -> {anchorPane.getChildren().add(alien.getImageView());});
                 bullets.forEach(bullet -> anchorPane.getChildren().remove(bullet.getImageView()));
                 bullets.clear();
             }
             else{
-
+                gameStage.close();
             }
         }
     }
