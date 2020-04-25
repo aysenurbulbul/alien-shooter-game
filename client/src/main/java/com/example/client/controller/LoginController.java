@@ -1,6 +1,8 @@
 package com.example.client.controller;
 
 import com.example.client.StageInitializer;
+import com.example.client.model.Game;
+import com.example.client.model.Player;
 import com.example.client.view.GameView;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,10 +14,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.json.JSONObject;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
@@ -23,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 @Component
@@ -41,6 +42,12 @@ public class LoginController implements Initializable {
 
     @FXML
     public Button loginButton;
+
+    private static Player player;
+
+    public static Player getPlayer(){
+        return player;
+    }
 
     @FXML
     private void loadMainMenu() throws IOException {
@@ -63,11 +70,21 @@ public class LoginController implements Initializable {
         HttpEntity<String> httpEntity = new HttpEntity<>(jsonString, httpHeaders);
 
         try {
-            restTemplate.exchange("http://localhost:8080/login",
+            ResponseEntity<String> tokenResponse = restTemplate.exchange("http://localhost:8080/login",
                     HttpMethod.POST,
                     httpEntity,
                     String.class);
-            //messageAlert(Alert.AlertType.CONFIRMATION,"Successfully logged in!", "Hello " + username + "!");
+            String token = "Bearer " + tokenResponse.getBody();
+            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+            httpHeaders.set("Authorization", token);
+            httpEntity = new HttpEntity<>("body", httpHeaders);
+            ResponseEntity<Player> playerResponse = restTemplate.exchange(
+                    "http://localhost:8080/players/" + username,
+                    HttpMethod.GET,
+                    httpEntity,
+                    new ParameterizedTypeReference<>() {});
+            player = playerResponse.getBody();
+            player.setJwt(token);
             Parent parent = FXMLLoader.load(getClass().getResource("/fxml/Game.fxml"));
             Stage mainStage = StageInitializer.parentStage;
             mainStage.getScene().setRoot(parent);

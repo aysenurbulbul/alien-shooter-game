@@ -1,6 +1,7 @@
 package com.example.client.controller;
 
 import com.example.client.StageInitializer;
+import com.example.client.model.Player;
 import com.example.client.view.GameView;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -28,6 +29,8 @@ public class GameController implements Initializable {
     @FXML
     public Button startGame;
 
+    private Player player;
+
     @FXML
     private void loadMainMenu() throws IOException {
         Parent parent = FXMLLoader.load(getClass().getResource("/fxml/MainMenu.fxml"));
@@ -44,6 +47,7 @@ public class GameController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         restTemplate = new RestTemplate();
+        player = LoginController.getPlayer();
     }
 
     private void addGame(){
