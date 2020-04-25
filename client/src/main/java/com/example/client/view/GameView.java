@@ -2,8 +2,10 @@ package com.example.client.view;
 
 import com.example.client.StageInitializer;
 import com.example.client.model.Bullet;
+import com.example.client.model.level.AbstractLevel;
 import com.example.client.model.level.Level1;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -15,6 +17,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.robot.Robot;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -31,6 +34,7 @@ public class GameView {
     private AnimationTimer animationTimer;
     private List<Bullet> bullets;
     private double t = 0;
+    private AbstractLevel level;
     private double mousePositionX;
     private double mousePositionY;
 
@@ -61,10 +65,11 @@ public class GameView {
     private void update(){
         t += 0.05;
         if(t>2){
-            Bullet bullet = new Bullet(mousePositionX + 11.5, mousePositionY - 40, "/static/laserBlue03.png");
+            Bullet bullet = new Bullet("PLAYER",mousePositionX + 11.5, mousePositionY -10, "/static/laserBlue03.png");
             bullets.add(bullet);
             anchorPane.getChildren().add(bullet.getImageView());
             bullets.forEach(Bullet::moveUp);
+            alienShoot();
             t = 0;
         }
         anchorPane.setOnMouseMoved(new EventHandler<MouseEvent>() {
@@ -76,20 +81,38 @@ public class GameView {
         });
     }
 
-    private void fireClicked(){
-        Event.fireEvent(anchorPane, new MouseEvent(MouseEvent.MOUSE_MOVED, 0,
-                0, 0, 0, MouseButton.PRIMARY, 1, true, true, true, true,
-                true, true, true, true, true, true, null));
+    void alienShoot(){
+        level.getAliens().forEach(alien -> {
+            if(alien.isCanShoot()){
+                if(Math.random()<0.3){
+                    Bullet bullet = new Bullet("ENEMY",alien.getPositionX()+21.5, alien.getPositionY()+20, "/static/laserRed03.png");
+                    alien.addBullet(bullet);
+                    anchorPane.getChildren().add(bullet.getImageView());
+                }
+                alien.getBullets().forEach(Bullet::moveDown);
+
+            }
+        });
+    }
+
+    private void moveCursor() {
+        Platform.runLater(() -> {
+            Robot robot = new Robot();
+            robot.mouseMove(robot.getMouseX(), robot.getMouseY()+200);
+
+        });
     }
 
     public void gameStart() {
         gameStage = StageInitializer.parentStage;
         gameStage.setScene(gameScene);
         Image cursorImage = new Image(playerShipPath);
+        moveCursor();
         gameScene.setCursor(new ImageCursor(cursorImage));
         createBackground(gameBackground);
         Level1 level1 = new Level1();
-        level1.getAliens().forEach(alien -> {anchorPane.getChildren().add(alien.getImageView());});
+        level = level1;
+        level.getAliens().forEach(alien -> {anchorPane.getChildren().add(alien.getImageView());});
         gameLoop();
     }
 

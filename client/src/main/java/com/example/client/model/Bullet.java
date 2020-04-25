@@ -3,6 +3,7 @@ package com.example.client.model;
 import javafx.scene.image.ImageView;
 
 public class Bullet {
+    private String type;
     private double positionX;
     private double positionY;
     private String imagePath;
@@ -16,7 +17,8 @@ public class Bullet {
         return imageView;
     }
 
-    public Bullet(double positionX, double positionY, String imagePath) {
+    public Bullet(String type, double positionX, double positionY, String imagePath) {
+        this.type = type;
         this.positionX = positionX;
         this.positionY = positionY;
         this.imagePath = imagePath;
@@ -52,7 +54,19 @@ public class Bullet {
         return imagePath;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public void moveUp(){
         imageView.setTranslateY(imageView.getTranslateY()-30);
+    }
+
+    public void moveDown(){
+        imageView.setTranslateY(imageView.getTranslateY()+30);
     }
 }

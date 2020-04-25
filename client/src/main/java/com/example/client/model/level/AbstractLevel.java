@@ -25,7 +25,7 @@ public abstract class AbstractLevel {
         this.levelPassed = levelPassed;
     }
 
-    public void addAlien(Alien alien){
+    void addAlien(Alien alien){
         aliens.add(alien);
     }
 }
