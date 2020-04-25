@@ -50,7 +50,7 @@ public class LoginController implements Initializable {
     }
 
     @FXML
-    private void login(){
+    private void login() throws IOException {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
@@ -68,8 +68,9 @@ public class LoginController implements Initializable {
                     httpEntity,
                     String.class);
             //messageAlert(Alert.AlertType.CONFIRMATION,"Successfully logged in!", "Hello " + username + "!");
-            GameView gameView = new GameView();
-            gameView.gameStart();
+            Parent parent = FXMLLoader.load(getClass().getResource("/fxml/Game.fxml"));
+            Stage mainStage = StageInitializer.parentStage;
+            mainStage.getScene().setRoot(parent);
         } catch (RestClientException e){
             messageAlert(Alert.AlertType.ERROR, "Error", "Wrong credentials");
         }
