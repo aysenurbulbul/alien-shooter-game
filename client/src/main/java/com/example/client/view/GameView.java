@@ -3,8 +3,7 @@ package com.example.client.view;
 import com.example.client.StageInitializer;
 import com.example.client.model.Alien;
 import com.example.client.model.Bullet;
-import com.example.client.model.level.AbstractLevel;
-import com.example.client.model.level.Level1;
+import com.example.client.model.level.*;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -60,18 +59,18 @@ public class GameView {
 
     private boolean isOnSamePosition(Alien alien, Bullet bullet){
 
-        if(alien.getPositionX()-100<=bullet.getImagePositionX() && bullet.getImagePositionX()<=alien.getPositionX()+100){
-            System.out.println("alienX: "+alien.getPositionX() + " bulletX: "+bullet.getImagePositionX());
-            System.out.println("alienY: "+alien.getPositionY() + " bulletY: "+bullet.getImagePositionY());
-            if(alien.getPositionY()-50<=bullet.getImagePositionY() && bullet.getImagePositionY()<=alien.getPositionY()+50){
-                return true;
-            }
+        if(bullet.getImageView().getBoundsInParent().intersects(alien.getImageView().getBoundsInParent())){
+            anchorPane.getChildren().remove(alien.getImageView());
+            anchorPane.getChildren().remove(bullet.getImageView());
+            return true;
         }
         return false;
+
+
     }
 
     private void addNewBullet(){
-        Bullet newBullet = new Bullet("PLAYER", mousePositionX, mousePositionY -40, "/static/laserBlue03.png");
+        Bullet newBullet = new Bullet("PLAYER", mousePositionX + 11.5, mousePositionY - 10, "/static/laserBlue03.png");
         bullets.add(newBullet);
         anchorPane.getChildren().add(newBullet.getImageView());
     }
@@ -142,7 +141,7 @@ public class GameView {
         moveCursor();
         gameScene.setCursor(new ImageCursor(cursorImage));
         createBackground(gameBackground);
-        Level1 level1 = new Level1();
+        Level4 level1 = new Level4();
         level1.getAliens().forEach(alien -> {anchorPane.getChildren().add(alien.getImageView());});
         level = level1;
         gameLoop();
