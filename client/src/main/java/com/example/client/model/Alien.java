@@ -8,13 +8,17 @@ public class Alien {
     private int health;
     private String imagePath;
     private ImageView imageView;
+    private boolean canShoot;
 
-    public Alien(int health, double positionX, double positionY, String imagePath) {
+    public Alien(int health, double positionX, double positionY, boolean canShoot, String imagePath) {
         this.health = health;
         this.positionX = positionX;
         this.positionY = positionY;
         this.imagePath = imagePath;
+        this.canShoot = canShoot;
         imageView = new ImageView(imagePath);
+        imageView.setFitHeight(50);
+        imageView.setFitWidth(50);
         imageView.setLayoutX(positionX);
         imageView.setLayoutY(positionY);
     }
@@ -57,5 +61,13 @@ public class Alien {
 
     public ImageView getImageView() {
         return imageView;
+    }
+
+    public boolean isCanShoot() {
+        return canShoot;
+    }
+
+    public void setCanShoot(boolean canShoot) {
+        this.canShoot = canShoot;
     }
 }

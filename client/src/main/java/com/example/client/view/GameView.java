@@ -2,6 +2,7 @@ package com.example.client.view;
 
 import com.example.client.StageInitializer;
 import com.example.client.model.Bullet;
+import com.example.client.model.level.Level1;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -87,6 +88,8 @@ public class GameView {
         Image cursorImage = new Image(playerShipPath);
         gameScene.setCursor(new ImageCursor(cursorImage));
         createBackground(gameBackground);
+        Level1 level1 = new Level1();
+        level1.getAliens().forEach(alien -> {anchorPane.getChildren().add(alien.getImageView());});
         gameLoop();
     }
 
