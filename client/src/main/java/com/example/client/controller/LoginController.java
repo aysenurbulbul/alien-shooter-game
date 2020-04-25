@@ -67,7 +67,7 @@ public class LoginController implements Initializable {
                     HttpMethod.POST,
                     httpEntity,
                     String.class);
-            messageAlert(Alert.AlertType.CONFIRMATION,"Successfully logged in!", "Hello " + username + "!");
+            //messageAlert(Alert.AlertType.CONFIRMATION,"Successfully logged in!", "Hello " + username + "!");
             GameView gameView = new GameView();
             gameView.gameStart();
         } catch (RestClientException e){
