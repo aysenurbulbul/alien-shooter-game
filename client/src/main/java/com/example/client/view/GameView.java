@@ -30,6 +30,8 @@ public class GameView {
     private AnimationTimer animationTimer;
     private List<Bullet> bullets;
     private double t = 0;
+    private double mousePositionX;
+    private double mousePositionY;
 
     public GameView(){
         anchorPane = new AnchorPane();
@@ -52,47 +54,29 @@ public class GameView {
                 update();
             }
         };
-
         animationTimer.start();
     }
 
     private void update(){
-        t += 0.016;
+        t += 0.05;
         if(t>2){
-            fireClicked();
+            Bullet bullet = new Bullet(mousePositionX + 11.5, mousePositionY - 40, "/static/laserBlue03.png");
+            bullets.add(bullet);
+            anchorPane.getChildren().add(bullet.getImageView());
             bullets.forEach(Bullet::moveUp);
             t = 0;
         }
-        anchorPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        anchorPane.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                Bullet bullet = new Bullet(mouseEvent.getSceneX() + 11.5, mouseEvent.getSceneY() - 40, "/static/laserBlue03.png");
-                bullets.add(bullet);
-                anchorPane.getChildren().add(bullet.getImageView());
+                mousePositionX = mouseEvent.getSceneX();
+                mousePositionY = mouseEvent.getSceneY();
             }
         });
-        // mouse moved dediğinde sadece mouse movelarsa atıyor durursa atmıyor
-
-        /*anchorPane.setOnMouseMoved(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                if(t>2){
-                    Bullet bullet = new Bullet(mouseEvent.getSceneX() + 11.5, mouseEvent.getSceneY() - 40, "/static/laserBlue03.png");
-                    bullets.add(bullet);
-                    anchorPane.getChildren().add(bullet.getImageView());
-                    t = 0;
-                }
-
-
-            }
-        });*/
-
-
-
     }
 
     private void fireClicked(){
-        Event.fireEvent(anchorPane, new MouseEvent(MouseEvent.MOUSE_CLICKED, 0,
+        Event.fireEvent(anchorPane, new MouseEvent(MouseEvent.MOUSE_MOVED, 0,
                 0, 0, 0, MouseButton.PRIMARY, 1, true, true, true, true,
                 true, true, true, true, true, true, null));
     }
