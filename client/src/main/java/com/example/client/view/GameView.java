@@ -9,37 +9,26 @@ import com.example.client.model.Ship;
 import com.example.client.model.level.*;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.robot.Robot;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.example.client.constant.ControllerConstants.GAME_FXML;
 import static com.example.client.constant.GameViewConstants.*;
 
 public class GameView {
 
-    private AnchorPane anchorPane;
-    private Scene gameScene;
+    private final AnchorPane anchorPane;
+    private final Scene gameScene;
     private Stage gameStage;
-    private final String playerShipPath = PLAYER_SHIP;
-    private final String gameBackground = GAME_BACKGROUND;
-    private final String scoreString = INFO_LABEL_SCOREBOARD;
-    private final String levelString = INFO_LABEL_LEVEL;
     private AnimationTimer animationTimer;
     private double t = 0;
     private List<AbstractLevel> levels;
@@ -56,16 +45,25 @@ public class GameView {
         this.anchorPane = anchorPane;
         this.gameScene = gameScene;
         this.gameStage = gameStage;
-        playerShip = new Ship(playerShipPath);
-        scoreboard = new InfoLabel("SCORE: 000",120);
-        scoreboard.setLayoutX(SCOREBOARD_LAYOUT_X);
-        scoreboard.setLayoutY(SCOREBOARD_LAYOUT_Y);
-        levelLabel = new InfoLabel("LEVEL: 1",120);
-        levelLabel.setLayoutX(LEVEL_LAYOUT_X);
-        levelLabel.setLayoutY(LEVEL_LAYOUT_Y);
-        anchorPane.getChildren().add(scoreboard);
-        anchorPane.getChildren().add(levelLabel);
+        this.gameStage = StageInitializer.parentStage;
+        this.gameStage.setScene(gameScene);
+        this.gameScene.setCursor(Cursor.NONE);
         score = 0;
+        level = 0;
+        cheatHandle();
+        moveCursor();
+        createBackground();
+        createPlayerShip();
+        createLevelInfo();
+        createScoreboard();
+        createPlayerShipHealthInfo();
+        initLevels();
+    }
+    private void createPlayerShip(){
+        playerShip = new Ship(PLAYER_SHIP);
+        this.anchorPane.getChildren().add(playerShip.getShipImage());
+    }
+    private void createPlayerShipHealthInfo(){
         shipHealthImages = new ArrayList<>();
         for(int i=0; i< playerShip.getHealth(); i++){
             ImageView imageView = new ImageView(PLAYER_LIFE);
@@ -77,15 +75,27 @@ public class GameView {
             anchorPane.getChildren().add(imageView);
         }
     }
+    private void createLevelInfo(){
+        levelLabel = new InfoLabel("LEVEL: 1",120);
+        levelLabel.setLayoutX(LEVEL_LAYOUT_X);
+        levelLabel.setLayoutY(LEVEL_LAYOUT_Y);
+        anchorPane.getChildren().add(levelLabel);
+    }
 
+    private void createScoreboard(){
+        scoreboard = new InfoLabel("SCORE: 000",120);
+        scoreboard.setLayoutX(SCOREBOARD_LAYOUT_X);
+        scoreboard.setLayoutY(SCOREBOARD_LAYOUT_Y);
+        anchorPane.getChildren().add(scoreboard);
+    }
 
-    private void createBackground(String backgroundImagePath){
-        Image background = new Image(backgroundImagePath, 256,256,false, true);
+    private void createBackground(){
+        Image background = new Image(GAME_BACKGROUND, 256,256,false, true);
         BackgroundImage backgroundImage = new BackgroundImage(background, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, null);
         anchorPane.setBackground(new Background(backgroundImage));
     }
 
-    private void finishGame(String text){
+    private void gameFinished(String text){
         gameScene.setCursor(Cursor.DEFAULT);
         animationTimer.stop();
         GameController.setScore(score);
@@ -96,16 +106,23 @@ public class GameView {
         anchorPane.getChildren().add(gameDoneView);
     }
 
+    private void isGameFinished(){
+        if(level == NUMBER_OF_LEVELS ){
+            gameFinished("CONGRATULATIONS!");
+        }
+        if(playerShip.getHealth() == ZERO_HEALTH){
+            gameFinished("LOSER... YOU SUCK");
+        }
+
+    }
+
     private void isLevelFinished()  {
         if(levels.get(level).getAliens().size() == 0){
             ++level;
             if(level<NUMBER_OF_LEVELS){
-                levels.get(level).getAliens().forEach(alien -> {anchorPane.getChildren().add(alien.getImageView());});
+                levels.get(level).getAliens().forEach(alien -> anchorPane.getChildren().add(alien.getImageView()));
                 playerShip.getBullets().forEach(bullet -> anchorPane.getChildren().remove(bullet.getImageView()));
                 playerShip.clearBullets();
-            }
-            else{
-                finishGame("Congratulations!");
             }
         }
     }
@@ -124,6 +141,7 @@ public class GameView {
             anchorPane.getChildren().remove(alien.getImageView());
             alienIterator.remove();
             isLevelFinished();
+            isGameFinished();
         }
     }
 
@@ -138,6 +156,7 @@ public class GameView {
                     alienShoot();
                     writeLabels();
                     isLevelFinished();
+                    isGameFinished();
                     t = 0;
                 }
                 updateShipPosition();
@@ -172,11 +191,8 @@ public class GameView {
                     bulletIterator.remove();
                     alien.decreaseHealth();
                     if(alien.getHealth()<= ZERO_HEALTH){
-                        alien.getBullets().forEach(alienBullet -> {
-                            anchorPane.getChildren().remove(alienBullet.getImageView());
-                        });
+                        alien.getBullets().forEach(alienBullet -> anchorPane.getChildren().remove(alienBullet.getImageView()));
                         anchorPane.getChildren().remove(alien.getImageView());
-                        //score++;
                         addToScore(alien);
                         alienIterator.remove();
                     }
@@ -202,13 +218,13 @@ public class GameView {
 
     private void writeLabels(){
         if(score<10){
-            scoreboard.setText(scoreString + "00" + score);
+            scoreboard.setText(INFO_LABEL_SCOREBOARD + "00" + score);
         } else if(score>10 && score<100){
-            scoreboard.setText(scoreString + "0" + score);
+            scoreboard.setText(INFO_LABEL_SCOREBOARD + "0" + score);
         } else {
-            scoreboard.setText(scoreString + score);
+            scoreboard.setText(INFO_LABEL_SCOREBOARD + score);
         }
-        levelLabel.setText(levelString + (level+1));
+        levelLabel.setText(INFO_LABEL_LEVEL + (level+1));
     }
 
     private void alienBulletShoot(Alien alien){
@@ -223,23 +239,17 @@ public class GameView {
                 if(shipHealth>ZERO_HEALTH){
                     anchorPane.getChildren().remove(shipHealthImages.get(shipHealth));
                 }
-                else{
-                    finishGame("LOSER... YOU SUCK!");
-                }
             }
         }
     }
 
     private void updateShipPosition(){
 
-        anchorPane.setOnMouseMoved(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                mousePositionX = mouseEvent.getSceneX();
-                mousePositionY = mouseEvent.getSceneY();
-                playerShip.getShipImage().setLayoutX(mouseEvent.getSceneX());
-                playerShip.getShipImage().setLayoutY(mouseEvent.getSceneY());
-            }
+        anchorPane.setOnMouseMoved(mouseEvent -> {
+            mousePositionX = mouseEvent.getSceneX();
+            mousePositionY = mouseEvent.getSceneY();
+            playerShip.getShipImage().setLayoutX(mouseEvent.getSceneX());
+            playerShip.getShipImage().setLayoutY(mouseEvent.getSceneY());
         });
     }
 
@@ -274,50 +284,18 @@ public class GameView {
         levels.add(level3);
         Level4 level4 = new Level4();
         levels.add(level4);
-        level = 0;
-        level1.getAliens().forEach(alien -> {anchorPane.getChildren().add(alien.getImageView());});
+        level1.getAliens().forEach(alien -> anchorPane.getChildren().add(alien.getImageView()));
+    }
+
+    public void cheatHandle(){
+        gameScene.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.isControlDown() && keyEvent.isShiftDown() && keyEvent.getCode() == KeyCode.DIGIT9) {
+                cheat();
+            }
+        });
     }
 
     public void gameStart() {
-        gameStage = StageInitializer.parentStage;
-        gameStage.setScene(gameScene);
-        gameScene.setCursor(Cursor.NONE);
-        anchorPane.getChildren().add(playerShip.getShipImage());
-        gameScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent keyEvent) {
-                if(keyEvent.isControlDown() && keyEvent.isShiftDown() && keyEvent.getCode() == KeyCode.DIGIT9){
-                    cheat();
-                }
-            }
-        });
-        moveCursor();
-        createBackground(gameBackground);
-        initLevels();
         gameLoop();
-    }
-
-    public Stage getGameStage() {
-        return gameStage;
-    }
-
-    public void setGameStage(Stage gameStage) {
-        this.gameStage = gameStage;
-    }
-
-    public Scene getGameScene() {
-        return gameScene;
-    }
-
-    public void setGameScene(Scene gameScene) {
-        this.gameScene = gameScene;
-    }
-
-    public AnchorPane getAnchorPane() {
-        return anchorPane;
-    }
-
-    public void setAnchorPane(AnchorPane anchorPane) {
-        this.anchorPane = anchorPane;
     }
 }
