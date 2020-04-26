@@ -71,10 +71,10 @@ public class Bullet {
     }
 
     public void moveUp(){
-        imageView.setTranslateY(imageView.getTranslateY()-30);
+        imageView.setTranslateY(imageView.getTranslateY() - 50);
     }
 
     public void moveDown(){
-        imageView.setTranslateY(imageView.getTranslateY()+30);
+        imageView.setTranslateY(imageView.getTranslateY() + 50);
     }
 }

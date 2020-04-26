@@ -100,6 +100,7 @@ public class GameView {
                 playerShip.clearBullets();
             }
             else{
+                gameScene.setCursor(Cursor.DEFAULT);
                 animationTimer.stop();
                 backToGameController();
             }
@@ -111,6 +112,12 @@ public class GameView {
         while(alienIterator.hasNext()){
             Alien alien = alienIterator.next();
             addToScore(alien);
+            Iterator<Bullet> bulletIterator = alien.getBullets().iterator();
+            while (bulletIterator.hasNext()){
+                Bullet bullet = bulletIterator.next();
+                anchorPane.getChildren().remove(bullet.getImageView());
+                bulletIterator.remove();
+            }
             anchorPane.getChildren().remove(alien.getImageView());
             alienIterator.remove();
             isLevelFinished();
@@ -144,7 +151,7 @@ public class GameView {
     }
 
     private void addNewPlayerBullet(){
-        Bullet newBullet = new Bullet("PLAYER", mousePositionX + 20, mousePositionY -10, "/static/laserBlue03.png");
+        Bullet newBullet = new Bullet("PLAYER", mousePositionX + 20, mousePositionY + 7, "/static/laserBlue03.png");
         playerShip.addBullet(newBullet);
         anchorPane.getChildren().add(newBullet.getImageView());
     }
@@ -175,7 +182,7 @@ public class GameView {
             }
         }
     }
-   
+
     private void addToScore(Alien alien){
         switch (alien.getType()){
             case "EASY":
