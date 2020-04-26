@@ -9,6 +9,8 @@ public final class GameViewConstants {
     public static final Double SCOREBOARD_LAYOUT_Y = 10.0;
     public static final Double LEVEL_LAYOUT_X = 0.0;
     public static final Double LEVEL_LAYOUT_Y = 10.0;
+    public static final String FONT_PATH = "src/main/resources/font/kenvector_future.ttf";
+    public static final String LABEL_PATH = "/static/blue_button13.png";
 
     /*********IMAGE PATHS*************/
     public static final String PLAYER_SHIP = "/static/playerShip1_red.png";

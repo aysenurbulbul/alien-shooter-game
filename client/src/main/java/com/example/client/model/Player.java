@@ -7,8 +7,11 @@ public class Player {
     private String username;
     private String email;
     private String password;
+
+    // jwt token for authentication and authorization
     @JsonIgnore
     private String jwt;
+
     public void setJwt(String jwt) {
         this.jwt = jwt;
     }

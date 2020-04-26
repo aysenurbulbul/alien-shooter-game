@@ -14,29 +14,38 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-public class InfoLabel extends Label {
-    private final String FONT_PATH = "src/main/resources/font/kenvector_future.ttf";
+import static com.example.client.constant.GameViewConstants.FONT_PATH;
+import static com.example.client.constant.GameViewConstants.LABEL_PATH;
 
+/**
+ * this class creates a label for showing level number, score and health of the ship
+ */
+public class InfoLabel extends Label {
+    /**
+     * creates label with given context, with background and font
+     * @param context label's context
+     */
     public InfoLabel(String context){
         setPrefHeight(40);
         setPrefWidth(120);
-        BackgroundImage backgroundImage = new BackgroundImage(new Image("/static/blue_button13.png", 120, 40, false, true),
+        BackgroundImage backgroundImage = new BackgroundImage(new Image(LABEL_PATH, 120, 40, false, true),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, null);
         setBackground(new Background(backgroundImage));
         setAlignment(Pos.CENTER_LEFT);
         setPadding(new Insets(10, 10, 10, 10));
-        setFont();
+        setLabelFont();
         setText(context);
     }
 
-    private void setFont(){
+    /**
+     * try to load font otherwise load default font
+     */
+    private void setLabelFont(){
         try {
             setFont(Font.loadFont(new FileInputStream(new File(FONT_PATH)), 12));
         } catch (FileNotFoundException e) {
-            System.out.println("why");
             setFont(Font.font("Verdana", 15));
         }
 
     }
-
 }

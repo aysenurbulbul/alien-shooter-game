@@ -11,7 +11,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -30,12 +29,6 @@ import static com.example.client.constant.ControllerConstants.*;
 public class RegisterController implements Initializable {
 
     private RestTemplate restTemplate;
-
-    // bu değeri null alıyor neden anlamadım, application.properties te yazmama rağmen
-    @Value("${spring.application.apiAddress}")
-    private String apiAddress;
-
-    private String url = API_ADDRESS;
 
     @FXML
     public Button backMenuButton;
@@ -57,6 +50,10 @@ public class RegisterController implements Initializable {
         restTemplate = new RestTemplate();
     }
 
+    /**
+     * loads main menu when user clicks "Back to Menu" button
+     * @throws IOException from FXMLloader.laod
+     */
     @FXML
     private void loadMainMenu() throws IOException {
         Parent parent = FXMLLoader.load(getClass().getResource(MAIN_MENU_FXML));
@@ -64,6 +61,10 @@ public class RegisterController implements Initializable {
         mainStage.getScene().setRoot(parent);
     }
 
+    /**
+     * register player,  add it to database
+     * sends POST request to the server using restTemplate
+     */
     @FXML
     private void register(){
         String username = usernameField.getText();
@@ -78,9 +79,8 @@ public class RegisterController implements Initializable {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> httpEntity = new HttpEntity<>(jsonString, httpHeaders);
-        System.out.println(apiAddress+"/registration");
         try {
-            restTemplate.exchange(url + "/registration",
+            restTemplate.exchange(API_ADDRESS + "/registration",
                     HttpMethod.POST,
                     httpEntity,
                     String.class);
@@ -91,6 +91,12 @@ public class RegisterController implements Initializable {
         }
     }
 
+    /**
+     * Create alert
+     * @param alertType alert type like error, confirmation
+     * @param title title of the alert title
+     * @param message context of the alert window
+     */
     private void messageAlert(Alert.AlertType alertType, String title, String message){
         Alert alert = new Alert(alertType);
         alert.setTitle(title);

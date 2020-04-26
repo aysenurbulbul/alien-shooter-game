@@ -53,7 +53,7 @@
     </Button>
 
     <!--leaderBoard button-->
-    <Button text="LEADER BOARD" fx:id="leaderBoard"
+    <Button text="LEADERBOARD" fx:id="leaderBoard"
             prefHeight="30" prefWidth="100" defaultButton="true"
             GridPane.columnIndex="1" GridPane.rowIndex="4"
             GridPane.columnSpan="2" GridPane.rowSpan="1"

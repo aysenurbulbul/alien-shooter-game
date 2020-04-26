@@ -9,9 +9,6 @@ public class Bullet {
     private String imagePath;
     private ImageView imageView;
 
-    public void setImageView(ImageView imageView) {
-        this.imageView = imageView;
-    }
 
     public ImageView getImageView() {
         return imageView;
@@ -25,20 +22,6 @@ public class Bullet {
         imageView = new ImageView(imagePath);
         imageView.setLayoutX(positionX);
         imageView.setLayoutY(positionY);
-    }
-
-    public void setPositionX(double positionX) {
-        this.positionX = positionX;
-        this.imageView.setTranslateX(positionX);
-    }
-
-    public void setPositionY(double positionY) {
-        this.positionY = positionY;
-        this.imageView.setTranslateY(positionY);
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
     }
 
     public double getPositionX() {
@@ -63,11 +46,11 @@ public class Bullet {
     }
 
     public double getImagePositionX(){
-        return imageView.getTranslateX()+0;
+        return imageView.getLayoutX();
     }
 
     public double getImagePositionY(){
-        return imageView.getTranslateY()+0;
+        return imageView.getLayoutY();
     }
 
     public void moveUp(){

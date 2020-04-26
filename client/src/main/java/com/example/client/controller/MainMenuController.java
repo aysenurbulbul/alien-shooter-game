@@ -31,6 +31,10 @@ public class MainMenuController {
     @FXML
     public Button leaderBoard;
 
+    /**
+     * loads login page when user clicks "LOGIN" button
+     * @throws IOException from FXMLloader.laod
+     */
     @FXML
     private void loadLogin() throws IOException {
         Parent parent = FXMLLoader.load(getClass().getResource(LOGIN_FXML));
@@ -38,6 +42,10 @@ public class MainMenuController {
         mainStage.getScene().setRoot(parent);
     }
 
+    /**
+     * loads register page when user clicks "REGISTER" button
+     * @throws IOException from FXMLloader
+     */
     @FXML
     private void loadRegister() throws  IOException{
         Parent parent = FXMLLoader.load(getClass().getResource(REGISTER_FXML));
@@ -45,6 +53,10 @@ public class MainMenuController {
         mainStage.getScene().setRoot(parent);
     }
 
+    /**
+     * loads leader boards when user click "LEADERBOARD" button
+     * @throws IOException from FXMLloader.laod
+     */
     @FXML
     private void loadLeaderBoard() throws  IOException{
         Parent parent = FXMLLoader.load(getClass().getResource(LEADERBOARD_FXML));

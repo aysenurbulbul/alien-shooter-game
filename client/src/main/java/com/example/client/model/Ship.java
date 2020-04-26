@@ -5,9 +5,13 @@ import javafx.scene.image.ImageView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * player's ship class
+ */
 public class Ship {
     private ImageView shipImage;
     private int health;
+    // list of bullets that player fires
     private List<Bullet> bullets;
 
     public Ship(String imagePath){
@@ -33,9 +37,15 @@ public class Ship {
     public List<Bullet> getBullets() {
         return bullets;
     }
+
+    /**
+     * adds the bullets that is fired from player
+     * @param bullet that player fired
+     */
     public void addBullet(Bullet bullet){
         bullets.add(bullet);
     }
+
     public void clearBullets(){
         bullets.clear();
     }

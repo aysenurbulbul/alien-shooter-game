@@ -1,9 +1,7 @@
 package com.example.client.controller;
 
 import com.example.client.StageInitializer;
-import com.example.client.model.Game;
 import com.example.client.model.Player;
-import com.example.client.view.GameView;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -17,13 +15,11 @@ import org.json.JSONObject;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import static com.example.client.constant.ControllerConstants.*;
@@ -51,6 +47,10 @@ public class LoginController implements Initializable {
         return player;
     }
 
+    /**
+     * loads main menu when user clicks "Back to Menu" button
+     * @throws IOException from FXMLloader.load
+     */
     @FXML
     private void loadMainMenu() throws IOException {
         Parent parent = FXMLLoader.load(getClass().getResource(MAIN_MENU_FXML));
@@ -58,13 +58,21 @@ public class LoginController implements Initializable {
         mainStage.getScene().setRoot(parent);
     }
 
+    /**
+     * loads Game.fxml which allows play the game or go back to menu
+     * @throws IOException from FXMLloader.load
+     */
     private void loadGame() throws IOException {
         Parent parent = FXMLLoader.load(getClass().getResource(GAME_FXML));
         Stage mainStage = StageInitializer.parentStage;
         mainStage.getScene().setRoot(parent);
     }
 
-    //gets player's info with the given username and sets player jwt token.
+    /**
+     * gets player's info with the given username and sets player jwt token.
+     * @param token player's token
+     * @param username player's username
+     */
     private void loadPlayer(String token, String username){
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -79,9 +87,13 @@ public class LoginController implements Initializable {
                 new ParameterizedTypeReference<>() {});
         //set player's authorization token to given jwt token for making further requests.
         player = playerResponse.getBody();
+        assert player != null;
         player.setJwt(token);
     }
 
+    /**
+     * using restTemplate authenticate the user with username and password
+     */
     @FXML
     private void login()  {
         String username = usernameField.getText();
@@ -97,7 +109,7 @@ public class LoginController implements Initializable {
 
         try {
             // on successful login this request returns a jwt token.
-            ResponseEntity<String> tokenResponse = restTemplate.exchange("http://localhost:8080/login",
+            ResponseEntity<String> tokenResponse = restTemplate.exchange(API_ADDRESS + "/login",
                     HttpMethod.POST,
                     httpEntity,
                     String.class);
@@ -120,6 +132,12 @@ public class LoginController implements Initializable {
         restTemplate = new RestTemplate();
     }
 
+    /**
+     * create alert
+     * @param alertType alert's type ike Error, Confirmation
+     * @param title title of the alert window
+     * @param message context of the alert window
+     */
     private void messageAlert(Alert.AlertType alertType, String title, String message){
         Alert alert = new Alert(alertType);
         alert.setTitle(title);

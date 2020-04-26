@@ -13,7 +13,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +33,6 @@ import static com.example.client.constant.ControllerConstants.MAIN_MENU_FXML;
 public class LeaderBoardController implements Initializable {
 
     private RestTemplate restTemplate;
-    private final String apiAddress = API_ADDRESS;
 
     @FXML
     public Button backMenu;
@@ -52,6 +50,10 @@ public class LeaderBoardController implements Initializable {
     @FXML public TableColumn<Game, Integer> scoreColumnAll;
     @FXML public TableColumn<Game, LocalDateTime> dateColumnAll;
 
+    /**
+     * Loads main menu when user clicks "Back to Menu" button
+     * @throws IOException from FXMLloader.load
+     */
     @FXML
     private void loadMainMenu() throws IOException {
         Parent parent = FXMLLoader.load(getClass().getResource(MAIN_MENU_FXML));
@@ -59,7 +61,11 @@ public class LeaderBoardController implements Initializable {
         mainStage.getScene().setRoot(parent);
     }
 
-
+    /**
+     * Initialize restTemplate that is used to get scores and
+     * calls functions to gets scores based on last 7 days,
+     * last 30 days and all time.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         restTemplate = new RestTemplate();
@@ -69,47 +75,62 @@ public class LeaderBoardController implements Initializable {
         loadLeaderboards();
     }
 
+    /**
+     * Creates tables
+     * @param usernameColumn username of player
+     * @param scoreColumn score of the player
+     * @param dateColumn date of the game finished
+     * @param leaderboardTable table to adjust
+     */
+    private void createTable(TableColumn<Player, String> usernameColumn, TableColumn<Game, Integer> scoreColumn,
+                             TableColumn<Game, LocalDateTime> dateColumn,TableView<Game> leaderboardTable){
+        int columnNumber = 3;
+        usernameColumn.prefWidthProperty().bind(leaderboardTable.widthProperty().divide(columnNumber));
+        scoreColumn.prefWidthProperty().bind(leaderboardTable.widthProperty().divide(columnNumber));
+        dateColumn.prefWidthProperty().bind(leaderboardTable.widthProperty().divide(columnNumber));
+
+        usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+        scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("finishDateTime"));
+    }
+
+    /**
+     * Creates table for last 7 days scores
+     */
     private void initializeLastSevenDaysLeaderboard(){
-
-        int columnNumber = 3;
-        usernameColumnSeven.prefWidthProperty().bind(lastSevenDaysLeaderboard.widthProperty().divide(columnNumber));
-        scoreColumnSeven.prefWidthProperty().bind(lastSevenDaysLeaderboard.widthProperty().divide(columnNumber));
-        dateColumnSeven.prefWidthProperty().bind(lastSevenDaysLeaderboard.widthProperty().divide(columnNumber));
-
-        usernameColumnSeven.setCellValueFactory(new PropertyValueFactory<>("username"));
-        scoreColumnSeven.setCellValueFactory(new PropertyValueFactory<>("score"));
-        dateColumnSeven.setCellValueFactory(new PropertyValueFactory<>("finishDateTime"));
+        createTable(usernameColumnSeven, scoreColumnSeven, dateColumnSeven, lastSevenDaysLeaderboard);
     }
+
+    /**
+     * Creates table for last 30 days scores
+     */
     private void initializeLastThirtyDaysLeaderboard(){
-
-        int columnNumber = 3;
-        usernameColumnThirty.prefWidthProperty().bind(lastThirtyDaysLeaderboard.widthProperty().divide(columnNumber));
-        scoreColumnThirty.prefWidthProperty().bind(lastThirtyDaysLeaderboard.widthProperty().divide(columnNumber));
-        dateColumnThirty.prefWidthProperty().bind(lastThirtyDaysLeaderboard.widthProperty().divide(columnNumber));
-
-        usernameColumnThirty.setCellValueFactory(new PropertyValueFactory<>("username"));
-        scoreColumnThirty.setCellValueFactory(new PropertyValueFactory<>("score"));
-        dateColumnThirty.setCellValueFactory(new PropertyValueFactory<>("finishDateTime"));
+        createTable(usernameColumnThirty, scoreColumnThirty, dateColumnThirty, lastThirtyDaysLeaderboard);
     }
+
+    /**
+     * Cretaes table for all scores
+     */
     private void initializeAllTimesLeaderboard(){
-
-        int columnNumber = 3;
-        usernameColumnAll.prefWidthProperty().bind(allTimesLeaderboard.widthProperty().divide(columnNumber));
-        scoreColumnAll.prefWidthProperty().bind(allTimesLeaderboard.widthProperty().divide(columnNumber));
-        dateColumnAll.prefWidthProperty().bind(allTimesLeaderboard.widthProperty().divide(columnNumber));
-
-        usernameColumnAll.setCellValueFactory(new PropertyValueFactory<>("username"));
-        scoreColumnAll.setCellValueFactory(new PropertyValueFactory<>("score"));
-        dateColumnAll.setCellValueFactory(new PropertyValueFactory<>("finishDateTime"));
+        createTable(usernameColumnAll, scoreColumnAll, dateColumnAll, allTimesLeaderboard);
     }
 
+    /**
+     * Calls the function for getting data from database and loads tables
+     */
     private void loadLeaderboards(){
         loadLeaderboard(lastSevenDaysLeaderboard, "/getLastSevenDays");
         loadLeaderboard(lastThirtyDaysLeaderboard, "/getLastThirtyDays");
         loadLeaderboard(allTimesLeaderboard, "/getAllTimes");
     }
+
+    /**
+     * Sends a GET request using restTemplate to get the scores.
+     * @param leaderboard table to load
+     * @param getLeaderboard URL to use in restTemplate
+     */
     private void loadLeaderboard(TableView<Game> leaderboard, String getLeaderboard){
-        String address = apiAddress + "/leaderboard" + getLeaderboard;
+        String address = API_ADDRESS + "/leaderboard" + getLeaderboard;
         ResponseEntity<List<Game>> response = restTemplate.exchange(
                 address,
                 HttpMethod.GET,

@@ -25,13 +25,22 @@ public class StageInitializer implements ApplicationListener<UiApplication.Stage
 
     private String applicationTitle;
     private ApplicationContext applicationContext;
+    // other views used this to load their view's
     public static Stage parentStage;
 
+    /**
+     * initialize stage
+     * @param applicationTitle title of the application
+     * @param applicationContext app's context class
+     */
     public StageInitializer(@Value("${spring.application.ui.title}") String applicationTitle, ApplicationContext applicationContext) {
         this.applicationTitle = applicationTitle;
         this.applicationContext = applicationContext;
     }
 
+    /**
+     * creates scene, shows the stage
+     */
     @Override
     public void onApplicationEvent(UiApplication.StageReadyEvent stageReadyEvent) {
         try {
