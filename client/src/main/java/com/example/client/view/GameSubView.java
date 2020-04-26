@@ -29,9 +29,9 @@ import static com.example.client.constant.GameViewConstants.FONT_PATH;
 /**
  * is showed after player loses or finishes all levels
  */
-public class GameSubView extends SubScene {
+class GameSubView extends SubScene {
 
-    public GameSubView(int score, String text) {
+    GameSubView(int score, String text) {
         super(new AnchorPane(), 600, 400);
         prefHeight(600);
         prefWidth(400);
@@ -59,12 +59,9 @@ public class GameSubView extends SubScene {
         button.setLayoutY(y);
         AnchorPane root = (AnchorPane) this.getRoot();
         root.getChildren().add(button);
-        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-                    backToGameController();
-                }
+        button.setOnMouseClicked(mouseEvent -> {
+            if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+                backToGameController();
             }
         });
     }
