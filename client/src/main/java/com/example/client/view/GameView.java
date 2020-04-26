@@ -185,6 +185,7 @@ public class GameView {
             }
             anchorPane.getChildren().remove(alien.getImageView());
             alienIterator.remove();
+            writeLabels();
             isLevelFinished();
             isGameFinished();
         }
