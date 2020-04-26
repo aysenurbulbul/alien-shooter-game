@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.json.JSONObject;
@@ -34,6 +35,9 @@ public class GameController implements Initializable {
     @FXML
     public Button startGame;
 
+    @FXML
+    private Label usernameLable;
+
     private static Player player;
 
     private static int score;
@@ -52,6 +56,7 @@ public class GameController implements Initializable {
         Stage mainStage = StageInitializer.parentStage;
         mainStage.getScene().setRoot(parent);
     }
+
 
     /**
      * When user clicks "Start Game" button, creates a new game view
@@ -74,6 +79,7 @@ public class GameController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         restTemplate = new RestTemplate();
         player = LoginController.getPlayer();
+        usernameLable.setText("Welcome " + player.getUsername() +"!");
     }
 
     /**
@@ -95,14 +101,14 @@ public class GameController implements Initializable {
         httpHeaders.set("Authorization", token);
         HttpEntity<String> httpEntity = new HttpEntity<>(jsonString, httpHeaders);
         try {
-            //make a request to server with the given username and get player.
-            ResponseEntity<String> response = restTemplate.exchange(
+            //make a request to server with the given username and send the game.
+            restTemplate.exchange(
                     API_ADDRESS +"/game/addGame/" + username,
                     HttpMethod.POST,
                     httpEntity,
                     new ParameterizedTypeReference<>() {});
         } catch (RestClientException e){
-
+            System.out.println(e);
         }
 
     }
