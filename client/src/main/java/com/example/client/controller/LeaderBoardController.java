@@ -27,11 +27,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+import static com.example.client.constant.ControllerConstants.API_ADDRESS;
+import static com.example.client.constant.ControllerConstants.MAIN_MENU_FXML;
+
 @Component
 public class LeaderBoardController implements Initializable {
 
     private RestTemplate restTemplate;
-    private final String apiAddress = "http://localhost:8080";
+    private final String apiAddress = API_ADDRESS;
 
     @FXML
     public Button backMenu;
@@ -51,7 +54,7 @@ public class LeaderBoardController implements Initializable {
 
     @FXML
     private void loadMainMenu() throws IOException {
-        Parent parent = FXMLLoader.load(getClass().getResource("/fxml/MainMenu.fxml"));
+        Parent parent = FXMLLoader.load(getClass().getResource(MAIN_MENU_FXML));
         Stage mainStage = StageInitializer.parentStage;
         mainStage.getScene().setRoot(parent);
     }

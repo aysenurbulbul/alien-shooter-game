@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static com.example.client.constant.ControllerConstants.*;
+
 @Component
 public class RegisterController implements Initializable {
 
@@ -33,7 +35,7 @@ public class RegisterController implements Initializable {
     @Value("${spring.application.apiAddress}")
     private String apiAddress;
 
-    private String url = "http://localhost:8080";
+    private String url = API_ADDRESS;
 
     @FXML
     public Button backMenuButton;
@@ -57,7 +59,7 @@ public class RegisterController implements Initializable {
 
     @FXML
     private void loadMainMenu() throws IOException {
-        Parent parent = FXMLLoader.load(getClass().getResource("/fxml/MainMenu.fxml"));
+        Parent parent = FXMLLoader.load(getClass().getResource(MAIN_MENU_FXML));
         Stage mainStage = StageInitializer.parentStage;
         mainStage.getScene().setRoot(parent);
     }
@@ -85,7 +87,7 @@ public class RegisterController implements Initializable {
             messageAlert(Alert.AlertType.CONFIRMATION, "Successfully registered", "Login and play " + username +"!");
             loadMainMenu();
         } catch (RestClientException | IOException e){
-            messageAlert(Alert.AlertType.ERROR, "Failed to register", "Server error, please try again");
+            messageAlert(Alert.AlertType.ERROR, "Failed to register", ERROR_REGISTER);
         }
     }
 

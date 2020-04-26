@@ -26,6 +26,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static com.example.client.constant.ControllerConstants.*;
+
 @Component
 public class LoginController implements Initializable {
 
@@ -51,13 +53,13 @@ public class LoginController implements Initializable {
 
     @FXML
     private void loadMainMenu() throws IOException {
-        Parent parent = FXMLLoader.load(getClass().getResource("/fxml/MainMenu.fxml"));
+        Parent parent = FXMLLoader.load(getClass().getResource(MAIN_MENU_FXML));
         Stage mainStage = StageInitializer.parentStage;
         mainStage.getScene().setRoot(parent);
     }
 
     private void loadGame() throws IOException {
-        Parent parent = FXMLLoader.load(getClass().getResource("/fxml/Game.fxml"));
+        Parent parent = FXMLLoader.load(getClass().getResource(GAME_FXML));
         Stage mainStage = StageInitializer.parentStage;
         mainStage.getScene().setRoot(parent);
     }
@@ -109,7 +111,7 @@ public class LoginController implements Initializable {
                 messageAlert(Alert.AlertType.ERROR, "Error", "Cannot open game page at the moment");
             }
         } catch (RestClientException e){
-            messageAlert(Alert.AlertType.ERROR, "Error", "Wrong credentials");
+            messageAlert(Alert.AlertType.ERROR, "Error", ERROR_CREDENTIALS);
         }
     }
 

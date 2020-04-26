@@ -27,15 +27,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.example.client.constant.ControllerConstants.GAME_FXML;
+import static com.example.client.constant.GameViewConstants.*;
+
 public class GameView {
 
     private AnchorPane anchorPane;
     private Scene gameScene;
     private Stage gameStage;
-    private final String playerShipPath = "/static/playerShip1_red.png";
-    private final String gameBackground = "/static/purple.png";
-    private final String scoreString = "SCORE: ";
-    private final String levelString = "LEVEL: ";
+    private final String playerShipPath = PLAYER_SHIP;
+    private final String gameBackground = GAME_BACKGROUND;
+    private final String scoreString = INFO_LABEL_SCOREBOARD;
+    private final String levelString = INFO_LABEL_LEVEL;
     private AnimationTimer animationTimer;
     private double t = 0;
     private List<AbstractLevel> levels;
@@ -54,15 +57,15 @@ public class GameView {
         this.gameStage = gameStage;
         playerShip = new Ship(playerShipPath);
         scoreboard = new InfoLabel("SCORE: 000");
-        scoreboard.setLayoutX(660);
-        scoreboard.setLayoutY(10);
+        scoreboard.setLayoutX(SCOREBOARD_LAYOUT_X);
+        scoreboard.setLayoutY(SCOREBOARD_LAYOUT_Y);
         levelLabel = new InfoLabel("LEVEL: 1");
-        levelLabel.setLayoutX(20);
-        levelLabel.setLayoutY(10);
+        levelLabel.setLayoutX(LEVEL_LAYOUT_X);
+        levelLabel.setLayoutY(LEVEL_LAYOUT_Y);
         score = 0;
         shipHealthImages = new ArrayList<>();
         for(int i=0; i< playerShip.getHealth(); i++){
-            ImageView imageView = new ImageView("/static/playerLife1_red.png");
+            ImageView imageView = new ImageView(PLAYER_LIFE);
             imageView.setFitWidth(20);
             imageView.setFitHeight(20);
             imageView.setLayoutX(665 + i * 30);
@@ -74,7 +77,7 @@ public class GameView {
 
     private void backToGameController(){
         try{
-            Parent parent = FXMLLoader.load(getClass().getResource("/fxml/Game.fxml"));
+            Parent parent = FXMLLoader.load(getClass().getResource(GAME_FXML));
             Stage mainStage = StageInitializer.parentStage;
             mainStage.getScene().setRoot(parent);
         } catch (IOException e){
@@ -91,7 +94,7 @@ public class GameView {
     private void isLevelFinished()  {
         if(levels.get(level).getAliens().size() == 0){
             ++level;
-            if(level<4){
+            if(level<NUMBER_OF_LEVELS){
                 levels.get(level).getAliens().forEach(alien -> {anchorPane.getChildren().add(alien.getImageView());});
                 playerShip.getBullets().forEach(bullet -> anchorPane.getChildren().remove(bullet.getImageView()));
                 playerShip.clearBullets();
@@ -118,8 +121,8 @@ public class GameView {
         animationTimer = new AnimationTimer() {
             @Override
             public void handle(long l) {
-                t += 0.05;
-                if(t>2){
+                t += TIMER_INCREASE;
+                if(t>TIMER_SHOULD_BE_LESS){
                     addNewPlayerBullet();
                     updatePlayerBullet();
                     alienShoot();
@@ -158,7 +161,7 @@ public class GameView {
                     anchorPane.getChildren().remove(bullet.getImageView());
                     bulletIterator.remove();
                     alien.decreaseHealth();
-                    if(alien.getHealth()<= 0){
+                    if(alien.getHealth()<= ZERO_HEALTH){
                         alien.getBullets().forEach(alienBullet -> {
                             anchorPane.getChildren().remove(alienBullet.getImageView());
                         });
@@ -176,13 +179,13 @@ public class GameView {
     private void addToScore(Alien alien){
         switch (alien.getType()){
             case "EASY":
-                score = score + 5;
+                score = score + EASY_SCORE_INCREASE;
                 break;
             case "MEDIUM":
-                score = score + 10;
+                score = score + MEDIUM_SCORE_INCREASE;
                 break;
             case "HARD":
-                score = score + 15;
+                score = score + HARD_SCORE_INCREASE;
                 break;
         }
     }
@@ -207,7 +210,7 @@ public class GameView {
                 bulletIterator.remove();
                 playerShip.setHealth(playerShip.getHealth()-1);
                 int shipHealth = playerShip.getHealth();
-                if(shipHealth>0){
+                if(shipHealth>ZERO_HEALTH){
                     anchorPane.getChildren().remove(shipHealthImages.get(shipHealth));
                 }
                 else{
@@ -237,7 +240,7 @@ public class GameView {
     private void alienShoot(){
         levels.get(level).getAliens().forEach(alien -> {
             if(alien.isCanShoot()){
-                if(Math.random()<0.3){
+                if(Math.random()<ALIEN_SHOOT_RANDOM){
                     Bullet bullet = new Bullet("ENEMY",alien.getPositionX()+21.5, alien.getPositionY()+20, "/static/laserRed03.png");
                     alien.addBullet(bullet);
                     anchorPane.getChildren().add(bullet.getImageView());

@@ -25,9 +25,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import static com.example.client.constant.ControllerConstants.API_ADDRESS;
+import static com.example.client.constant.ControllerConstants.MAIN_MENU_FXML;
+
 public class GameController implements Initializable {
 
     private RestTemplate restTemplate;
+
+    private final String apiAddress = API_ADDRESS;
 
     @FXML
     public Button backMenuButton;
@@ -45,7 +50,7 @@ public class GameController implements Initializable {
 
     @FXML
     private void loadMainMenu() throws IOException {
-        Parent parent = FXMLLoader.load(getClass().getResource("/fxml/MainMenu.fxml"));
+        Parent parent = FXMLLoader.load(getClass().getResource(MAIN_MENU_FXML));
         Stage mainStage = StageInitializer.parentStage;
         mainStage.getScene().setRoot(parent);
     }
@@ -81,7 +86,7 @@ public class GameController implements Initializable {
         HttpEntity<String> httpEntity = new HttpEntity<>("body", httpHeaders);
         //make a request to server with the given username and get player.
         ResponseEntity<Player> playerResponse = restTemplate.exchange(
-                "http://localhost:8080/game/addGame/" + username,
+                apiAddress +"/game/addGame/" + username,
                 HttpMethod.GET,
                 httpEntity,
                 new ParameterizedTypeReference<>() {});

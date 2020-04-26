@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+import static com.example.client.constant.ControllerConstants.*;
+
 @Component
 public class MainMenuController {
 
@@ -31,21 +33,21 @@ public class MainMenuController {
 
     @FXML
     private void loadLogin() throws IOException {
-        Parent parent = FXMLLoader.load(getClass().getResource("/fxml/Login.fxml"));
+        Parent parent = FXMLLoader.load(getClass().getResource(LOGIN_FXML));
         Stage mainStage = StageInitializer.parentStage;
         mainStage.getScene().setRoot(parent);
     }
 
     @FXML
     private void loadRegister() throws  IOException{
-        Parent parent = FXMLLoader.load(getClass().getResource("/fxml/Register.fxml"));
+        Parent parent = FXMLLoader.load(getClass().getResource(REGISTER_FXML));
         Stage mainStage = StageInitializer.parentStage;
         mainStage.getScene().setRoot(parent);
     }
 
     @FXML
     private void loadLeaderBoard() throws  IOException{
-        Parent parent = FXMLLoader.load(getClass().getResource("/fxml/LeaderBoard.fxml"));
+        Parent parent = FXMLLoader.load(getClass().getResource(LEADERBOARD_FXML));
         Stage mainStage = StageInitializer.parentStage;
         mainStage.getScene().setRoot(parent);
     }
