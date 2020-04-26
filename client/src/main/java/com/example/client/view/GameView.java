@@ -15,6 +15,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.robot.Robot;
@@ -55,7 +57,7 @@ public class GameView {
         scoreboard.setLayoutX(660);
         scoreboard.setLayoutY(10);
         levelLabel = new InfoLabel("LEVEL: 1");
-        levelLabel.setLayoutX(0);
+        levelLabel.setLayoutX(20);
         levelLabel.setLayoutY(10);
         score = 0;
         shipHealthImages = new ArrayList<>();
@@ -98,6 +100,17 @@ public class GameView {
                 animationTimer.stop();
                 backToGameController();
             }
+        }
+    }
+
+    private void cheat(){
+        Iterator<Alien> alienIterator = levels.get(level).getAliens().iterator();
+        while(alienIterator.hasNext()){
+            Alien alien = alienIterator.next();
+            addToScore(alien);
+            anchorPane.getChildren().remove(alien.getImageView());
+            alienIterator.remove();
+            isLevelFinished();
         }
     }
 
@@ -150,12 +163,27 @@ public class GameView {
                             anchorPane.getChildren().remove(alienBullet.getImageView());
                         });
                         anchorPane.getChildren().remove(alien.getImageView());
-                        score++;
+                        //score++;
+                        addToScore(alien);
                         alienIterator.remove();
                     }
                     break;
                 }
             }
+        }
+    }
+   
+    private void addToScore(Alien alien){
+        switch (alien.getType()){
+            case "EASY":
+                score = score + 5;
+                break;
+            case "MEDIUM":
+                score = score + 10;
+                break;
+            case "HARD":
+                score = score + 15;
+                break;
         }
     }
 
@@ -184,9 +212,9 @@ public class GameView {
                 }
                 else{
                     // buraya game over açıcaz
+                    gameScene.setCursor(Cursor.DEFAULT);
                     animationTimer.stop();
                     anchorPane.getChildren().remove(playerShip.getShipImage());
-                    gameScene.setCursor(Cursor.DEFAULT);
                     backToGameController();
                 }
             }
@@ -248,6 +276,14 @@ public class GameView {
         anchorPane.getChildren().add(scoreboard);
         anchorPane.getChildren().add(levelLabel);
         anchorPane.getChildren().add(playerShip.getShipImage());
+        gameScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                if(keyEvent.isControlDown() && keyEvent.isShiftDown() && keyEvent.getCode() == KeyCode.DIGIT9){
+                    cheat();
+                }
+            }
+        });
         moveCursor();
         createBackground(gameBackground);
         initLevels();
