@@ -21,16 +21,15 @@ import static com.example.client.constant.GameViewConstants.LABEL_PATH;
  * this class creates a label for showing level number, score and health of the ship
  */
 public class InfoLabel extends Label {
-    private final String FONT_PATH = "/font/kenvector_future.ttf";
 
-    public InfoLabel(String context, double w){
     /**
      * creates label with given context, with background and font
      * @param context label's context
      */
+    public InfoLabel(String context, double w){
         setPrefHeight(40);
         setPrefWidth(w);
-        BackgroundImage backgroundImage = new BackgroundImage(new Image("/static/blue_button13.png", w, 40, false, true),
+        BackgroundImage backgroundImage = new BackgroundImage(new Image(LABEL_PATH, w, 40, false, true),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, null);
         setBackground(new Background(backgroundImage));
         setAlignment(Pos.CENTER_LEFT);

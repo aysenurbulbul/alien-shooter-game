@@ -70,7 +70,7 @@ public class GameView {
             ImageView imageView = new ImageView(PLAYER_LIFE);
             imageView.setFitWidth(20);
             imageView.setFitHeight(20);
-            imageView.setLayoutX(665 + i * 30);
+            imageView.setLayoutX(675 + i * 30);
             imageView.setLayoutY(55);
             shipHealthImages.add(imageView);
             anchorPane.getChildren().add(imageView);

@@ -5,9 +5,9 @@ public final class GameViewConstants {
     /*********INFO LABELS************************/
     public static final String INFO_LABEL_SCOREBOARD = "SCORE: ";
     public static final String INFO_LABEL_LEVEL = "LEVEL: ";
-    public static final Double SCOREBOARD_LAYOUT_X = 660.0;
+    public static final Double SCOREBOARD_LAYOUT_X = 670.0;
     public static final Double SCOREBOARD_LAYOUT_Y = 10.0;
-    public static final Double LEVEL_LAYOUT_X = 0.0;
+    public static final Double LEVEL_LAYOUT_X = 10.0;
     public static final Double LEVEL_LAYOUT_Y = 10.0;
     public static final String FONT_PATH = "src/main/resources/font/kenvector_future.ttf";
     public static final String LABEL_PATH = "/static/blue_button13.png";
