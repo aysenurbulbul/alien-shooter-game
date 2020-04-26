@@ -148,7 +148,7 @@ public class GameView {
             gameFinished("CONGRATULATIONS!");
         }
         if(playerShip.getHealth() == ZERO_HEALTH){
-            gameFinished("LOSER... YOU SUCK");
+            gameFinished("LOSER...GAME OVER");
         }
 
     }
