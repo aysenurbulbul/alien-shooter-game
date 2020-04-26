@@ -56,12 +56,14 @@ public class GameView {
         this.gameScene = gameScene;
         this.gameStage = gameStage;
         playerShip = new Ship(playerShipPath);
-        scoreboard = new InfoLabel("SCORE: 000");
+        scoreboard = new InfoLabel("SCORE: 000",120);
         scoreboard.setLayoutX(SCOREBOARD_LAYOUT_X);
         scoreboard.setLayoutY(SCOREBOARD_LAYOUT_Y);
-        levelLabel = new InfoLabel("LEVEL: 1");
+        levelLabel = new InfoLabel("LEVEL: 1",120);
         levelLabel.setLayoutX(LEVEL_LAYOUT_X);
         levelLabel.setLayoutY(LEVEL_LAYOUT_Y);
+        anchorPane.getChildren().add(scoreboard);
+        anchorPane.getChildren().add(levelLabel);
         score = 0;
         shipHealthImages = new ArrayList<>();
         for(int i=0; i< playerShip.getHealth(); i++){
@@ -75,15 +77,6 @@ public class GameView {
         }
     }
 
-    private void backToGameController(){
-        try{
-            Parent parent = FXMLLoader.load(getClass().getResource(GAME_FXML));
-            Stage mainStage = StageInitializer.parentStage;
-            mainStage.getScene().setRoot(parent);
-        } catch (IOException e){
-
-        }
-    }
 
     private void createBackground(String backgroundImagePath){
         Image background = new Image(backgroundImagePath, 256,256,false, true);
@@ -102,7 +95,10 @@ public class GameView {
             else{
                 gameScene.setCursor(Cursor.DEFAULT);
                 animationTimer.stop();
-                backToGameController();
+                GameSubView gameDoneView = new GameSubView(score, "Congratulations!");
+                gameDoneView.setLayoutX(100);
+                gameDoneView.setLayoutY(100);
+                anchorPane.getChildren().add(gameDoneView);
             }
         }
     }
@@ -221,11 +217,13 @@ public class GameView {
                     anchorPane.getChildren().remove(shipHealthImages.get(shipHealth));
                 }
                 else{
-                    // buraya game over açıcaz
+                    GameSubView gameDoneView = new GameSubView(score, "LOSER... YOU SUCK!");
+                    gameDoneView.setLayoutX(100);
+                    gameDoneView.setLayoutY(100);
+                    anchorPane.getChildren().add(gameDoneView);
                     gameScene.setCursor(Cursor.DEFAULT);
                     animationTimer.stop();
                     anchorPane.getChildren().remove(playerShip.getShipImage());
-                    backToGameController();
                 }
             }
         }
@@ -283,8 +281,6 @@ public class GameView {
         gameStage = StageInitializer.parentStage;
         gameStage.setScene(gameScene);
         gameScene.setCursor(Cursor.NONE);
-        anchorPane.getChildren().add(scoreboard);
-        anchorPane.getChildren().add(levelLabel);
         anchorPane.getChildren().add(playerShip.getShipImage());
         gameScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
