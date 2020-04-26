@@ -10,15 +10,16 @@
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="com.example.client.controller.LeaderBoardController"
           alignment="CENTER"
-          hgap="7" vgap="7">
+          hgap="7" vgap="7"
+          style=" -fx-background-image: url(/static/purple.png)">
     <columnConstraints>
         <ColumnConstraints/>
         <ColumnConstraints/>
     </columnConstraints>
 
     <!--back to main menu button-->
-    <Button text="Back to Menu" fx:id="backMenu"
-            prefHeight="30" prefWidth="100" defaultButton="true"
+    <Button text="Back" fx:id="backMenu"
+            prefHeight="30" prefWidth="130" defaultButton="true"
             GridPane.columnIndex="0" GridPane.rowIndex="6"
             GridPane.columnSpan="2" GridPane.rowSpan="1"
             GridPane.halignment="CENTER"
@@ -27,33 +28,39 @@
             <Insets top="10" bottom="20"/>
         </GridPane.margin>
     </Button>
-    <Label style="-fx-font: NORMAL 15 Tahoma;" text="Last Seven Days Leaderboard"
-           GridPane.columnIndex="0" GridPane.rowIndex="0">
+    <Label text="Last Seven Days Leaderboard"
+           GridPane.columnIndex="0" GridPane.rowIndex="0"
+           fx:id="sevenLabel">
     </Label>
     <TableView fx:id="lastSevenDaysLeaderboard" GridPane.columnIndex="0"
-               GridPane.rowIndex="1">
+               GridPane.rowIndex="1"
+               prefWidth="800">
         <columns>
             <TableColumn fx:id="usernameColumnSeven" style="-fx-alignment: CENTER;" text="username"/>
             <TableColumn fx:id="scoreColumnSeven" style="-fx-alignment: CENTER;" text="score"/>
             <TableColumn fx:id="dateColumnSeven" style="-fx-alignment: CENTER;" text="date"/>
         </columns>
     </TableView>
-    <Label style="-fx-font: NORMAL 15 Tahoma;" text="Last 30 Days Leaderboard"
-           GridPane.columnIndex="0" GridPane.rowIndex="2">
+    <Label text="Last 30 Days Leaderboard"
+           GridPane.columnIndex="0" GridPane.rowIndex="2"
+           fx:id="thirtyLabel">
     </Label>
     <TableView fx:id="lastThirtyDaysLeaderboard" GridPane.columnIndex="0"
-               GridPane.rowIndex="3">
+               GridPane.rowIndex="3"
+               prefWidth="800">
         <columns>
             <TableColumn fx:id="usernameColumnThirty" style="-fx-alignment: CENTER;" text="username"/>
             <TableColumn fx:id="scoreColumnThirty" style="-fx-alignment: CENTER;" text="score"/>
             <TableColumn fx:id="dateColumnThirty" style="-fx-alignment: CENTER;" text="date"/>
         </columns>
     </TableView>
-    <Label style="-fx-font: NORMAL 15 Tahoma;" text="All Times Leaderboard"
-           GridPane.columnIndex="0" GridPane.rowIndex="4">
+    <Label text="All Times Leaderboard"
+           GridPane.columnIndex="0" GridPane.rowIndex="4"
+           fx:id="allLabel">
     </Label>
     <TableView fx:id="allTimesLeaderboard" GridPane.columnIndex="0"
-               GridPane.rowIndex="5">
+               GridPane.rowIndex="5"
+               prefWidth="800">
         <columns>
             <TableColumn fx:id="usernameColumnAll"  style="-fx-alignment: CENTER;" text="username"/>
             <TableColumn fx:id="scoreColumnAll" style="-fx-alignment: CENTER;" text="score"/>

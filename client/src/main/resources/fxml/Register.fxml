@@ -6,12 +6,12 @@
 
 <?import javafx.geometry.Insets?>
 
-<?import javafx.scene.text.Font?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="com.example.client.controller.RegisterController"
           alignment="CENTER"
-          hgap="7" vgap="7">
+          hgap="7" vgap="7"
+          style=" -fx-background-image: url(/static/purple.png)">
     <columnConstraints>
         <ColumnConstraints/>
         <ColumnConstraints/>
@@ -20,10 +20,8 @@
     <!-- Header -->
     <Label text="Register" GridPane.columnIndex="0"
            GridPane.rowIndex="0" GridPane.columnSpan="2"
-           GridPane.rowSpan="1" GridPane.halignment="CENTER">
-        <font>
-            <Font size="25"/>
-        </font>
+           GridPane.rowSpan="1" GridPane.halignment="CENTER"
+           fx:id="registerLabel">
         <GridPane.margin>
             <Insets top="20" bottom="20"/>
         </GridPane.margin>
@@ -31,28 +29,31 @@
 
     <!--username-->
     <Label text="Username: " GridPane.columnIndex="0"
-           GridPane.rowIndex="1">
+           GridPane.rowIndex="1"
+           fx:id="usernameLabel">
     </Label>
     <TextField fx:id="usernameField" prefHeight="30"
                GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
     <!--email-->
     <Label text="Email: " GridPane.columnIndex="0"
-           GridPane.rowIndex="2">
+           GridPane.rowIndex="2"
+           fx:id="emailLabel">
     </Label>
     <TextField fx:id="emailField" prefHeight="30"
                GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
     <!--password-->
     <Label text="Password: " GridPane.columnIndex="0"
-           GridPane.rowIndex="3">
+           GridPane.rowIndex="3"
+           fx:id="passwordLabel">
     </Label>
     <PasswordField fx:id="passwordField" prefHeight="30"
                GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
     <!--submit button-->
     <Button text="Register" fx:id="registerButton"
-            prefHeight="30" prefWidth="100" defaultButton="true"
+            prefHeight="30" prefWidth="130" defaultButton="true"
             GridPane.columnIndex="0" GridPane.rowIndex="4"
             GridPane.columnSpan="2" GridPane.rowSpan="1"
             GridPane.halignment="CENTER"
@@ -63,8 +64,8 @@
     </Button>
 
     <!--back to main menu button-->
-    <Button text="Back to Menu" fx:id="backMenuButton"
-            prefHeight="30" prefWidth="100" defaultButton="true"
+    <Button text="Back" fx:id="backMenuButton"
+            prefHeight="30" prefWidth="130" defaultButton="true"
             GridPane.columnIndex="0" GridPane.rowIndex="5"
             GridPane.columnSpan="2" GridPane.rowSpan="1"
             GridPane.halignment="CENTER"

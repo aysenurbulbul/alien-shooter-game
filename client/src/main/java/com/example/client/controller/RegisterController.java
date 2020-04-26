@@ -5,10 +5,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
@@ -19,11 +17,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import static com.example.client.constant.ControllerConstants.*;
+import static com.example.client.constant.GameViewConstants.FONT_PATH;
 
 @Component
 public class RegisterController implements Initializable {
@@ -45,13 +47,31 @@ public class RegisterController implements Initializable {
     @FXML
     public Button registerButton;
 
+    @FXML
+    public Label passwordLabel;
+
+    @FXML
+    public Label emailLabel;
+
+    @FXML
+    public Label usernameLabel;
+
+    @FXML
+    public Label registerLabel;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         restTemplate = new RestTemplate();
+        setFont(registerLabel, 30);
+        setFont(usernameLabel, 15);
+        setFont(emailLabel, 15);
+        setFont(passwordLabel, 15);
+        setButtonFont(registerButton, 15);
+        setButtonFont(backMenuButton, 15);
     }
 
     /**
-     * loads main menu when user clicks "Back to Menu" button
+     * loads main menu when user clicks "Back" button
      * @throws IOException from FXMLloader.laod
      */
     @FXML
@@ -103,5 +123,21 @@ public class RegisterController implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.show();
+    }
+
+    private void setFont(Label label, int size){
+        try {
+            label.setFont(Font.loadFont(new FileInputStream(new File(FONT_PATH)), size));
+        } catch (FileNotFoundException e) {
+            label.setFont(Font.font("Verdana", size));
+        }
+    }
+
+    private void setButtonFont(Button button, int size){
+        try {
+            button.setFont(Font.loadFont(new FileInputStream(new File(FONT_PATH)), size));
+        } catch (FileNotFoundException e) {
+            button.setFont(Font.font("Verdana", size));
+        }
     }
 }

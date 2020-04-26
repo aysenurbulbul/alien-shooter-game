@@ -6,10 +6,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.json.JSONObject;
 import org.springframework.core.ParameterizedTypeReference;
@@ -18,11 +16,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import static com.example.client.constant.ControllerConstants.*;
+import static com.example.client.constant.GameViewConstants.FONT_PATH;
 
 @Component
 public class LoginController implements Initializable {
@@ -41,6 +43,15 @@ public class LoginController implements Initializable {
     @FXML
     public Button loginButton;
 
+    @FXML
+    public Label passwordLabel;
+
+    @FXML
+    public Label usernameLabel;
+
+    @FXML
+    public Label loginLabel;
+
     private static Player player;
 
     static Player getPlayer(){
@@ -48,7 +59,7 @@ public class LoginController implements Initializable {
     }
 
     /**
-     * loads main menu when user clicks "Back to Menu" button
+     * loads main menu when user clicks "Back" button
      * @throws IOException from FXMLloader.load
      */
     @FXML
@@ -81,7 +92,7 @@ public class LoginController implements Initializable {
         HttpEntity<String> httpEntity = new HttpEntity<>("body", httpHeaders);
         //make a request to server with the given username and get player.
         ResponseEntity<Player> playerResponse = restTemplate.exchange(
-                "http://localhost:8080/players/" + username,
+                API_ADDRESS + "/players/" + username,
                 HttpMethod.GET,
                 httpEntity,
                 new ParameterizedTypeReference<>() {});
@@ -130,6 +141,11 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         restTemplate = new RestTemplate();
+        setFont(loginLabel, 30);
+        setFont(usernameLabel, 15);
+        setFont(passwordLabel, 15);
+        setButtonFont(loginButton, 15);
+        setButtonFont(backMenuButton, 15);
     }
 
     /**
@@ -144,5 +160,21 @@ public class LoginController implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.show();
+    }
+
+    private void setFont(Label label, int size){
+        try {
+            label.setFont(Font.loadFont(new FileInputStream(new File(FONT_PATH)), size));
+        } catch (FileNotFoundException e) {
+            label.setFont(Font.font("Verdana", size));
+        }
+    }
+
+    private void setButtonFont(Button button, int size){
+        try {
+            button.setFont(Font.loadFont(new FileInputStream(new File(FONT_PATH)), size));
+        } catch (FileNotFoundException e) {
+            button.setFont(Font.font("Verdana", size));
+        }
     }
 }

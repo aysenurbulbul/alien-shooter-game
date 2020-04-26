@@ -9,9 +9,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -19,6 +21,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -28,6 +33,7 @@ import java.util.ResourceBundle;
 
 import static com.example.client.constant.ControllerConstants.API_ADDRESS;
 import static com.example.client.constant.ControllerConstants.MAIN_MENU_FXML;
+import static com.example.client.constant.GameViewConstants.FONT_PATH;
 
 @Component
 public class LeaderBoardController implements Initializable {
@@ -49,6 +55,9 @@ public class LeaderBoardController implements Initializable {
     @FXML public TableColumn<Player, String> usernameColumnAll;
     @FXML public TableColumn<Game, Integer> scoreColumnAll;
     @FXML public TableColumn<Game, LocalDateTime> dateColumnAll;
+    @FXML public Label allLabel;
+    @FXML public Label thirtyLabel;
+    @FXML public Label sevenLabel;
 
     /**
      * Loads main menu when user clicks "Back to Menu" button
@@ -64,11 +73,16 @@ public class LeaderBoardController implements Initializable {
     /**
      * Initialize restTemplate that is used to get scores and
      * calls functions to gets scores based on last 7 days,
+     * set fonts of table labels
      * last 30 days and all time.
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         restTemplate = new RestTemplate();
+        setFont(sevenLabel, 15);
+        setFont(thirtyLabel, 15);
+        setFont(allLabel, 15);
+        setButtonFont(backMenu, 15);
         initializeAllTimesLeaderboard();
         initializeLastSevenDaysLeaderboard();
         initializeLastThirtyDaysLeaderboard();
@@ -137,5 +151,21 @@ public class LeaderBoardController implements Initializable {
                 null,
                 new ParameterizedTypeReference<>() {});
         leaderboard.setItems(FXCollections.observableList(Objects.requireNonNull(response.getBody())));
+    }
+
+    private void setFont(Label label, int size){
+        try {
+            label.setFont(Font.loadFont(new FileInputStream(new File(FONT_PATH)), size));
+        } catch (FileNotFoundException e) {
+            label.setFont(Font.font("Verdana", size));
+        }
+    }
+
+    private void setButtonFont(Button button, int size){
+        try {
+            button.setFont(Font.loadFont(new FileInputStream(new File(FONT_PATH)), size));
+        } catch (FileNotFoundException e) {
+            button.setFont(Font.font("Verdana", size));
+        }
     }
 }

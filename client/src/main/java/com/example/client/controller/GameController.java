@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.json.JSONObject;
 import org.springframework.core.ParameterizedTypeReference;
@@ -18,12 +19,16 @@ import org.springframework.http.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 import static com.example.client.constant.ControllerConstants.*;
+import static com.example.client.constant.GameViewConstants.FONT_PATH;
 
 public class GameController implements Initializable {
 
@@ -80,6 +85,25 @@ public class GameController implements Initializable {
         restTemplate = new RestTemplate();
         player = LoginController.getPlayer();
         usernameLable.setText("Welcome " + player.getUsername() +"!");
+        setFont(usernameLable);
+        setButtonFont(startGame, 13);
+        setButtonFont(backMenuButton, 15);
+    }
+
+    private void setFont(Label label){
+        try {
+            label.setFont(Font.loadFont(new FileInputStream(new File(FONT_PATH)), 30));
+        } catch (FileNotFoundException e) {
+            label.setFont(Font.font("Verdana", 30));
+        }
+    }
+
+    private void setButtonFont(Button button, int size){
+        try {
+            button.setFont(Font.loadFont(new FileInputStream(new File(FONT_PATH)), size));
+        } catch (FileNotFoundException e) {
+            button.setFont(Font.font("Verdana", size));
+        }
     }
 
     /**
@@ -108,7 +132,7 @@ public class GameController implements Initializable {
                     httpEntity,
                     new ParameterizedTypeReference<>() {});
         } catch (RestClientException e){
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
 
     }

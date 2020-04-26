@@ -4,12 +4,12 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.text.Font?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="com.example.client.controller.MainMenuController"
           alignment="CENTER"
-          hgap="7" vgap="7">
+          hgap="7" vgap="7"
+          style=" -fx-background-image: url(/static/purple.png)">
     <columnConstraints>
         <ColumnConstraints/>
         <ColumnConstraints/>
@@ -19,10 +19,8 @@
     <!-- Header -->
     <Label text="Main Menu" GridPane.columnIndex="1"
            GridPane.rowIndex="0" GridPane.columnSpan="2"
-           GridPane.rowSpan="1" GridPane.halignment="CENTER">
-        <font>
-            <Font size="25"/>
-        </font>
+           GridPane.rowSpan="1" GridPane.halignment="CENTER"
+            fx:id="label">
         <GridPane.margin>
             <Insets top="20" bottom="20"/>
         </GridPane.margin>
@@ -30,7 +28,7 @@
 
     <!--Login button-->
     <Button text="LOGIN" fx:id="login"
-            prefHeight="30" prefWidth="100" defaultButton="true"
+            prefHeight="30" prefWidth="130" defaultButton="true"
             GridPane.columnIndex="1" GridPane.rowIndex="2"
             GridPane.columnSpan="2" GridPane.rowSpan="1"
             GridPane.halignment="CENTER"
@@ -42,7 +40,7 @@
 
     <!--Register button-->
     <Button text="REGISTER" fx:id="register"
-            prefHeight="30" prefWidth="100" defaultButton="true"
+            prefHeight="30" prefWidth="130" defaultButton="true"
             GridPane.columnIndex="1" GridPane.rowIndex="3"
             GridPane.columnSpan="2" GridPane.rowSpan="1"
             GridPane.halignment="CENTER"
@@ -53,8 +51,8 @@
     </Button>
 
     <!--leaderBoard button-->
-    <Button text="LEADERBOARD" fx:id="leaderBoard"
-            prefHeight="30" prefWidth="100" defaultButton="true"
+    <Button text="LEADER BOARD" fx:id="leaderBoard"
+            prefHeight="30" prefWidth="130" defaultButton="true"
             GridPane.columnIndex="1" GridPane.rowIndex="4"
             GridPane.columnSpan="2" GridPane.rowSpan="1"
             GridPane.halignment="CENTER"

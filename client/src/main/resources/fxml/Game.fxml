@@ -6,12 +6,12 @@
 
 <?import javafx.geometry.Insets?>
 
-<?import javafx.scene.text.Font?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="com.example.client.controller.GameController"
           alignment="CENTER"
-          hgap="7" vgap="7">
+          hgap="7" vgap="7"
+          style=" -fx-background-image: url(/static/purple.png)">
     <columnConstraints>
         <ColumnConstraints/>
         <ColumnConstraints/>
@@ -21,9 +21,6 @@
     <Label fx:id="usernameLable" GridPane.columnIndex="0"
            GridPane.rowIndex="0" GridPane.columnSpan="2"
            GridPane.rowSpan="1" GridPane.halignment="CENTER">
-        <font>
-            <Font size="25"/>
-        </font>
         <GridPane.margin>
             <Insets top="20" bottom="20"/>
         </GridPane.margin>
@@ -31,7 +28,7 @@
 
     <!--back to main menu button-->
     <Button text="Start Game" fx:id="startGame"
-            prefHeight="30" prefWidth="100" defaultButton="true"
+            prefHeight="30" prefWidth="130" defaultButton="true"
             GridPane.columnIndex="0" GridPane.rowIndex="3"
             GridPane.columnSpan="2" GridPane.rowSpan="1"
             GridPane.halignment="CENTER"
@@ -42,8 +39,8 @@
     </Button>
 
     <!--back to main menu button-->
-    <Button text="Back to Menu" fx:id="backMenuButton"
-            prefHeight="30" prefWidth="100" defaultButton="true"
+    <Button text="Back" fx:id="backMenuButton"
+            prefHeight="30" prefWidth="130" defaultButton="true"
             GridPane.columnIndex="0" GridPane.rowIndex="5"
             GridPane.columnSpan="2" GridPane.rowSpan="1"
             GridPane.halignment="CENTER"
