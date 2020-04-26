@@ -1,6 +1,6 @@
 package com.example.client.constant;
 
-public class ControllerConstants {
+public final class ControllerConstants {
     /**********FXML PATHS***********/
     public static final String MAIN_MENU_FXML = "/fxml/MainMenu.fxml";
     public static final String LEADERBOARD_FXML = "/fxml/LeaderBoard.fxml";

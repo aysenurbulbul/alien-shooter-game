@@ -3,14 +3,12 @@ package com.example.client.view;
 import com.example.client.StageInitializer;
 import com.example.client.model.GameButton;
 import com.example.client.model.InfoLabel;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.SubScene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -56,6 +54,11 @@ class GameSubView extends SubScene {
         GameButton button = new GameButton (text);
         button.setLayoutX(x);
         button.setLayoutY(y);
+        try {
+            button.setFont(Font.loadFont(new FileInputStream(new File(FONT_PATH)), 15)); // set to Label
+        } catch (FileNotFoundException e) {
+            button.setFont(Font.font("Verdana", 15));
+        }
         AnchorPane root = (AnchorPane) this.getRoot();
         root.getChildren().add(button);
         button.setOnMouseClicked(mouseEvent -> {

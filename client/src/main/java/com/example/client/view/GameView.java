@@ -41,6 +41,12 @@ public class GameView {
     private List<ImageView> shipHealthImages;
     private int score;
 
+    /**
+     * game view constructor
+     * @param anchorPane pane that will have object nodes
+     * @param gameScene scene that contains pane
+     * @param gameStage stage to show
+     */
     public GameView(AnchorPane anchorPane, Scene gameScene, Stage gameStage){
         this.anchorPane = anchorPane;
         this.gameScene = gameScene;
@@ -51,18 +57,28 @@ public class GameView {
         score = 0;
         level = 0;
         cheatHandle();
+        createPlayerShip();
         moveCursor();
         createBackground();
-        createPlayerShip();
         createLevelInfo();
         createScoreboard();
         createPlayerShipHealthInfo();
         initLevels();
     }
+
+    /**
+     * creates player ship and place it where mouse is
+     */
     private void createPlayerShip(){
         playerShip = new Ship(PLAYER_SHIP);
         this.anchorPane.getChildren().add(playerShip.getShipImage());
+        playerShip.getShipImage().setLayoutX(mousePositionX);
+        playerShip.getShipImage().setLayoutY(mousePositionY);
     }
+
+    /**
+     * label which shows player ship's health with small ship images
+     */
     private void createPlayerShipHealthInfo(){
         shipHealthImages = new ArrayList<>();
         for(int i=0; i< playerShip.getHealth(); i++){
@@ -75,6 +91,10 @@ public class GameView {
             anchorPane.getChildren().add(imageView);
         }
     }
+
+    /**
+     * label that shows which level is player at
+     */
     private void createLevelInfo(){
         levelLabel = new InfoLabel("LEVEL: 1",120);
         levelLabel.setLayoutX(LEVEL_LAYOUT_X);
@@ -82,6 +102,9 @@ public class GameView {
         anchorPane.getChildren().add(levelLabel);
     }
 
+    /**
+     * label that shows score of the player
+     */
     private void createScoreboard(){
         scoreboard = new InfoLabel("SCORE: 000",120);
         scoreboard.setLayoutX(SCOREBOARD_LAYOUT_X);
@@ -89,14 +112,23 @@ public class GameView {
         anchorPane.getChildren().add(scoreboard);
     }
 
+    /**
+     * creates background of the game
+     */
     private void createBackground(){
         Image background = new Image(GAME_BACKGROUND, 256,256,false, true);
         BackgroundImage backgroundImage = new BackgroundImage(background, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, null);
         anchorPane.setBackground(new Background(backgroundImage));
     }
 
+    /**
+     * if game ends, shows game ends sub view
+     * either player is dead or passes all levels
+     * @param text text to show on screen
+     */
     private void gameFinished(String text){
         gameScene.setCursor(Cursor.DEFAULT);
+        anchorPane.getChildren().remove(playerShip.getShipImage());
         animationTimer.stop();
         GameController.setScore(score);
         GameController.addGame();
@@ -106,6 +138,11 @@ public class GameView {
         anchorPane.getChildren().add(gameDoneView);
     }
 
+    /**
+     * checks if levels are finished or
+     * player's health is 0 then ends the game
+     * calls the game finished screen
+     */
     private void isGameFinished(){
         if(level == NUMBER_OF_LEVELS ){
             gameFinished("CONGRATULATIONS!");
@@ -116,6 +153,10 @@ public class GameView {
 
     }
 
+    /**
+     * check if all aliens in the level are destroyed
+     * if so increments level and displays other level
+     */
     private void isLevelFinished()  {
         if(levels.get(level).getAliens().size() == 0){
             ++level;
@@ -127,6 +168,10 @@ public class GameView {
         }
     }
 
+    /**
+     * cheat which enables passing levels and getting all points
+     * by pressing CTRL + SHIFT + 9, bound to key pressing event
+     */
     private void cheat(){
         Iterator<Alien> alienIterator = levels.get(level).getAliens().iterator();
         while(alienIterator.hasNext()){
@@ -145,6 +190,9 @@ public class GameView {
         }
     }
 
+    /**
+     * animation timer which enables game to go on
+     */
     private void gameLoop(){
         animationTimer = new AnimationTimer() {
             @Override
@@ -165,19 +213,41 @@ public class GameView {
         animationTimer.start();
     }
 
+    /**
+     * checks if player bullet hits to alien
+     * @param alien alien that is targetted
+     * @param bullet player bullet
+     * @return true if hits
+     */
     private boolean isOnSamePosition(Alien alien, Bullet bullet){
         return bullet.getImageView().getBoundsInParent().intersects(alien.getImageView().getBoundsInParent());
     }
+
+    /**
+     * checks if player gets hit by alien bullet
+     * @param playerShip player's ship that is targetted
+     * @param bullet alien's bullet
+     * @return true if hits
+     */
     private boolean isOnSamePosition(Ship playerShip, Bullet bullet){
         return bullet.getImageView().getBoundsInParent().intersects(playerShip.getShipImage().getBoundsInParent());
     }
 
+    /**
+     * create player bullet
+     * enables auto-firing by calling in game loop
+     */
     private void addNewPlayerBullet(){
         Bullet newBullet = new Bullet("PLAYER", mousePositionX + 20, mousePositionY + 7, "/static/laserBlue03.png");
         playerShip.addBullet(newBullet);
         anchorPane.getChildren().add(newBullet.getImageView());
     }
 
+    /**
+     * updates player's bullets position by time
+     * if player's bullet hit alien, removes bullet, decreases alien's health
+     * if alien's health is 0 removes alien
+     */
     private void updatePlayerBullet(){
         Iterator<Bullet> bulletIterator = playerShip.getBullets().iterator();
         while (bulletIterator.hasNext()) {
@@ -202,6 +272,10 @@ public class GameView {
         }
     }
 
+    /**
+     * checks alien's type, increments score based on this value
+     * @param alien alien that is destroyed
+     */
     private void addToScore(Alien alien){
         switch (alien.getType()){
             case "EASY":
@@ -216,6 +290,9 @@ public class GameView {
         }
     }
 
+    /**
+     * writes score label and level label
+     */
     private void writeLabels(){
         if(score<10){
             scoreboard.setText(INFO_LABEL_SCOREBOARD + "00" + score);
@@ -227,6 +304,11 @@ public class GameView {
         levelLabel.setText(INFO_LABEL_LEVEL + (level+1));
     }
 
+    /**
+     * if alien's bullet hit player, removes bullet, decreases player's health
+     * removes the little ship image which represents health bar
+     * @param alien alien that shoots
+     */
     private void alienBulletShoot(Alien alien){
         Iterator<Bullet> bulletIterator = alien.getBullets().iterator();
         while(bulletIterator.hasNext()){
@@ -236,15 +318,17 @@ public class GameView {
                 bulletIterator.remove();
                 playerShip.setHealth(playerShip.getHealth()-1);
                 int shipHealth = playerShip.getHealth();
-                if(shipHealth>ZERO_HEALTH){
+                if(shipHealth>=ZERO_HEALTH){
                     anchorPane.getChildren().remove(shipHealthImages.get(shipHealth));
                 }
             }
         }
     }
 
+    /**
+     * set mouse move event to replace ship based on mouse movement
+     */
     private void updateShipPosition(){
-
         anchorPane.setOnMouseMoved(mouseEvent -> {
             mousePositionX = mouseEvent.getSceneX();
             mousePositionY = mouseEvent.getSceneY();
@@ -253,6 +337,10 @@ public class GameView {
         });
     }
 
+    /**
+     * creates alien bullets, works on ALIEN_SHOOT_RANDOM probability
+     * moves alien bullets
+     */
     private void alienShoot(){
         levels.get(level).getAliens().forEach(alien -> {
             if(alien.isCanShoot()){
@@ -267,6 +355,10 @@ public class GameView {
         });
     }
 
+    /**
+     * when player starts the game replaces the mosue position
+     * which also means replaces the player ship's position
+     */
     private void moveCursor() {
         Platform.runLater(() -> {
             Robot robot = new Robot();
@@ -274,6 +366,9 @@ public class GameView {
         });
     }
 
+    /**
+     * initialize game levels, starts level1
+     */
     private void initLevels(){
         levels = new ArrayList<>();
         Level1 level1 = new Level1();
@@ -287,7 +382,11 @@ public class GameView {
         level1.getAliens().forEach(alien -> anchorPane.getChildren().add(alien.getImageView()));
     }
 
-    public void cheatHandle(){
+    /**
+     * when user presses ctrl+shift+9 combination cheat() function gets calles
+     * which passes levels
+     */
+    private void cheatHandle(){
         gameScene.setOnKeyPressed(keyEvent -> {
             if (keyEvent.isControlDown() && keyEvent.isShiftDown() && keyEvent.getCode() == KeyCode.DIGIT9) {
                 cheat();
@@ -295,6 +394,9 @@ public class GameView {
         });
     }
 
+    /**
+     * starts the game by calling gameLoop()
+     */
     public void gameStart() {
         gameLoop();
     }

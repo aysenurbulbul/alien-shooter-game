@@ -32,7 +32,7 @@ public class InfoLabel extends Label {
         BackgroundImage backgroundImage = new BackgroundImage(new Image(LABEL_PATH, w, 40, false, true),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, null);
         setBackground(new Background(backgroundImage));
-        setAlignment(Pos.CENTER_LEFT);
+        setAlignment(Pos.CENTER);
         setPadding(new Insets(10, 10, 10, 10));
         setLabelFont();
         setText(context);
