@@ -21,8 +21,8 @@ public class GameButton extends Button {
     public GameButton(String text){
         setText(text);
         setButtonFont();
-        setPrefHeight(190);
-        setPrefWidth(49);
+        setPrefHeight(49);
+        setPrefWidth(190);
         setStyle(BUTTON_FREE_STYLE);
     }
 

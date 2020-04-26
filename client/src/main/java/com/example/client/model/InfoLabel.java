@@ -28,7 +28,6 @@ public class InfoLabel extends Label {
      * creates label with given context, with background and font
      * @param context label's context
      */
-    public InfoLabel(String context){
         setPrefHeight(40);
         setPrefWidth(w);
         BackgroundImage backgroundImage = new BackgroundImage(new Image("/static/blue_button13.png", w, 40, false, true),

@@ -57,7 +57,7 @@ public class GameSubView extends SubScene {
         });
     }
     private void createInfoLabel(String text, double x, double y){
-        InfoLabel infoLabel = new InfoLabel(text,200);
+        InfoLabel infoLabel = new InfoLabel(text,220);
         infoLabel.setLayoutX(x);
         infoLabel.setLayoutY(y);
         AnchorPane root = (AnchorPane) this.getRoot();
