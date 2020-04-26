@@ -1,6 +1,7 @@
 package com.example.client.view;
 
 import com.example.client.StageInitializer;
+import com.example.client.controller.GameController;
 import com.example.client.model.Alien;
 import com.example.client.model.Bullet;
 import com.example.client.model.InfoLabel;
@@ -84,6 +85,17 @@ public class GameView {
         anchorPane.setBackground(new Background(backgroundImage));
     }
 
+    private void finishGame(String text){
+        gameScene.setCursor(Cursor.DEFAULT);
+        animationTimer.stop();
+        GameController.setScore(score);
+        GameController.addGame();
+        GameSubView gameDoneView = new GameSubView(score, text);
+        gameDoneView.setLayoutX(100);
+        gameDoneView.setLayoutY(100);
+        anchorPane.getChildren().add(gameDoneView);
+    }
+
     private void isLevelFinished()  {
         if(levels.get(level).getAliens().size() == 0){
             ++level;
@@ -93,12 +105,7 @@ public class GameView {
                 playerShip.clearBullets();
             }
             else{
-                gameScene.setCursor(Cursor.DEFAULT);
-                animationTimer.stop();
-                GameSubView gameDoneView = new GameSubView(score, "Congratulations!");
-                gameDoneView.setLayoutX(100);
-                gameDoneView.setLayoutY(100);
-                anchorPane.getChildren().add(gameDoneView);
+                finishGame("Congratulations!");
             }
         }
     }
@@ -129,8 +136,8 @@ public class GameView {
                     addNewPlayerBullet();
                     updatePlayerBullet();
                     alienShoot();
-                    isLevelFinished();
                     writeLabels();
+                    isLevelFinished();
                     t = 0;
                 }
                 updateShipPosition();
@@ -217,13 +224,7 @@ public class GameView {
                     anchorPane.getChildren().remove(shipHealthImages.get(shipHealth));
                 }
                 else{
-                    GameSubView gameDoneView = new GameSubView(score, "LOSER... YOU SUCK!");
-                    gameDoneView.setLayoutX(100);
-                    gameDoneView.setLayoutY(100);
-                    anchorPane.getChildren().add(gameDoneView);
-                    gameScene.setCursor(Cursor.DEFAULT);
-                    animationTimer.stop();
-                    anchorPane.getChildren().remove(playerShip.getShipImage());
+                    finishGame("LOSER... YOU SUCK!");
                 }
             }
         }

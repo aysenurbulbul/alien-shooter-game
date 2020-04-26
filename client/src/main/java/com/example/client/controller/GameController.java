@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import org.json.JSONObject;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -21,12 +22,11 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
-import static com.example.client.constant.ControllerConstants.API_ADDRESS;
-import static com.example.client.constant.ControllerConstants.MAIN_MENU_FXML;
+import static com.example.client.constant.ControllerConstants.*;
 
 public class GameController implements Initializable {
 
-    private RestTemplate restTemplate;
+    private static RestTemplate restTemplate;
 
     @FXML
     public Button backMenuButton;
@@ -34,14 +34,13 @@ public class GameController implements Initializable {
     @FXML
     public Button startGame;
 
-    private Player player;
+    private static Player player;
 
-    private static Long score;
+    private static int score;
 
-    public static void setScore(Long value){
+    public static void setScore(int value){
         score = value;
     }
-
 
     /**
      * Loads main menu if user clicks "Back to Menu" button
@@ -81,7 +80,7 @@ public class GameController implements Initializable {
      * Gets the score of the player and using restTemplate
      * sends the score to the database
      */
-    private void addGame(){
+    public static void addGame(){
         String username = player.getUsername();
         LocalDateTime date = LocalDateTime.now();
         String token = player.getJwt();
@@ -89,19 +88,22 @@ public class GameController implements Initializable {
         String jsonString = new JSONObject()
                 .put("score", score)
                 .put("finishDateTime", date).toString();
-
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
         //set jwt token as a header since this request needs authentication
         httpHeaders.set("Authorization", token);
-        HttpEntity<String> httpEntity = new HttpEntity<>("body", httpHeaders);
+        HttpEntity<String> httpEntity = new HttpEntity<>(jsonString, httpHeaders);
+        try {
+            //make a request to server with the given username and get player.
+            ResponseEntity<String> response = restTemplate.exchange(
+                    API_ADDRESS +"/game/addGame/" + username,
+                    HttpMethod.POST,
+                    httpEntity,
+                    new ParameterizedTypeReference<>() {});
+        } catch (RestClientException e){
 
-        //make a request to server with the given username and get player.
-        ResponseEntity<Player> playerResponse = restTemplate.exchange(
-                API_ADDRESS +"/game/addGame/" + username,
-                HttpMethod.GET,
-                httpEntity,
-                new ParameterizedTypeReference<>() {});
+        }
+
     }
 }

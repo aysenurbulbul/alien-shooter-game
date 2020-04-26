@@ -14,6 +14,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -24,7 +25,7 @@ import static com.example.client.constant.ControllerConstants.GAME_FXML;
 
 public class GameSubView extends SubScene {
 
-    private final static String BACKGROUND_IMAGE = "/static/grey_panel.png";
+    private final static String BACKGROUND_IMAGE = "/static/darkPurple.png";
     public GameSubView(int score, String text) {
         super(new AnchorPane(), 600, 400);
         prefHeight(600);
@@ -64,15 +65,17 @@ public class GameSubView extends SubScene {
         root.getChildren().add(infoLabel);
     }
     private void setHeadLine(String text, double x, double y){
-        final double MAX_FONT_SIZE = 30.0; // define max font size you need
+        final double MAX_FONT_SIZE = 30.0;
         Label label = new Label();
         label.setLayoutX(x);
         label.setLayoutY(y);
         label.setText(text);
         label.setFont(new Font(MAX_FONT_SIZE)); // set to Label
+        label.setTextFill(Color.WHITE);
         AnchorPane root = (AnchorPane) this.getRoot();
         root.getChildren().add(label);
     }
+
     private void backToGameController(){
         try{
             Parent parent = FXMLLoader.load(getClass().getResource(GAME_FXML));

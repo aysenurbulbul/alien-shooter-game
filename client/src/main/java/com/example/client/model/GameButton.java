@@ -19,16 +19,14 @@ import java.io.FileNotFoundException;
 public class GameButton extends Button {
 
     private final String FONT_PATH = "/font/kenvector_future.ttf";
-    private final String IMAGE_PATH = "/static/buttonYellow.png";
-    private final String BUTTON_PRESSED_STYLE = "-fx-background-color: transparent; -fx-background-image url: ('/static/buttonYellow.png');";
-    private final String BUTTON_FREE_STYLE = "-fx-background-color: transparent; -fx-background-image url: ('/static/yellow_button03.png');";
+    private final String IMAGE_PATH = "/static/blue_button13.png";
 
     public GameButton(String text){
         setText(text);
         setButtonFont();
         setPrefHeight(40);
         setPrefWidth(190);
-        BackgroundImage backgroundImage = new BackgroundImage(new Image("/static/blue_button13.png", 190, 40, false, true),
+        BackgroundImage backgroundImage = new BackgroundImage(new Image(IMAGE_PATH, 190, 40, false, true),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, null);
         setBackground(new Background(backgroundImage));
     }
