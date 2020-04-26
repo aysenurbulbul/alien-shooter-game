@@ -3,8 +3,13 @@ package com.example.client.model;
 
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.text.Font;
 
 import java.io.File;
@@ -21,45 +26,18 @@ public class GameButton extends Button {
     public GameButton(String text){
         setText(text);
         setButtonFont();
-        setPrefHeight(49);
+        setPrefHeight(40);
         setPrefWidth(190);
-        setStyle(BUTTON_FREE_STYLE);
+        BackgroundImage backgroundImage = new BackgroundImage(new Image("/static/blue_button13.png", 190, 40, false, true),
+                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, null);
+        setBackground(new Background(backgroundImage));
     }
 
     private void setButtonFont(){
         try {
             setFont(Font.loadFont(new FileInputStream(new File(FONT_PATH)), 12));
         } catch (FileNotFoundException e) {
-            System.out.println("why");
             setFont(Font.font("Verdana", 15));
         }
-    }
-    private void setButtonPressedStyle(){
-        setStyle(BUTTON_PRESSED_STYLE);
-        setPrefHeight(45);
-        setLayoutY(getLayoutY()+4);
-    }
-    private void setButtonReleasedStyle(){
-        setStyle(BUTTON_FREE_STYLE);
-        setPrefHeight(49);
-        setLayoutY(getLayoutY()-4);
-    }
-    private void initButtonListeners(){
-        setOnMouseReleased(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-                    setButtonReleasedStyle();
-                }
-            }
-        });
-        setOnMouseEntered(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-                    setButtonPressedStyle();
-                }
-            }
-        });
     }
 }

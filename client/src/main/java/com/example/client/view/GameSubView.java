@@ -37,9 +37,9 @@ public class GameSubView extends SubScene {
         AnchorPane root = (AnchorPane) this.getRoot();
         root.setBackground(new Background(image));
 
-        setHeadLine(text, 200,100);
-        createButton("Back to Start", 200, 200);
-        createInfoLabel("YOUR FINAL SCORE: " + score, 200,150);
+        setHeadLine(text, 180,100);
+        createButton("Back to Start", 205, 250);
+        createInfoLabel("YOUR FINAL SCORE: " + score, 192,175);
     }
     private void createButton(String text, double x, double y){
         GameButton button = new GameButton (text);
