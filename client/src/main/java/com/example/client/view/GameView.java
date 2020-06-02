@@ -1,6 +1,7 @@
 package com.example.client.view;
 
 import com.example.client.StageInitializer;
+import com.example.client.clientSocket.Client;
 import com.example.client.controller.GameController;
 import com.example.client.model.Alien;
 import com.example.client.model.Bullet;
@@ -18,6 +19,7 @@ import javafx.scene.layout.*;
 import javafx.scene.robot.Robot;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -131,7 +133,7 @@ public class GameView {
         anchorPane.getChildren().remove(playerShip.getShipImage());
         animationTimer.stop();
         GameController.setScore(score);
-        GameController.addGame();
+        //GameController.addGame();
         GameSubView gameDoneView = new GameSubView(score, text);
         gameDoneView.setLayoutX(100);
         gameDoneView.setLayoutY(100);
@@ -143,9 +145,27 @@ public class GameView {
      * player's health is 0 then ends the game
      * calls the game finished screen
      */
-    private void isGameFinished(){
+    private void isGameFinished() {
         if(level == NUMBER_OF_LEVELS ){
-            gameFinished("CONGRATULATIONS!");
+            gameFinished("waiting for other player");
+            Thread thread = new Thread(new Runnable(){
+
+                @Override
+                public void run() {
+                    Client client = new Client();
+                    try {
+                        String who = client.connectToServer();
+                        GameSubView gameDoneView = new GameSubView(score, who);
+                        gameDoneView.setLayoutX(100);
+                        gameDoneView.setLayoutY(100);
+                        Platform.runLater(()->anchorPane.getChildren().add(gameDoneView));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            thread.start();
+
         }
         if(playerShip.getHealth() == ZERO_HEALTH){
             gameFinished("LOSER...GAME OVER");
@@ -172,7 +192,7 @@ public class GameView {
      * cheat which enables passing levels and getting all points
      * by pressing CTRL + SHIFT + 9, bound to key pressing event
      */
-    private void cheat(){
+    private void cheat() {
         Iterator<Alien> alienIterator = levels.get(level).getAliens().iterator();
         while(alienIterator.hasNext()){
             Alien alien = alienIterator.next();
