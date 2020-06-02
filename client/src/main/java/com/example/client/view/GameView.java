@@ -32,16 +32,19 @@ public class GameView {
     private final Scene gameScene;
     private Stage gameStage;
     private AnimationTimer animationTimer;
+    private AnimationTimer multiplayerAnimationTimer;
     private double t = 0;
     private List<AbstractLevel> levels;
     private int level;
     private double mousePositionX;
     private double mousePositionY;
     private Ship playerShip;
+    private Ship enemyShip;
     private InfoLabel scoreboard;
     private InfoLabel levelLabel;
     private List<ImageView> shipHealthImages;
     private int score;
+    private Client client;
 
     /**
      * game view constructor
@@ -76,6 +79,11 @@ public class GameView {
         this.anchorPane.getChildren().add(playerShip.getShipImage());
         playerShip.getShipImage().setLayoutX(mousePositionX);
         playerShip.getShipImage().setLayoutY(mousePositionY);
+    }
+
+    private void createEnemyShip(){
+        enemyShip = new Ship(PLAYER_SHIP);
+        this.anchorPane.getChildren().add(enemyShip.getShipImage());
     }
 
     /**
@@ -152,13 +160,15 @@ public class GameView {
 
                 @Override
                 public void run() {
-                    Client client = new Client();
+                    client = new Client();
                     try {
-                        String who = client.connectToServer();
-                        GameSubView gameDoneView = new GameSubView(score, who);
-                        gameDoneView.setLayoutX(100);
-                        gameDoneView.setLayoutY(100);
-                        Platform.runLater(()->anchorPane.getChildren().add(gameDoneView));
+                        client.connectToServer();
+                        Platform.runLater(()->{
+                            createBackground();
+                            createPlayerShip();
+                            createEnemyShip();
+                            multiplayerGameLoop();
+                        });
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -232,6 +242,27 @@ public class GameView {
             }
         };
         animationTimer.start();
+    }
+
+    private void multiplayerGameLoop(){
+        multiplayerAnimationTimer = new AnimationTimer() {
+            @Override
+            public void handle(long l) {
+                t += TIMER_INCREASE;
+                if(t>TIMER_SHOULD_BE_LESS){
+                    t = 0;
+                }
+                updateShipPosition();
+                try {
+                    client.sendShipCoords(mousePositionX, mousePositionY);
+                    Double[] coords = client.getShipCoords();
+                    updateEnemyPosition(coords);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        multiplayerAnimationTimer.start();
     }
 
     /**
@@ -356,6 +387,11 @@ public class GameView {
             playerShip.getShipImage().setLayoutX(mouseEvent.getSceneX());
             playerShip.getShipImage().setLayoutY(mouseEvent.getSceneY());
         });
+    }
+
+    private void updateEnemyPosition(Double[] coords){
+        enemyShip.getShipImage().setLayoutX(coords[0]);
+        enemyShip.getShipImage().setLayoutY(coords[1]);
     }
 
     /**
