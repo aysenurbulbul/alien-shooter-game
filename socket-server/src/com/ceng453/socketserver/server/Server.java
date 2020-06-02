@@ -1,6 +1,7 @@
 package com.ceng453.socketserver.server;
 
 import com.ceng453.socketserver.game.Gamer;
+import com.ceng453.socketserver.game.Match;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -30,14 +31,13 @@ public class Server {
         }
     }
 
-    private void matchMaker() throws IOException {
+    private void matchMaker()  {
         while(players.size() > 1){
             Gamer gamer1 = players.poll();
             Gamer gamer2 = players.poll();
-            DataOutputStream out1 = new DataOutputStream(gamer1.getSocket().getOutputStream());
-            out1.writeUTF("you will be play with 1: " + gamer2.getSocket().getInetAddress());
-            DataOutputStream out2 = new DataOutputStream(gamer2.getSocket().getOutputStream());
-            out2.writeUTF("you will be play with 2: " + gamer1.getSocket().getInetAddress());
+            Match match = new Match(gamer1, gamer2);
+            Thread matchThread = new Thread(match);
+            matchThread.start();
         }
     }
 }
