@@ -41,6 +41,14 @@ public class Alien {
 
     }
 
+    public void setPositionX(double positionX) {
+        this.positionX = positionX;
+    }
+
+    public void setPositionY(double positionY) {
+        this.positionY = positionY;
+    }
+
     public double getPositionX() {
         return positionX;
     }
@@ -88,5 +96,7 @@ public class Alien {
     public void decreaseHealth(){
         health = health -1;
     }
+
+
 
 }

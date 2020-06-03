@@ -163,6 +163,7 @@ public class GameView {
         anchorPane.getChildren().add(gameDoneView);
     }
 
+
     private void waitingEnemy(String text){
         gameScene.setCursor(Cursor.DEFAULT);
         anchorPane.getChildren().remove(playerShip.getShipImage());
@@ -201,6 +202,7 @@ public class GameView {
                             createBackground();
                             createPlayerShip();
                             createEnemyShip();
+                            levels.get(level).getAliens().forEach(alien -> anchorPane.getChildren().add(alien.getImageView()));
                             multiplayerGameLoop();
                         });
                     } catch (IOException e) {
@@ -470,7 +472,10 @@ public class GameView {
         levels.add(level3);
         Level4 level4 = new Level4();
         levels.add(level4);
+        Level5 finalLevel = new Level5();
+        levels.add(finalLevel);
         level1.getAliens().forEach(alien -> anchorPane.getChildren().add(alien.getImageView()));
+
     }
 
     /**
