@@ -121,8 +121,8 @@ public class GameView {
         playerUsernameInfo.setLayoutY(LEVEL_LAYOUT_Y);
         anchorPane.getChildren().add(playerUsernameInfo);
         InfoLabel enemyUsernameInfo = new InfoLabel(enemyUsername,120);
-        playerUsernameInfo.setLayoutX(SCOREBOARD_LAYOUT_X);
-        playerUsernameInfo.setLayoutY(SCOREBOARD_LAYOUT_Y);
+        enemyUsernameInfo.setLayoutX(SCOREBOARD_LAYOUT_X);
+        enemyUsernameInfo.setLayoutY(SCOREBOARD_LAYOUT_Y);
         anchorPane.getChildren().add(enemyUsernameInfo);
 
     }
