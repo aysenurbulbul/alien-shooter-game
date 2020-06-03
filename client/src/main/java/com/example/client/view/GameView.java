@@ -82,7 +82,7 @@ public class GameView {
     }
 
     private void createEnemyShip(){
-        enemyShip = new Ship(PLAYER_SHIP);
+        enemyShip = new Ship(ENEMY_SHIP);
         this.anchorPane.getChildren().add(enemyShip.getShipImage());
     }
 
