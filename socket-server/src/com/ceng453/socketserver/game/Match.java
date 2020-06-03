@@ -23,6 +23,14 @@ public class Match implements Runnable {
     public void run() {
         gamer1Coords = new Double[2];
         gamer2Coords = new Double[2];
+        try {
+            sendUsername(gamer1, gamer2);
+            sendUsername(gamer2, gamer1);
+            sendHealth(gamer1, gamer2);
+            sendHealth(gamer2, gamer1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         while (gameOn){
             try {
                 sendData(gamer1, gamer2, gamer1Coords);
@@ -42,5 +50,19 @@ public class Match implements Runnable {
         for(int i=0; i<2; i++){
             out.writeDouble(gamer1Coords[i]);
         }
+    }
+
+    public void sendUsername(Gamer gamer1, Gamer gamer2) throws IOException {
+        in = new DataInputStream(gamer1.getSocket().getInputStream());
+        String gamer1Username = in.readUTF();
+        out = new DataOutputStream(gamer2.getSocket().getOutputStream());
+        out.writeUTF(gamer1Username);
+    }
+
+    public void sendHealth(Gamer gamer1, Gamer gamer2) throws IOException {
+        in = new DataInputStream(gamer1.getSocket().getInputStream());
+        int gamer1Health = in.readInt();
+        out = new DataOutputStream(gamer2.getSocket().getOutputStream());
+        out.writeInt(gamer1Health);
     }
 }
