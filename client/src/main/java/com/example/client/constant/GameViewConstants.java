@@ -16,7 +16,8 @@ public final class GameViewConstants {
     public static final String PLAYER_SHIP = "/static/playerShip2_blue.png";
     public static final String ENEMY_SHIP = "/static/playerShip1_red.png";
     public static final String GAME_BACKGROUND = "/static/purple.png";
-    public static final String PLAYER_LIFE ="/static/playerLife1_red.png";
+    public static final String PLAYER_LIFE ="/static/playerLife2_blue.png";
+    public static final String ENEMY_LIFE ="/static/playerLife1_red.png";
     public static final String BACKGROUND_IMAGE = "/static/darkPurple.png";
 
     /**********LEVEL****************/

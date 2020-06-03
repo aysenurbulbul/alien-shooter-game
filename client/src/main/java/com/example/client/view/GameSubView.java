@@ -28,7 +28,7 @@ import static com.example.client.constant.GameViewConstants.FONT_PATH;
  */
 class GameSubView extends SubScene {
 
-    GameSubView(int score, String text) {
+    GameSubView(int score, String text, boolean endGame) {
         super(new AnchorPane(), 600, 400);
         prefHeight(600);
         prefWidth(400);
@@ -40,8 +40,11 @@ class GameSubView extends SubScene {
         AnchorPane root = (AnchorPane) this.getRoot();
         root.setBackground(new Background(image));
         setHeadLine(text, 130,100);
-        createButton("Back to Start", 205, 250);
-        createInfoLabel("YOUR FINAL SCORE: " + score, 192,175);
+        if(endGame){
+            createButton("Back to Start", 205, 250);
+            createInfoLabel("YOUR FINAL SCORE: " + score, 192,175);
+        }
+
     }
 
     /**
