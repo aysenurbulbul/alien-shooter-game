@@ -145,6 +145,7 @@ public class GameView {
         GameSubView gameDoneView = new GameSubView(score, text);
         gameDoneView.setLayoutX(100);
         gameDoneView.setLayoutY(100);
+        gameDoneView.setId("gameDoneView");
         anchorPane.getChildren().add(gameDoneView);
     }
 
@@ -164,6 +165,7 @@ public class GameView {
                     try {
                         client.connectToServer();
                         Platform.runLater(()->{
+                            anchorPane.getChildren().remove(anchorPane.lookup("#gameDoneView"));
                             createBackground();
                             createPlayerShip();
                             createEnemyShip();
