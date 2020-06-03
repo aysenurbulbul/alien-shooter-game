@@ -33,4 +33,26 @@ public class Client {
         return coords;
 
     }
+
+    public void sendUsername(String username) throws IOException {
+        out = new DataOutputStream(socket.getOutputStream());
+        out.writeUTF(username);
+    }
+
+    public String getUsername() throws IOException {
+        in = new DataInputStream(socket.getInputStream());
+        String username = in.readUTF();
+        return username;
+    }
+
+    public void sendHealth(int health) throws IOException {
+        out = new DataOutputStream(socket.getOutputStream());
+        out.writeInt(health);
+    }
+
+    public int getHealth() throws IOException {
+        in = new DataInputStream(socket.getInputStream());
+        int health = in.readInt();
+        return health;
+    }
 }
