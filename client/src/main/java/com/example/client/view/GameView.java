@@ -3,6 +3,7 @@ package com.example.client.view;
 import com.example.client.StageInitializer;
 import com.example.client.clientSocket.Client;
 import com.example.client.controller.GameController;
+import com.example.client.controller.LoginController;
 import com.example.client.model.Alien;
 import com.example.client.model.Bullet;
 import com.example.client.model.InfoLabel;
@@ -45,6 +46,7 @@ public class GameView {
     private List<ImageView> shipHealthImages;
     private int score;
     private Client client;
+    private String username;
 
     /**
      * game view constructor
@@ -53,6 +55,7 @@ public class GameView {
      * @param gameStage stage to show
      */
     public GameView(AnchorPane anchorPane, Scene gameScene, Stage gameStage){
+        this.username = GameController.player.getUsername();
         this.anchorPane = anchorPane;
         this.gameScene = gameScene;
         this.gameStage = gameStage;
@@ -67,7 +70,7 @@ public class GameView {
         createBackground();
         createLevelInfo();
         createScoreboard();
-        createPlayerShipHealthInfo();
+        createPlayerShipHealthInfo(675, PLAYER_LIFE, playerShip.getHealth());
         initLevels();
     }
 
@@ -89,13 +92,13 @@ public class GameView {
     /**
      * label which shows player ship's health with small ship images
      */
-    private void createPlayerShipHealthInfo(){
+    private void createPlayerShipHealthInfo(int xLayout, String who, int health){
         shipHealthImages = new ArrayList<>();
-        for(int i=0; i< playerShip.getHealth(); i++){
-            ImageView imageView = new ImageView(PLAYER_LIFE);
+        for(int i=0; i< health; i++){
+            ImageView imageView = new ImageView(who);
             imageView.setFitWidth(20);
             imageView.setFitHeight(20);
-            imageView.setLayoutX(675 + i * 30);
+            imageView.setLayoutX(xLayout + i * 30);
             imageView.setLayoutY(55);
             shipHealthImages.add(imageView);
             anchorPane.getChildren().add(imageView);
@@ -110,6 +113,18 @@ public class GameView {
         levelLabel.setLayoutX(LEVEL_LAYOUT_X);
         levelLabel.setLayoutY(LEVEL_LAYOUT_Y);
         anchorPane.getChildren().add(levelLabel);
+    }
+
+    private void createUsernameInfo(String playerUsername, String enemyUsername){
+        InfoLabel playerUsernameInfo = new InfoLabel(playerUsername,120);
+        playerUsernameInfo.setLayoutX(LEVEL_LAYOUT_X);
+        playerUsernameInfo.setLayoutY(LEVEL_LAYOUT_Y);
+        anchorPane.getChildren().add(playerUsernameInfo);
+        InfoLabel enemyUsernameInfo = new InfoLabel(enemyUsername,120);
+        playerUsernameInfo.setLayoutX(SCOREBOARD_LAYOUT_X);
+        playerUsernameInfo.setLayoutY(SCOREBOARD_LAYOUT_Y);
+        anchorPane.getChildren().add(enemyUsernameInfo);
+
     }
 
     /**
@@ -142,11 +157,21 @@ public class GameView {
         animationTimer.stop();
         GameController.setScore(score);
         //GameController.addGame();
-        GameSubView gameDoneView = new GameSubView(score, text);
+        GameSubView gameDoneView = new GameSubView(score, text, true);
         gameDoneView.setLayoutX(100);
         gameDoneView.setLayoutY(100);
-        gameDoneView.setId("gameDoneView");
         anchorPane.getChildren().add(gameDoneView);
+    }
+
+    private void waitingEnemy(String text){
+        gameScene.setCursor(Cursor.DEFAULT);
+        anchorPane.getChildren().remove(playerShip.getShipImage());
+        animationTimer.stop();
+        GameSubView gameWaitView = new GameSubView(score, text, false);
+        gameWaitView.setLayoutX(100);
+        gameWaitView.setLayoutY(100);
+        gameWaitView.setId("gameWaitView");
+        anchorPane.getChildren().add(gameWaitView);
     }
 
     /**
@@ -156,16 +181,23 @@ public class GameView {
      */
     private void isGameFinished() {
         if(level == NUMBER_OF_LEVELS ){
-            gameFinished("waiting for other player");
+            waitingEnemy("WAITING FOR ENEMY");
             Thread thread = new Thread(new Runnable(){
-
                 @Override
                 public void run() {
                     client = new Client();
                     try {
                         client.connectToServer();
+                        client.sendUsername(username);
+                        String enemyName = client.getUsername();
+                        client.sendHealth(playerShip.getHealth());
+                        int enemyHealth = client.getHealth();
                         Platform.runLater(()->{
-                            anchorPane.getChildren().remove(anchorPane.lookup("#gameDoneView"));
+                            anchorPane.getChildren().clear();
+                            gameScene.setCursor(Cursor.NONE);
+                            createUsernameInfo(username, enemyName);
+                            createPlayerShipHealthInfo(10, PLAYER_LIFE, playerShip.getHealth());
+                            createPlayerShipHealthInfo(675, ENEMY_LIFE, enemyHealth);
                             createBackground();
                             createPlayerShip();
                             createEnemyShip();

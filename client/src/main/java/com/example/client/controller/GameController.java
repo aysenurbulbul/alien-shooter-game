@@ -43,7 +43,7 @@ public class GameController implements Initializable {
     @FXML
     private Label usernameLable;
 
-    private static Player player;
+    public static Player player;
 
     private static int score;
 
