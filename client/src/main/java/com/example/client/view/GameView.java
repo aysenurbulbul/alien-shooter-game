@@ -275,11 +275,11 @@ public class GameView {
             client.sendGameStatus(true);
             gameFinished("LOSER... GAME OVER", multiplayerAnimationTimer, true);
         }
-        if(enemyShip.getHealth() <= 0 ){
+        else if(enemyShip.getHealth() <= 0 ){
             client.sendGameStatus(true);
             gameFinished("ENEMY DIED...GAME OVER!", multiplayerAnimationTimer, true);
         }
-        if(levels.get(4).getAliens().size() == 0){
+        else if(levels.get(4).getAliens().size() == 0){
             client.sendGameStatus(true);
             System.out.println("***alien died*****");
             gameFinished("CONGRATS...", multiplayerAnimationTimer, true);
@@ -344,7 +344,7 @@ public class GameView {
                     client.sendShipCoords(mousePositionX, mousePositionY);
                     Double[] coords = client.getShipCoords();
                     updateEnemyPosition(coords);
-                    if(t > TIMER_SHOULD_BE_LESS){
+                    if(t > -1){
                         client.sendAlienMove(true);
                         Double[] alienCoords = client.getAlienCoords();
                         setAlienPosition(alienCoords);
@@ -361,7 +361,7 @@ public class GameView {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if(t > TIMER_SHOULD_BE_LESS){
+                if(t > -1){
                     addNewPlayerBullet();
                     updatePlayerBullet(playerShip, "PLAYER");
                     addNewEnemyBullet();
@@ -369,7 +369,6 @@ public class GameView {
                     t = 0;
                 }
                 updateShipPosition();
-                //addNewPlayerBullet();
 
             }
         };
@@ -377,6 +376,7 @@ public class GameView {
     }
 
     private void shootAlien(boolean status) throws IOException {
+        if(levels.get(4).getAliens().size() == 0) return;
         boolean canShoot = client.getCanAlienShoot();
         levels.get(level).getAliens().forEach(alien -> {
             if(canShoot){
@@ -392,6 +392,7 @@ public class GameView {
     }
 
     private void updateEnemyPlayerHealth() throws IOException{
+        if(levels.get(4).getAliens().size() == 0) return;
         client.sendHealth(playerShip.getHealth());
         int enemyHealth = client.getHealth();
         enemyShip.setHealth(enemyHealth);
@@ -403,77 +404,9 @@ public class GameView {
         }
     }
 
-    private void updateFinalLevelPlayerBullet() throws IOException{
-        Iterator<Bullet> bulletIterator = playerShip.getBullets().iterator();
-        int didPlayerShout = 0;
-        if(levels.get(4).getAliens().size() == 0) return;
-        Alien alien = levels.get(4).getAliens().get(0);
-        while (bulletIterator.hasNext()) {
-            Bullet bullet = bulletIterator.next();
-            bullet.moveUp();
-            if(isOnSamePosition(alien, bullet)){
-                anchorPane.getChildren().remove(bullet.getImageView());
-                bulletIterator.remove();
-                alien.decreaseHealth();
-                addToScore(alien);
-                didPlayerShout = 1;
-                break;
-            }
-        }
-        client.sendHealth(didPlayerShout);
-        int didEnemyShout = client.getHealth();
-        if(didEnemyShout == 1){
-            alien.decreaseHealth();
-        }
-    }
-
-    private void didFinalAlienDied(){
-        if(levels.get(4).getAliens().size() == 0) return;
-        Alien alien = levels.get(4).getAliens().get(0);
-        if(alien.getHealth()<= ZERO_HEALTH){
-            alien.getBullets().forEach(alienBullet -> anchorPane.getChildren().remove(alienBullet.getImageView()));
-            anchorPane.getChildren().remove(alien.getImageView());
-            levels.get(level).getAliens().remove(0);
-        }
-    }
 
 
-    private void moveAlien() throws IOException{
-        if(levels.get(level).getAliens().size() == 0) return;
-        if(client.isController() == 1){
-            Double[] alienCoords = updateAlienPosition();
-            client.sendShipCoords(alienCoords[0], alienCoords[1]);
-        }
-        else{
-            Double[] coords = client.getShipCoords();
-            setAlienPosition(coords);
-        }
-    }
-    private void finalAlienShoot() throws IOException{
-        if(levels.get(level).getAliens().size() == 0) return;
-        Double alienShootRandom = Math.random();
-        if(client.isController() == 1){
-            client.sendAlienShootRandom(alienShootRandom);
-        }
-        else{
-            alienShootRandom = client.getAlienShootRandom();
-        }
-        Alien alien = levels.get(4).getAliens().get(0);
-        if(alienShootRandom<ALIEN_SHOOT_RANDOM){
-            Bullet bullet = new Bullet("ENEMY",alien.getPositionX()+21.5, alien.getPositionY()+20, "/static/laserRed03.png");
-            levels.get(4).getAliens().get(0).addBullet(bullet);
-            anchorPane.getChildren().add(bullet.getImageView());
-        }
-        alien.getBullets().forEach(Bullet::moveDown);
-        alienBulletShoot(alien);
-    }
-    private void moveEnemyShipAndBullets() throws IOException{
-        client.sendShipCoords(mousePositionX, mousePositionY);
-        Double[] coords = client.getShipCoords();
-        updateEnemyPosition(coords);
-        //addNewEnemyPlayerBullet(coords);
-        //updateEnemyPlayerBullets();
-    }
+
 
     /**
      * checks if player bullet hits to alien
@@ -493,16 +426,6 @@ public class GameView {
      */
     private boolean isOnSamePosition(Ship playerShip, Bullet bullet){
         return bullet.getImageView().getBoundsInParent().intersects(playerShip.getShipImage().getBoundsInParent());
-    }
-
-    private void addNewEnemyPlayerBullet(Double[] coords){
-        Bullet newBullet = new Bullet("PLAYER", coords[0] + 20, coords[1] + 7, "/static/laserBlue03.png");
-        enemyShip.addBullet(newBullet);
-        anchorPane.getChildren().add(newBullet.getImageView());
-    }
-
-    private void updateEnemyPlayerBullets(){
-        enemyShip.getBullets().forEach(Bullet::moveUp);
     }
 
     /**
@@ -637,11 +560,13 @@ public class GameView {
     }
 
     private void setAlienPosition(Double[] coords){
+        if(levels.get(4).getAliens().size() == 0) return;
         this.levels.get(4).getAliens().get(0).setPositionX(coords[0]);
         this.levels.get(4).getAliens().get(0).setPositionY(coords[1]);
     }
 
     private void updateEnemyPosition(Double[] coords){
+        if(levels.get(4).getAliens().size() == 0) return;
         enemyShip.getShipImage().setLayoutX(coords[0]);
         enemyShip.getShipImage().setLayoutY(coords[1]);
     }
