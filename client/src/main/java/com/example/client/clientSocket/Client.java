@@ -94,5 +94,11 @@ public class Client {
         return alienCoords;
     }
 
+    public boolean getCanAlienShoot() throws IOException {
+        in = new DataInputStream(socket.getInputStream());
+        boolean status = in.readBoolean();
+        return status;
+    }
+
 
 }

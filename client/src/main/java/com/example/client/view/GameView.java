@@ -311,11 +311,13 @@ public class GameView {
                         client.sendAlienMove(true);
                         Double[] alienCoords = client.getAlienCoords();
                         setAlienPosition(alienCoords);
+                        shootAlien(true);
                     }
                     else{
                         client.sendAlienMove(false);
                         Double[] alienCoords = client.getAlienCoords();
                         setAlienPosition(alienCoords);
+                        shootAlien(false);
                     }
                     /*
                     isGameFinished();
@@ -336,7 +338,6 @@ public class GameView {
                     updatePlayerBullet(playerShip);
                     addNewEnemyBullet();
                     updatePlayerBullet(enemyShip);
-                    alienShoot();
                     t = 0;
                 }
                 updateShipPosition();
@@ -345,6 +346,21 @@ public class GameView {
             }
         };
         multiplayerAnimationTimer.start();
+    }
+
+    private void shootAlien(boolean status) throws IOException {
+        boolean canShoot = client.getCanAlienShoot();
+        levels.get(level).getAliens().forEach(alien -> {
+            if(canShoot){
+                Bullet bullet = new Bullet("ENEMY",alien.getPositionX() + 30, alien.getPositionY()+35, "/static/laserRed03.png");
+                alien.addBullet(bullet);
+                anchorPane.getChildren().add(bullet.getImageView());
+            }
+            if(status){
+                alien.getBullets().forEach(Bullet::moveDown);
+                alienBulletShoot(alien);
+            }
+        });
     }
 
     private void updateEnemyPlayerHealth() throws IOException{
