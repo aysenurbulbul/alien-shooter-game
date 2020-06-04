@@ -49,6 +49,7 @@ public class GameView {
     private int enemyScore;
     private Client client;
     private String username;
+    private Thread thread;
 
     /**
      * game view constructor
@@ -158,6 +159,7 @@ public class GameView {
         if(multiLevel){
             client.sendScore(score);
             enemyScore = client.getEnemyScore();
+            multiplayerAnimationTimer.stop();
         }
 
         System.out.println("*****first ******");
@@ -216,7 +218,7 @@ public class GameView {
     private void areSingleLevelsFinished() {
         if(level == NUMBER_OF_LEVELS ){
             waitingEnemy("WAITING FOR ENEMY");
-            Thread thread = new Thread(new Runnable(){
+            thread = new Thread(new Runnable(){
                 @Override
                 public void run() {
                     client = new Client();
@@ -273,19 +275,26 @@ public class GameView {
     private void isGameFinished() throws IOException {
         if(playerShip.getHealth() <= 0){
             client.sendGameStatus(true);
-            gameFinished("LOSER... GAME OVER", multiplayerAnimationTimer, true);
+            boolean otherStatus = client.getGameStatus();
+            gameFinished(GAME_FINISHED, multiplayerAnimationTimer, true);
         }
         else if(enemyShip.getHealth() <= 0 ){
             client.sendGameStatus(true);
-            gameFinished("ENEMY DIED...GAME OVER!", multiplayerAnimationTimer, true);
+            boolean otherStatus = client.getGameStatus();
+            gameFinished(GAME_FINISHED, multiplayerAnimationTimer, true);
         }
         else if(levels.get(4).getAliens().size() == 0){
             client.sendGameStatus(true);
+            boolean otherStatus = client.getGameStatus();
             System.out.println("***alien died*****");
-            gameFinished("CONGRATS...", multiplayerAnimationTimer, true);
+            gameFinished(GAME_FINISHED, multiplayerAnimationTimer, true);
         }
         else{
             client.sendGameStatus(false);
+            boolean otherStatus = client.getGameStatus();
+            if(otherStatus){
+                gameFinished(GAME_FINISHED, multiplayerAnimationTimer, true);
+            }
         }
     }
 
@@ -340,28 +349,32 @@ public class GameView {
             @Override
             public void handle(long l) {
                 t += TIMER_INCREASE;
-                try {
-                    client.sendShipCoords(mousePositionX, mousePositionY);
-                    Double[] coords = client.getShipCoords();
-                    updateEnemyPosition(coords);
-                    if(t > -1){
-                        client.sendAlienMove(true);
-                        Double[] alienCoords = client.getAlienCoords();
-                        setAlienPosition(alienCoords);
-                        shootAlien(true);
+                if(!client.isSocketAlive()){
+                    try {
+                        isGameFinished();
+                        client.sendShipCoords(mousePositionX, mousePositionY);
+                        Double[] coords = client.getShipCoords();
+                        updateEnemyPosition(coords);
+                        if(t > TIMER_SHOULD_BE_LESS){
+                            client.sendAlienMove(true);
+                            Double[] alienCoords = client.getAlienCoords();
+                            setAlienPosition(alienCoords);
+                            shootAlien(true);
+                        }
+                        else{
+                            client.sendAlienMove(false);
+                            Double[] alienCoords = client.getAlienCoords();
+                            setAlienPosition(alienCoords);
+                            shootAlien(false);
+                        }
+                        updateEnemyPlayerHealth();
+                        isGameFinished();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    else{
-                        client.sendAlienMove(false);
-                        Double[] alienCoords = client.getAlienCoords();
-                        setAlienPosition(alienCoords);
-                        shootAlien(false);
-                    }
-                    updateEnemyPlayerHealth();
-                    isGameFinished();
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
-                if(t > -1){
+
+                if(t > TIMER_SHOULD_BE_LESS){
                     addNewPlayerBullet();
                     updatePlayerBullet(playerShip, "PLAYER");
                     addNewEnemyBullet();

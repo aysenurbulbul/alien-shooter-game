@@ -58,7 +58,7 @@ class GameSubView extends SubScene {
                 null);
         AnchorPane root = (AnchorPane) this.getRoot();
         root.setBackground(new Background(image));
-        setHeadLine(text, 110,75);
+        setHeadLine(text, 130,75);
         int totalScore = score + enemyScore;
         if(endGame){
             createButton("Back to Start", 205, 300);

@@ -84,13 +84,8 @@ public class Client {
         out.writeInt(score);
     }
 
-    public int isController(){
-        return this.isController;
-    }
-
-    public void sendAlienShootRandom(double random)throws IOException{
-        out = new DataOutputStream(socket.getOutputStream());
-        out.writeDouble(random);
+    public boolean isSocketAlive(){
+        return socket.isClosed();
     }
 
     public void sendAlienMove(boolean status)throws IOException{
@@ -121,6 +116,12 @@ public class Client {
     public void sendGameStatus(boolean status) throws IOException {
         out = new DataOutputStream(socket.getOutputStream());
         out.writeBoolean(status);
+    }
+
+    public boolean getGameStatus() throws IOException {
+        in = new DataInputStream(socket.getInputStream());
+        boolean status = in.readBoolean();
+        return status;
     }
 
 }

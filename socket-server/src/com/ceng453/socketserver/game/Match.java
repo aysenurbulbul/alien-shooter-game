@@ -40,6 +40,18 @@ public class Match implements Runnable {
         }
         while (gameOn){
             try {
+
+                boolean gameEnd1 = getGameStatus(gamer1);
+                boolean gameEnd2 = getGameStatus(gamer2);
+                if(gameEnd1 || gameEnd2){
+                    gameOn = false;
+                    sendGameStatus(gamer1, true);
+                    sendGameStatus(gamer2, true);
+                    break;
+                }
+                sendGameStatus(gamer1, false);
+                sendGameStatus(gamer2, false);
+
                 // send each other their coordinate data
                 sendData(gamer1, gamer2, gamer1Coords);
                 sendData(gamer2, gamer1, gamer2Coords);
@@ -59,11 +71,16 @@ public class Match implements Runnable {
                 sendHealth(gamer1, gamer2);
                 sendHealth(gamer2, gamer1);
 
-                boolean gameEnd1 = getGameStatus(gamer1);
-                boolean gameEnd2 = getGameStatus(gamer2);
+                gameEnd1 = getGameStatus(gamer1);
+                gameEnd2 = getGameStatus(gamer2);
                 if(gameEnd1 || gameEnd2){
                     gameOn = false;
+                    sendGameStatus(gamer1, true);
+                    sendGameStatus(gamer2, true);
+                    break;
                 }
+                sendGameStatus(gamer1, false);
+                sendGameStatus(gamer2, false);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -114,6 +131,11 @@ public class Match implements Runnable {
         String gamer1Username = in.readUTF();
         out = new DataOutputStream(gamer2.getSocket().getOutputStream());
         out.writeUTF(gamer1Username);
+    }
+
+    private void sendGameStatus(Gamer gamer, boolean status) throws IOException {
+        out = new DataOutputStream(gamer.getSocket().getOutputStream());
+        out.writeBoolean(status);
     }
 
     private void sendHealth(Gamer gamer1, Gamer gamer2) throws IOException {
