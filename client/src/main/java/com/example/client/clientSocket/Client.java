@@ -14,6 +14,11 @@ public class Client {
     private Double[] alienCoords;
     private int isController;
 
+    public void closeSocket() throws IOException{
+        System.out.println("Closing socket");
+        socket.close();
+    }
+
     public void connectToServer() throws IOException {
         coords = new Double[2];
         alienCoords = new Double[2];

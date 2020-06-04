@@ -152,16 +152,29 @@ public class GameView {
      * either player is dead or passes all levels
      * @param text text to show on screen
      */
-    private void gameFinished(String text){
+    private void gameFinished(String text, AnimationTimer animationTimer1) {
+        System.out.println("*****first ******");
         gameScene.setCursor(Cursor.DEFAULT);
         anchorPane.getChildren().remove(playerShip.getShipImage());
-        animationTimer.stop();
+        animationTimer1.stop();
+        System.out.println("*****score set ******score: " + score);
         GameController.setScore(score);
         //GameController.addGame();
+        System.out.println("*****new view ******");
         GameSubView gameDoneView = new GameSubView(score, text, true);
         gameDoneView.setLayoutX(100);
         gameDoneView.setLayoutY(100);
+        System.out.println("*****add ******");
+        if(level>=4){
+            try{
+                client.closeSocket();
+            }
+            catch (IOException e){
+                System.out.println(e);
+            }
+        }
         anchorPane.getChildren().add(gameDoneView);
+
     }
 
 
@@ -222,7 +235,7 @@ public class GameView {
 
         }
         if(playerShip.getHealth() == ZERO_HEALTH){
-            gameFinished("LOSER...GAME OVER");
+            gameFinished("LOSER...GAME OVER", animationTimer);
         }
     }
 
@@ -242,13 +255,15 @@ public class GameView {
     }
     private void isGameFinished(){
         if(playerShip.getHealth() <= 0){
-            gameFinished("LOSER... GAME OVER");
+            gameFinished("LOSER... GAME OVER", multiplayerAnimationTimer);
         }
         if(enemyShip.getHealth() <=0 ){
-            gameFinished("ENEMY DIED...GAME OVER!");
+            gameFinished("ENEMY DIED...GAME OVER!",multiplayerAnimationTimer);
         }
         if(levels.get(4).getAliens().size() == 0){
-            gameFinished("CONGRATS...");
+            System.out.println("***alien died*****");
+
+            gameFinished("CONGRATS...",multiplayerAnimationTimer);
         }
     }
 
@@ -379,8 +394,8 @@ public class GameView {
     private void updateFinalLevelPlayerBullet() throws IOException{
         Iterator<Bullet> bulletIterator = playerShip.getBullets().iterator();
         int didPlayerShout = 0;
-        if(levels.get(level).getAliens().size() == 0) return;
-        Alien alien = levels.get(level).getAliens().get(0);
+        if(levels.get(4).getAliens().size() == 0) return;
+        Alien alien = levels.get(4).getAliens().get(0);
         while (bulletIterator.hasNext()) {
             Bullet bullet = bulletIterator.next();
             bullet.moveUp();
@@ -401,8 +416,8 @@ public class GameView {
     }
 
     private void didFinalAlienDied(){
-        if(levels.get(level).getAliens().size() == 0) return;
-        Alien alien = levels.get(level).getAliens().get(0);
+        if(levels.get(4).getAliens().size() == 0) return;
+        Alien alien = levels.get(4).getAliens().get(0);
         if(alien.getHealth()<= ZERO_HEALTH){
             alien.getBullets().forEach(alienBullet -> anchorPane.getChildren().remove(alienBullet.getImageView()));
             anchorPane.getChildren().remove(alien.getImageView());
@@ -431,10 +446,10 @@ public class GameView {
         else{
             alienShootRandom = client.getAlienShootRandom();
         }
-        Alien alien = levels.get(level).getAliens().get(0);
+        Alien alien = levels.get(4).getAliens().get(0);
         if(alienShootRandom<ALIEN_SHOOT_RANDOM){
             Bullet bullet = new Bullet("ENEMY",alien.getPositionX()+21.5, alien.getPositionY()+20, "/static/laserRed03.png");
-            levels.get(level).getAliens().get(0).addBullet(bullet);
+            levels.get(4).getAliens().get(0).addBullet(bullet);
             anchorPane.getChildren().add(bullet.getImageView());
         }
         alien.getBullets().forEach(Bullet::moveDown);
@@ -593,22 +608,22 @@ public class GameView {
     }
 
     private Double[] updateAlienPosition(){
-        Double alienPosX = this.levels.get(level).getAliens().get(0).getPositionX();
-        Double alienPosY = this.levels.get(level).getAliens().get(0).getPositionY();
+        Double alienPosX = this.levels.get(4).getAliens().get(0).getPositionX();
+        Double alienPosY = this.levels.get(4).getAliens().get(0).getPositionY();
         Double randomX = -50 + (Math.random() * ((50 - (-50)) + 1));
         Double randomY = -50 + (Math.random() * ((50 - (-50)) + 1));
         if(50<alienPosX + randomX && alienPosX + randomX < 650)
             alienPosX += randomX;
         if(50<alienPosY + randomY && alienPosY + randomY < 300)
             alienPosY += randomY;
-        this.levels.get(level).getAliens().get(0).setPositionX(alienPosX);
-        this.levels.get(level).getAliens().get(0).setPositionY(alienPosY);
+        this.levels.get(4).getAliens().get(0).setPositionX(alienPosX);
+        this.levels.get(4).getAliens().get(0).setPositionY(alienPosY);
         return new Double[]{alienPosX, alienPosY};
     }
 
     private void setAlienPosition(Double[] coords){
-        this.levels.get(level).getAliens().get(0).setPositionX(coords[0]);
-        this.levels.get(level).getAliens().get(0).setPositionY(coords[1]);
+        this.levels.get(4).getAliens().get(0).setPositionX(coords[0]);
+        this.levels.get(4).getAliens().get(0).setPositionY(coords[1]);
     }
 
     private void updateEnemyPosition(Double[] coords){
