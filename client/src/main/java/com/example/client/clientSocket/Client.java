@@ -5,6 +5,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+import static com.example.client.constant.GameViewConstants.SOCKET_PORT;
+
 /**
  * Client socket for sendind data to the server socket
  */
@@ -36,7 +38,7 @@ public class Client {
         coords = new Double[2];
         alienCoords = new Double[2];
         System.out.println("Connecting....");
-        socket = new Socket("localhost", 7777);
+        socket = new Socket("localhost", SOCKET_PORT);
         System.out.println("Connection success");
     }
 

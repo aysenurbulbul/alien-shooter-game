@@ -8,6 +8,6 @@ public class Main {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         Server server = new Server();
-        server.startServer(7777);
+        server.startServer(8081);
     }
 }
