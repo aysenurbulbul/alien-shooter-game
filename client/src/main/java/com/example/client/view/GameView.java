@@ -176,9 +176,9 @@ public class GameView {
         anchorPane.getChildren().add(gameWaitView);
     }
     private void createFinalAlien(){
-        levels.get(level).getAliens().forEach(alien -> anchorPane.getChildren().add(alien.getImageView()));
-        levels.get(level).getAliens().get(0).getImageView().setFitHeight(100);
-        levels.get(level).getAliens().get(0).getImageView().setFitWidth(100);
+        levels.get(4).getAliens().forEach(alien -> anchorPane.getChildren().add(alien.getImageView()));
+        levels.get(4).getAliens().get(0).getImageView().setFitHeight(100);
+        levels.get(4).getAliens().get(0).getImageView().setFitWidth(100);
     }
 
     /**
