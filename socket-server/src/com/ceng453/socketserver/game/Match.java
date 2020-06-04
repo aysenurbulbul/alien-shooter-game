@@ -45,6 +45,16 @@ public class Match implements Runnable {
                 sendData(gamer2, gamer1, gamer2Coords);
                 // send random alien coordinates
                 sendAlienCoords(gamer1, gamer2);
+
+                // randomly make alien shoot
+                if(Math.random() < 0.1){
+                    sendCanAlienShoot(gamer1, true);
+                    sendCanAlienShoot(gamer2, true);
+                }
+                else {
+                    sendCanAlienShoot(gamer1, false);
+                    sendCanAlienShoot(gamer2, false);
+                }
                 //update alien health
                 //sendHealth(gamer1, gamer2);
                 //sendHealth(gamer2, gamer1);
@@ -131,6 +141,11 @@ public class Match implements Runnable {
         for(int i=0; i<2; i++){
             out.writeDouble(alienCoords[i]);
         }
+    }
+
+    private void sendCanAlienShoot(Gamer gamer, boolean status) throws IOException {
+        out = new DataOutputStream(gamer.getSocket().getOutputStream());
+        out.writeBoolean(status);
     }
 
 }
