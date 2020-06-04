@@ -3,7 +3,6 @@ package com.example.client.view;
 import com.example.client.StageInitializer;
 import com.example.client.clientSocket.Client;
 import com.example.client.controller.GameController;
-import com.example.client.controller.LoginController;
 import com.example.client.model.Alien;
 import com.example.client.model.Bullet;
 import com.example.client.model.InfoLabel;
@@ -20,6 +19,7 @@ import javafx.scene.layout.*;
 import javafx.scene.robot.Robot;
 import javafx.stage.Stage;
 
+import javax.print.attribute.standard.MediaSize;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -43,7 +43,8 @@ public class GameView {
     private Ship enemyShip;
     private InfoLabel scoreboard;
     private InfoLabel levelLabel;
-    private List<ImageView> shipHealthImages;
+    private List<ImageView> shipHealthImages = new ArrayList<>();
+    private List<ImageView> enemyShipHealthImages = new ArrayList<>();
     private int score;
     private Client client;
     private String username;
@@ -70,7 +71,7 @@ public class GameView {
         createBackground();
         createLevelInfo();
         createScoreboard();
-        createPlayerShipHealthInfo(675, PLAYER_LIFE, playerShip.getHealth());
+        createPlayerShipHealthInfo(675, PLAYER_LIFE, playerShip.getHealth(), shipHealthImages);
         initLevels();
     }
 
@@ -92,8 +93,7 @@ public class GameView {
     /**
      * label which shows player ship's health with small ship images
      */
-    private void createPlayerShipHealthInfo(int xLayout, String who, int health){
-        shipHealthImages = new ArrayList<>();
+    private void createPlayerShipHealthInfo(int xLayout, String who, int health, List<ImageView> shipHealthImages){
         for(int i=0; i< health; i++){
             ImageView imageView = new ImageView(who);
             imageView.setFitWidth(20);
@@ -185,7 +185,7 @@ public class GameView {
      * player's health is 0 then ends the game
      * calls the game finished screen
      */
-    private void isGameFinished() {
+    private void areSingleLevelsFinished() {
         if(level == NUMBER_OF_LEVELS ){
             waitingEnemy("WAITING FOR ENEMY");
             Thread thread = new Thread(new Runnable(){
@@ -203,8 +203,8 @@ public class GameView {
                             anchorPane.getChildren().clear();
                             gameScene.setCursor(Cursor.NONE);
                             createUsernameInfo(username, enemyName);
-                            createPlayerShipHealthInfo(10, PLAYER_LIFE, playerShip.getHealth());
-                            createPlayerShipHealthInfo(675, ENEMY_LIFE, enemyHealth);
+                            createPlayerShipHealthInfo(10, PLAYER_LIFE, playerShip.getHealth(), shipHealthImages);
+                            createPlayerShipHealthInfo(675, ENEMY_LIFE, enemyHealth, enemyShipHealthImages);
                             createBackground();
                             createPlayerShip();
                             createEnemyShip();
@@ -238,6 +238,17 @@ public class GameView {
             }
         }
     }
+    private void isGameFinished(){
+        if(playerShip.getHealth() <= 0){
+            gameFinished("LOSER... GAME OVER");
+        }
+        if(enemyShip.getHealth() <=0 ){
+            gameFinished("ENEMY DIED...GAME OVER!");
+        }
+        if(levels.get(level).getAliens().size() == 0){
+            gameFinished("CONGRATS...");
+        }
+    }
 
     /**
      * cheat which enables passing levels and getting all points
@@ -258,7 +269,7 @@ public class GameView {
             alienIterator.remove();
             writeLabels();
             isLevelFinished();
-            isGameFinished();
+            areSingleLevelsFinished();
         }
     }
 
@@ -276,7 +287,7 @@ public class GameView {
                     alienShoot();
                     writeLabels();
                     isLevelFinished();
-                    isGameFinished();
+                    areSingleLevelsFinished();
                     t = 0;
                 }
                 updateShipPosition();
@@ -291,27 +302,78 @@ public class GameView {
             public void handle(long l) {
                 t += TIMER_INCREASE;
                 if(t>TIMER_SHOULD_BE_LESS){
-
-
                     t = 0;
                 }
                 updateShipPosition();
                 addNewPlayerBullet();
-                updatePlayerBullet();
                 try {
+                    isGameFinished();
+                    updateFinalLevelPlayerBullet();
+                    isGameFinished();
+                    didFinalAlienDied();
+                    isGameFinished();
                     moveAlien();
                     finalAlienShoot();
                     moveEnemyShipAndBullets();
+                    updateEnemyPlayerHealth();
+                    isGameFinished();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
             }
         };
         multiplayerAnimationTimer.start();
     }
 
+    private void updateEnemyPlayerHealth() throws IOException{
+        client.sendHealth(playerShip.getHealth());
+        int enemyHealth = client.getHealth();
+        enemyShip.setHealth(enemyHealth);
+        int currentEnemyHealth = this.enemyShipHealthImages.size();
+        if(enemyHealth<currentEnemyHealth && enemyHealth>=0 ){
+            System.out.println("**********removing enemy health**********");
+            anchorPane.getChildren().remove(enemyShipHealthImages.get(currentEnemyHealth-1));
+        }
+    }
+
+    private void updateFinalLevelPlayerBullet() throws IOException{
+        Iterator<Bullet> bulletIterator = playerShip.getBullets().iterator();
+        int didPlayerShout = 0;
+        if(levels.get(level).getAliens().size() == 0) return;
+        Alien alien = levels.get(level).getAliens().get(0);
+        while (bulletIterator.hasNext()) {
+            Bullet bullet = bulletIterator.next();
+            bullet.moveUp();
+            if(isOnSamePosition(alien, bullet)){
+                anchorPane.getChildren().remove(bullet.getImageView());
+                bulletIterator.remove();
+                alien.decreaseHealth();
+                addToScore(alien);
+                didPlayerShout = 1;
+                break;
+            }
+        }
+        client.sendHealth(didPlayerShout);
+        int didEnemyShout = client.getHealth();
+        if(didEnemyShout == 1){
+            alien.decreaseHealth();
+        }
+    }
+
+    private void didFinalAlienDied(){
+        if(levels.get(level).getAliens().size() == 0) return;
+        Alien alien = levels.get(level).getAliens().get(0);
+        if(alien.getHealth()<= ZERO_HEALTH){
+            alien.getBullets().forEach(alienBullet -> anchorPane.getChildren().remove(alienBullet.getImageView()));
+            anchorPane.getChildren().remove(alien.getImageView());
+            levels.get(level).getAliens().remove(0);
+        }
+    }
+
 
     private void moveAlien() throws IOException{
+        if(levels.get(level).getAliens().size() == 0) return;
         if(client.isController() == 1){
             Double[] alienCoords = updateAlienPosition();
             client.sendShipCoords(alienCoords[0], alienCoords[1]);
@@ -322,6 +384,7 @@ public class GameView {
         }
     }
     private void finalAlienShoot() throws IOException{
+        if(levels.get(level).getAliens().size() == 0) return;
         Double alienShootRandom = Math.random();
         if(client.isController() == 1){
             client.sendAlienShootRandom(alienShootRandom);
@@ -429,6 +492,9 @@ public class GameView {
                 break;
             case "HARD":
                 score = score + HARD_SCORE_INCREASE;
+                break;
+            case "FINAL":
+                score = score + 20;
                 break;
         }
     }
