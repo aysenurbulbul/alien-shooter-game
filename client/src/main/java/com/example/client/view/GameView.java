@@ -300,7 +300,7 @@ public class GameView {
                 t += TIMER_INCREASE;
                 if(t>TIMER_SHOULD_BE_LESS){
                     addNewPlayerBullet();
-                    updatePlayerBullet(playerShip);
+                    updatePlayerBullet(playerShip, "PLAYER");
                     alienShoot();
                     writeLabels();
                     isLevelFinished();
@@ -322,7 +322,8 @@ public class GameView {
                     client.sendShipCoords(mousePositionX, mousePositionY);
                     Double[] coords = client.getShipCoords();
                     updateEnemyPosition(coords);
-                    if(t>TIMER_SHOULD_BE_LESS){
+                    isGameFinished();
+                    if(t>-1){
                         client.sendAlienMove(true);
                         Double[] alienCoords = client.getAlienCoords();
                         setAlienPosition(alienCoords);
@@ -349,11 +350,11 @@ public class GameView {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if(t>TIMER_SHOULD_BE_LESS){
+                if(t>-1){
                     addNewPlayerBullet();
-                    updatePlayerBullet(playerShip);
+                    updatePlayerBullet(playerShip, "PLAYER");
                     addNewEnemyBullet();
-                    updatePlayerBullet(enemyShip);
+                    updatePlayerBullet(enemyShip, "ENEMY");
                     t = 0;
                 }
                 updateShipPosition();
@@ -514,7 +515,7 @@ public class GameView {
      * if player's bullet hit alien, removes bullet, decreases alien's health
      * if alien's health is 0 removes alien
      */
-    private void updatePlayerBullet(Ship ship){
+    private void updatePlayerBullet(Ship ship, String type){
         Iterator<Bullet> bulletIterator = ship.getBullets().iterator();
         while (bulletIterator.hasNext()) {
             Bullet bullet = bulletIterator.next();
@@ -526,10 +527,13 @@ public class GameView {
                     anchorPane.getChildren().remove(bullet.getImageView());
                     bulletIterator.remove();
                     alien.decreaseHealth();
+                    if(alien.getType().equals("FINAL") && type.equals("PLAYER"))
+                        addToScore(alien);
                     if(alien.getHealth()<= ZERO_HEALTH){
                         alien.getBullets().forEach(alienBullet -> anchorPane.getChildren().remove(alienBullet.getImageView()));
                         anchorPane.getChildren().remove(alien.getImageView());
-                        addToScore(alien);
+                        if(type.equals("PLAYER"))
+                            addToScore(alien);
                         alienIterator.remove();
                     }
                     break;
@@ -554,7 +558,7 @@ public class GameView {
                 score = score + HARD_SCORE_INCREASE;
                 break;
             case "FINAL":
-                score = score + 20;
+                score = score + 10;
                 break;
         }
     }
