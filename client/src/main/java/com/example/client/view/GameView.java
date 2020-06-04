@@ -175,6 +175,7 @@ public class GameView {
         gameWaitView.setId("gameWaitView");
         anchorPane.getChildren().add(gameWaitView);
     }
+
     private void createFinalAlien(){
         levels.get(level).getAliens().forEach(alien -> anchorPane.getChildren().add(alien.getImageView()));
         levels.get(level).getAliens().get(0).getImageView().setFitHeight(100);
@@ -284,7 +285,7 @@ public class GameView {
                 t += TIMER_INCREASE;
                 if(t>TIMER_SHOULD_BE_LESS){
                     addNewPlayerBullet();
-                    updatePlayerBullet();
+                    updatePlayerBullet(playerShip);
                     alienShoot();
                     writeLabels();
                     isLevelFinished();
@@ -302,12 +303,21 @@ public class GameView {
             @Override
             public void handle(long l) {
                 t += TIMER_INCREASE;
-                if(t>TIMER_SHOULD_BE_LESS){
-                    t = 0;
-                }
-                updateShipPosition();
-                addNewPlayerBullet();
                 try {
+                    client.sendShipCoords(mousePositionX, mousePositionY);
+                    Double[] coords = client.getShipCoords();
+                    updateEnemyPosition(coords);
+                    if(t>TIMER_SHOULD_BE_LESS){
+                        client.sendAlienMove(true);
+                        Double[] alienCoords = client.getAlienCoords();
+                        setAlienPosition(alienCoords);
+                    }
+                    else{
+                        client.sendAlienMove(false);
+                        Double[] alienCoords = client.getAlienCoords();
+                        setAlienPosition(alienCoords);
+                    }
+                    /*
                     isGameFinished();
                     updateFinalLevelPlayerBullet();
                     isGameFinished();
@@ -315,12 +325,22 @@ public class GameView {
                     isGameFinished();
                     moveAlien();
                     finalAlienShoot();
-                    moveEnemyShipAndBullets();
+                    //moveEnemyShipAndBullets();
                     updateEnemyPlayerHealth();
-                    isGameFinished();
+                    isGameFinished();*/
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                if(t>TIMER_SHOULD_BE_LESS){
+                    addNewPlayerBullet();
+                    updatePlayerBullet(playerShip);
+                    addNewEnemyBullet();
+                    updatePlayerBullet(enemyShip);
+                    alienShoot();
+                    t = 0;
+                }
+                updateShipPosition();
+                //addNewPlayerBullet();
 
             }
         };
@@ -407,8 +427,8 @@ public class GameView {
         client.sendShipCoords(mousePositionX, mousePositionY);
         Double[] coords = client.getShipCoords();
         updateEnemyPosition(coords);
-        addNewEnemyPlayerBullet(coords);
-        updateEnemyPlayerBullets();
+        //addNewEnemyPlayerBullet(coords);
+        //updateEnemyPlayerBullets();
     }
 
     /**
@@ -451,13 +471,19 @@ public class GameView {
         anchorPane.getChildren().add(newBullet.getImageView());
     }
 
+    private void addNewEnemyBullet(){
+        Bullet newBullet = new Bullet("PLAYER", enemyShip.getShipImage().getLayoutX() + 20, enemyShip.getShipImage().getLayoutY() + 7, "/static/laserBlue03.png");
+        enemyShip.addBullet(newBullet);
+        anchorPane.getChildren().add(newBullet.getImageView());
+    }
+
     /**
      * updates player's bullets position by time
      * if player's bullet hit alien, removes bullet, decreases alien's health
      * if alien's health is 0 removes alien
      */
-    private void updatePlayerBullet(){
-        Iterator<Bullet> bulletIterator = playerShip.getBullets().iterator();
+    private void updatePlayerBullet(Ship ship){
+        Iterator<Bullet> bulletIterator = ship.getBullets().iterator();
         while (bulletIterator.hasNext()) {
             Bullet bullet = bulletIterator.next();
             bullet.moveUp();

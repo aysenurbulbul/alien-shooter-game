@@ -11,10 +11,12 @@ public class Client {
     private DataInputStream in;
     private DataOutputStream out;
     private Double[] coords;
+    private Double[] alienCoords;
     private int isController;
 
     public void connectToServer() throws IOException {
         coords = new Double[2];
+        alienCoords = new Double[2];
         System.out.println("Connecting....");
         socket = new Socket("localhost", 7777);
         System.out.println("Connection success");
@@ -73,10 +75,24 @@ public class Client {
         out.writeDouble(random);
     }
 
+    public void sendAlienMove(boolean status)throws IOException{
+        out = new DataOutputStream(socket.getOutputStream());
+        out.writeBoolean(status);
+    }
+
     public double getAlienShootRandom() throws IOException{
         in = new DataInputStream(socket.getInputStream());
         double alienShootRandom = in.readDouble();
         return alienShootRandom;
     }
+
+    public Double[] getAlienCoords() throws IOException {
+        in = new DataInputStream(socket.getInputStream());
+        for(int i=0; i<2; i++){
+            alienCoords[i] = in.readDouble();
+        }
+        return alienCoords;
+    }
+
 
 }
