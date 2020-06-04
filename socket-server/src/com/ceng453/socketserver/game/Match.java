@@ -47,7 +47,7 @@ public class Match implements Runnable {
                 sendAlienCoords(gamer1, gamer2);
 
                 // randomly make alien shoot
-                if(Math.random() < 0.1){
+                if(Math.random() < 0.01){
                     sendCanAlienShoot(gamer1, true);
                     sendCanAlienShoot(gamer2, true);
                 }

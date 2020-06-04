@@ -352,7 +352,7 @@ public class GameView {
         boolean canShoot = client.getCanAlienShoot();
         levels.get(level).getAliens().forEach(alien -> {
             if(canShoot){
-                Bullet bullet = new Bullet("ENEMY",alien.getPositionX() + 30, alien.getPositionY()+35, "/static/laserRed03.png");
+                Bullet bullet = new Bullet("ENEMY",alien.getPositionX() + 42.5, alien.getPositionY() + 75.5, "/static/laserRed03.png");
                 alien.addBullet(bullet);
                 anchorPane.getChildren().add(bullet.getImageView());
             }
