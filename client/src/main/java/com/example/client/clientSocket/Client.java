@@ -68,4 +68,15 @@ public class Client {
         return this.isController;
     }
 
+    public void sendAlienShootRandom(double random)throws IOException{
+        out = new DataOutputStream(socket.getOutputStream());
+        out.writeDouble(random);
+    }
+
+    public double getAlienShootRandom() throws IOException{
+        in = new DataInputStream(socket.getInputStream());
+        double alienShootRandom = in.readDouble();
+        return alienShootRandom;
+    }
+
 }

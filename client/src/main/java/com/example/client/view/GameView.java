@@ -298,9 +298,9 @@ public class GameView {
                 //addNewPlayerBullet();
                 //updatePlayerBullet();
                 updateShipPosition();
-                //alienShoot();
                 try {
                     moveAlien();
+                    finalAlienShoot();
                     moveEnemyShip();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -319,6 +319,23 @@ public class GameView {
             Double[] coords = client.getShipCoords();
             setAlienPosition(coords);
         }
+    }
+    private void finalAlienShoot() throws IOException{
+        Double alienShootRandom = Math.random();
+        if(client.isController() == 1){
+            client.sendAlienShootRandom(alienShootRandom);
+        }
+        else{
+            alienShootRandom = client.getAlienShootRandom();
+        }
+        Alien alien = levels.get(level).getAliens().get(0);
+        if(alienShootRandom<ALIEN_SHOOT_RANDOM){
+            Bullet bullet = new Bullet("ENEMY",alien.getPositionX()+21.5, alien.getPositionY()+20, "/static/laserRed03.png");
+            levels.get(level).getAliens().get(0).addBullet(bullet);
+            anchorPane.getChildren().add(bullet.getImageView());
+        }
+        alien.getBullets().forEach(Bullet::moveDown);
+        alienBulletShoot(alien);
     }
     private void moveEnemyShip() throws IOException{
         client.sendShipCoords(mousePositionX, mousePositionY);
