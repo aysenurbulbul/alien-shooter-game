@@ -47,6 +47,27 @@ class GameSubView extends SubScene {
 
     }
 
+    GameSubView(int score, int enemyScore, String text, boolean endGame) {
+        super(new AnchorPane(), 600, 400);
+        prefHeight(600);
+        prefWidth(400);
+        BackgroundImage image = new BackgroundImage(new Image(BACKGROUND_IMAGE, 200,200, false, true),
+                BackgroundRepeat.REPEAT,
+                BackgroundRepeat.REPEAT,
+                BackgroundPosition.DEFAULT,
+                null);
+        AnchorPane root = (AnchorPane) this.getRoot();
+        root.setBackground(new Background(image));
+        setHeadLine(text, 110,75);
+        int totalScore = score + enemyScore;
+        if(endGame){
+            createButton("Back to Start", 205, 300);
+            createInfoLabel("YOUR SCORE: " + score, 192,160);
+            createInfoLabel("ENEMY'S SCORE: " + enemyScore, 192,190);
+            createInfoLabel("TOTAL SCORE: " + totalScore, 192,130);
+        }
+    }
+
     /**
      * button that enables player to get back to menu
      * @param text text on button

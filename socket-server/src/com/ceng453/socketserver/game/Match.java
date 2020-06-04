@@ -16,6 +16,7 @@ public class Match implements Runnable {
     private Double alienX = 300.0;
     private Double alienY = 150.0;
     private Double[] alienCoords;
+    private int alienHealth = 15;
 
     public Match(Gamer gamer1, Gamer gamer2){
         this.gamer1 = gamer1;
@@ -34,7 +35,6 @@ public class Match implements Runnable {
             sendUsername(gamer2, gamer1);
             sendHealth(gamer1, gamer2);
             sendHealth(gamer2, gamer1);
-            setGameControllerPlayer(gamer1, gamer2);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -55,24 +55,32 @@ public class Match implements Runnable {
                     sendCanAlienShoot(gamer1, false);
                     sendCanAlienShoot(gamer2, false);
                 }
-                //update alien health
+                //update players health
                 sendHealth(gamer1, gamer2);
                 sendHealth(gamer2, gamer1);
-                //move alien
-                //sendData(gamer1, gamer2, alienCoords);
-                //final alien shoot
-                //sendAlienShootRandom(gamer1,gamer2);
-                //move enemy ship
-                //update enemy player health
-                //sendHealth(gamer1, gamer2);
-                //sendHealth(gamer2, gamer1);
+
+                boolean gameEnd1 = getGameStatus(gamer1);
+                boolean gameEnd2 = getGameStatus(gamer2);
+                if(gameEnd1 || gameEnd2){
+                    gameOn = false;
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        try {
+            int score1 = getScores(gamer1);
+            int score2 = getScores(gamer2);
+            sendScores(gamer1, score2);
+            sendScores(gamer2, score1);
+            in.close();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void sendData(Gamer gamer1, Gamer gamer2, Double[] gamer1Coords) throws IOException {
+    private void sendData(Gamer gamer1, Gamer gamer2, Double[] gamer1Coords) throws IOException {
         in = new DataInputStream(gamer1.getSocket().getInputStream());
         for(int i=0; i<2; i++){
             gamer1Coords[i] = in.readDouble();
@@ -81,6 +89,17 @@ public class Match implements Runnable {
         for(int i=0; i<2; i++){
             out.writeDouble(gamer1Coords[i]);
         }
+    }
+
+    private int getScores(Gamer gamer) throws IOException {
+        in = new DataInputStream(gamer.getSocket().getInputStream());
+        int score = in.readInt();
+        return score;
+    }
+
+    private void sendScores(Gamer gamer, int score) throws IOException {
+        out = new DataOutputStream(gamer.getSocket().getOutputStream());
+        out.writeInt(score);
     }
 
     private boolean moveAlien(Gamer gamer) throws IOException {
@@ -146,6 +165,12 @@ public class Match implements Runnable {
     private void sendCanAlienShoot(Gamer gamer, boolean status) throws IOException {
         out = new DataOutputStream(gamer.getSocket().getOutputStream());
         out.writeBoolean(status);
+    }
+
+    private boolean getGameStatus(Gamer gamer) throws IOException {
+        in = new DataInputStream(gamer.getSocket().getInputStream());
+        boolean status = in.readBoolean();
+        return status;
     }
 
 }

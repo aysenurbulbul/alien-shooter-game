@@ -46,6 +46,7 @@ public class GameView {
     private List<ImageView> shipHealthImages = new ArrayList<>();
     private List<ImageView> enemyShipHealthImages = new ArrayList<>();
     private int score;
+    private int enemyScore;
     private Client client;
     private String username;
 
@@ -64,6 +65,7 @@ public class GameView {
         this.gameStage.setScene(gameScene);
         this.gameScene.setCursor(Cursor.NONE);
         score = 0;
+        enemyScore = 0;
         level = 0;
         cheatHandle();
         createPlayerShip();
@@ -152,7 +154,12 @@ public class GameView {
      * either player is dead or passes all levels
      * @param text text to show on screen
      */
-    private void gameFinished(String text, AnimationTimer animationTimer1) {
+    private void gameFinished(String text, AnimationTimer animationTimer1, boolean multiLevel) throws IOException {
+        if(multiLevel){
+            client.sendScore(score);
+            enemyScore = client.getEnemyScore();
+        }
+
         System.out.println("*****first ******");
         gameScene.setCursor(Cursor.DEFAULT);
         anchorPane.getChildren().remove(playerShip.getShipImage());
@@ -161,7 +168,13 @@ public class GameView {
         GameController.setScore(score);
         //GameController.addGame();
         System.out.println("*****new view ******");
-        GameSubView gameDoneView = new GameSubView(score, text, true);
+        GameSubView gameDoneView;
+        if(multiLevel){
+            gameDoneView = new GameSubView(score, enemyScore, text, true);
+        }
+        else{
+            gameDoneView = new GameSubView(score, text, true);
+        }
         gameDoneView.setLayoutX(100);
         gameDoneView.setLayoutY(100);
         System.out.println("*****add ******");
@@ -213,7 +226,6 @@ public class GameView {
                         String enemyName = client.getUsername();
                         client.sendHealth(playerShip.getHealth());
                         int enemyHealth = client.getHealth();
-                        client.setController();
                         Platform.runLater(()->{
                             anchorPane.getChildren().clear();
                             gameScene.setCursor(Cursor.NONE);
@@ -223,6 +235,7 @@ public class GameView {
                             createBackground();
                             createPlayerShip();
                             createEnemyShip();
+                            enemyShip.setHealth(enemyHealth);
                             createFinalAlien();
                             multiplayerGameLoop();
                         });
@@ -235,7 +248,11 @@ public class GameView {
 
         }
         if(playerShip.getHealth() == ZERO_HEALTH){
-            gameFinished("LOSER...GAME OVER", animationTimer);
+            try {
+                gameFinished("LOSER...GAME OVER", animationTimer, false);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -253,17 +270,22 @@ public class GameView {
             }
         }
     }
-    private void isGameFinished(){
+    private void isGameFinished() throws IOException {
         if(playerShip.getHealth() <= 0){
-            gameFinished("LOSER... GAME OVER", multiplayerAnimationTimer);
+            client.sendGameStatus(true);
+            gameFinished("LOSER... GAME OVER", multiplayerAnimationTimer, true);
         }
-        if(enemyShip.getHealth() <=0 ){
-            gameFinished("ENEMY DIED...GAME OVER!",multiplayerAnimationTimer);
+        if(enemyShip.getHealth() <= 0 ){
+            client.sendGameStatus(true);
+            gameFinished("ENEMY DIED...GAME OVER!", multiplayerAnimationTimer, true);
         }
         if(levels.get(4).getAliens().size() == 0){
+            client.sendGameStatus(true);
             System.out.println("***alien died*****");
-
-            gameFinished("CONGRATS...",multiplayerAnimationTimer);
+            gameFinished("CONGRATS...", multiplayerAnimationTimer, true);
+        }
+        else{
+            client.sendGameStatus(false);
         }
     }
 
@@ -322,8 +344,7 @@ public class GameView {
                     client.sendShipCoords(mousePositionX, mousePositionY);
                     Double[] coords = client.getShipCoords();
                     updateEnemyPosition(coords);
-                    isGameFinished();
-                    if(t>-1){
+                    if(t > TIMER_SHOULD_BE_LESS){
                         client.sendAlienMove(true);
                         Double[] alienCoords = client.getAlienCoords();
                         setAlienPosition(alienCoords);
@@ -335,22 +356,12 @@ public class GameView {
                         setAlienPosition(alienCoords);
                         shootAlien(false);
                     }
-                    /*
-                    isGameFinished();
-                    updateFinalLevelPlayerBullet();
-                    isGameFinished();
-                    didFinalAlienDied();
-                    isGameFinished();
-                    moveAlien();
-                    finalAlienShoot();
-                    //moveEnemyShipAndBullets();
-                    */
                     updateEnemyPlayerHealth();
                     isGameFinished();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if(t>-1){
+                if(t > TIMER_SHOULD_BE_LESS){
                     addNewPlayerBullet();
                     updatePlayerBullet(playerShip, "PLAYER");
                     addNewEnemyBullet();
@@ -529,7 +540,7 @@ public class GameView {
                     alien.decreaseHealth();
                     if(alien.getType().equals("FINAL") && type.equals("PLAYER"))
                         addToScore(alien);
-                    if(alien.getHealth()<= ZERO_HEALTH){
+                    if(alien.getHealth() <= ZERO_HEALTH){
                         alien.getBullets().forEach(alienBullet -> anchorPane.getChildren().remove(alienBullet.getImageView()));
                         anchorPane.getChildren().remove(alien.getImageView());
                         if(type.equals("PLAYER"))

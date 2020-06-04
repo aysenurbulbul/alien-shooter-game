@@ -16,6 +16,8 @@ public class Client {
 
     public void closeSocket() throws IOException{
         System.out.println("Closing socket");
+        in.close();
+        out.close();
         socket.close();
     }
 
@@ -71,6 +73,17 @@ public class Client {
         return isController;
     }
 
+    public int getEnemyScore() throws IOException {
+        in = new DataInputStream(socket.getInputStream());
+        int enemyScore = in.readInt();
+        return enemyScore;
+    }
+
+    public void sendScore(int score) throws IOException {
+        out = new DataOutputStream(socket.getOutputStream());
+        out.writeInt(score);
+    }
+
     public int isController(){
         return this.isController;
     }
@@ -105,5 +118,9 @@ public class Client {
         return status;
     }
 
+    public void sendGameStatus(boolean status) throws IOException {
+        out = new DataOutputStream(socket.getOutputStream());
+        out.writeBoolean(status);
+    }
 
 }
