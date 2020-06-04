@@ -174,6 +174,11 @@ public class GameView {
         gameWaitView.setId("gameWaitView");
         anchorPane.getChildren().add(gameWaitView);
     }
+    private void createFinalAlien(){
+        levels.get(level).getAliens().forEach(alien -> anchorPane.getChildren().add(alien.getImageView()));
+        levels.get(level).getAliens().get(0).getImageView().setFitHeight(100);
+        levels.get(level).getAliens().get(0).getImageView().setFitWidth(100);
+    }
 
     /**
      * checks if levels are finished or
@@ -193,6 +198,7 @@ public class GameView {
                         String enemyName = client.getUsername();
                         client.sendHealth(playerShip.getHealth());
                         int enemyHealth = client.getHealth();
+                        client.setController();
                         Platform.runLater(()->{
                             anchorPane.getChildren().clear();
                             gameScene.setCursor(Cursor.NONE);
@@ -202,7 +208,7 @@ public class GameView {
                             createBackground();
                             createPlayerShip();
                             createEnemyShip();
-                            levels.get(level).getAliens().forEach(alien -> anchorPane.getChildren().add(alien.getImageView()));
+                            createFinalAlien();
                             multiplayerGameLoop();
                         });
                     } catch (IOException e) {
@@ -216,7 +222,6 @@ public class GameView {
         if(playerShip.getHealth() == ZERO_HEALTH){
             gameFinished("LOSER...GAME OVER");
         }
-
     }
 
     /**
@@ -286,19 +291,39 @@ public class GameView {
             public void handle(long l) {
                 t += TIMER_INCREASE;
                 if(t>TIMER_SHOULD_BE_LESS){
+
+
                     t = 0;
                 }
+                //addNewPlayerBullet();
+                //updatePlayerBullet();
                 updateShipPosition();
+                //alienShoot();
                 try {
-                    client.sendShipCoords(mousePositionX, mousePositionY);
-                    Double[] coords = client.getShipCoords();
-                    updateEnemyPosition(coords);
+                    moveAlien();
+                    moveEnemyShip();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         };
         multiplayerAnimationTimer.start();
+    }
+
+    private void moveAlien() throws IOException{
+        if(client.isController() == 1){
+            Double[] alienCoords = updateAlienPosition();
+            client.sendShipCoords(alienCoords[0], alienCoords[1]);
+        }
+        else{
+            Double[] coords = client.getShipCoords();
+            setAlienPosition(coords);
+        }
+    }
+    private void moveEnemyShip() throws IOException{
+        client.sendShipCoords(mousePositionX, mousePositionY);
+        Double[] coords = client.getShipCoords();
+        updateEnemyPosition(coords);
     }
 
     /**
@@ -423,6 +448,25 @@ public class GameView {
             playerShip.getShipImage().setLayoutX(mouseEvent.getSceneX());
             playerShip.getShipImage().setLayoutY(mouseEvent.getSceneY());
         });
+    }
+
+    private Double[] updateAlienPosition(){
+        Double alienPosX = this.levels.get(level).getAliens().get(0).getPositionX();
+        Double alienPosY = this.levels.get(level).getAliens().get(0).getPositionY();
+        Double randomX = -50 + (Math.random() * ((50 - (-50)) + 1));
+        Double randomY = -50 + (Math.random() * ((50 - (-50)) + 1));
+        if(50<alienPosX + randomX && alienPosX + randomX < 650)
+            alienPosX += randomX;
+        if(50<alienPosY + randomY && alienPosY + randomY < 300)
+            alienPosY += randomY;
+        this.levels.get(level).getAliens().get(0).setPositionX(alienPosX);
+        this.levels.get(level).getAliens().get(0).setPositionY(alienPosY);
+        return new Double[]{alienPosX, alienPosY};
+    }
+
+    private void setAlienPosition(Double[] coords){
+        this.levels.get(level).getAliens().get(0).setPositionX(coords[0]);
+        this.levels.get(level).getAliens().get(0).setPositionY(coords[1]);
     }
 
     private void updateEnemyPosition(Double[] coords){

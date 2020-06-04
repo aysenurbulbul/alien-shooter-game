@@ -43,10 +43,12 @@ public class Alien {
 
     public void setPositionX(double positionX) {
         this.positionX = positionX;
+        this.imageView.setLayoutX(positionX);
     }
 
     public void setPositionY(double positionY) {
         this.positionY = positionY;
+        this.imageView.setLayoutY(positionY);
     }
 
     public double getPositionX() {

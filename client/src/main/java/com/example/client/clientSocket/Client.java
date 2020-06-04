@@ -11,6 +11,7 @@ public class Client {
     private DataInputStream in;
     private DataOutputStream out;
     private Double[] coords;
+    private int isController;
 
     public void connectToServer() throws IOException {
         coords = new Double[2];
@@ -55,4 +56,16 @@ public class Client {
         int health = in.readInt();
         return health;
     }
+
+    public int setController() throws IOException {
+        in = new DataInputStream(socket.getInputStream());
+        int isController = in.readInt();
+        this.isController = isController;
+        return isController;
+    }
+
+    public int isController(){
+        return this.isController;
+    }
+
 }
