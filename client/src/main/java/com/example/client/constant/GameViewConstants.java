@@ -6,6 +6,7 @@ public final class GameViewConstants {
     public static final String INFO_LABEL_SCOREBOARD = "SCORE: ";
     public static final String INFO_LABEL_LEVEL = "LEVEL: ";
     public static final String GAME_FINISHED = "GAME FINISHED";
+    public static final String IP_ADDRESS = "http://144.122.71.144";
     public static final int SOCKET_PORT = 8081;
     public static final Double SCOREBOARD_LAYOUT_X = 670.0;
     public static final Double SCOREBOARD_LAYOUT_Y = 10.0;

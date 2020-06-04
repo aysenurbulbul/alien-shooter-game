@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+import static com.example.client.constant.GameViewConstants.IP_ADDRESS;
 import static com.example.client.constant.GameViewConstants.SOCKET_PORT;
 
 /**
@@ -17,7 +18,6 @@ public class Client {
     private DataOutputStream out;
     private Double[] coords;
     private Double[] alienCoords;
-    private int isController;
 
     /**
      * closes sockets and datainput output streams
@@ -38,7 +38,7 @@ public class Client {
         coords = new Double[2];
         alienCoords = new Double[2];
         System.out.println("Connecting....");
-        socket = new Socket("localhost", SOCKET_PORT);
+        socket = new Socket(IP_ADDRESS, SOCKET_PORT);
         System.out.println("Connection success");
     }
 
