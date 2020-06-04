@@ -56,8 +56,8 @@ public class Match implements Runnable {
                     sendCanAlienShoot(gamer2, false);
                 }
                 //update alien health
-                //sendHealth(gamer1, gamer2);
-                //sendHealth(gamer2, gamer1);
+                sendHealth(gamer1, gamer2);
+                sendHealth(gamer2, gamer1);
                 //move alien
                 //sendData(gamer1, gamer2, alienCoords);
                 //final alien shoot

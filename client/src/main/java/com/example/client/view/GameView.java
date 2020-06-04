@@ -328,8 +328,9 @@ public class GameView {
                     moveAlien();
                     finalAlienShoot();
                     //moveEnemyShipAndBullets();
+                    */
                     updateEnemyPlayerHealth();
-                    isGameFinished();*/
+                    isGameFinished();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
