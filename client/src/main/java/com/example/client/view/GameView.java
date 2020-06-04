@@ -93,15 +93,15 @@ public class GameView {
     /**
      * label which shows player ship's health with small ship images
      */
-    private void createPlayerShipHealthInfo(int xLayout, String who, int health, List<ImageView> shipHealthImages){
-        shipHealthImages = new ArrayList<>();
+    private void createPlayerShipHealthInfo(int xLayout, String who, int health, List<ImageView> shipImages){
+        shipImages.clear();
         for(int i=0; i< health; i++){
             ImageView imageView = new ImageView(who);
             imageView.setFitWidth(20);
             imageView.setFitHeight(20);
             imageView.setLayoutX(xLayout + i * 30);
             imageView.setLayoutY(55);
-            shipHealthImages.add(imageView);
+            shipImages.add(imageView);
             anchorPane.getChildren().add(imageView);
         }
     }
