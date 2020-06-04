@@ -7,7 +7,7 @@ public final class ControllerConstants {
     public static final String LOGIN_FXML = "/fxml/Login.fxml";
     public static final String REGISTER_FXML = "/fxml/Register.fxml";
     public static final String GAME_FXML = "/fxml/Game.fxml";
-    public static final String API_ADDRESS = "http://144.122.71.144:8081/server_program21";
+    public static final String API_ADDRESS = "http://144.122.71.144:8083/server_program21";
 
     /***********ERRORS*****************/
     public static final String ERROR_CREDENTIALS = "Wrong credentials";
