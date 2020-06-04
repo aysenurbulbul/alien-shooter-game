@@ -295,13 +295,13 @@ public class GameView {
 
                     t = 0;
                 }
-                //addNewPlayerBullet();
-                //updatePlayerBullet();
                 updateShipPosition();
+                addNewPlayerBullet();
+                updatePlayerBullet();
                 try {
                     moveAlien();
                     finalAlienShoot();
-                    moveEnemyShip();
+                    moveEnemyShipAndBullets();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -309,6 +309,7 @@ public class GameView {
         };
         multiplayerAnimationTimer.start();
     }
+
 
     private void moveAlien() throws IOException{
         if(client.isController() == 1){
@@ -337,10 +338,12 @@ public class GameView {
         alien.getBullets().forEach(Bullet::moveDown);
         alienBulletShoot(alien);
     }
-    private void moveEnemyShip() throws IOException{
+    private void moveEnemyShipAndBullets() throws IOException{
         client.sendShipCoords(mousePositionX, mousePositionY);
         Double[] coords = client.getShipCoords();
         updateEnemyPosition(coords);
+        addNewEnemyPlayerBullet(coords);
+        updateEnemyPlayerBullets();
     }
 
     /**
@@ -361,6 +364,16 @@ public class GameView {
      */
     private boolean isOnSamePosition(Ship playerShip, Bullet bullet){
         return bullet.getImageView().getBoundsInParent().intersects(playerShip.getShipImage().getBoundsInParent());
+    }
+
+    private void addNewEnemyPlayerBullet(Double[] coords){
+        Bullet newBullet = new Bullet("PLAYER", coords[0] + 20, coords[1] + 7, "/static/laserBlue03.png");
+        enemyShip.addBullet(newBullet);
+        anchorPane.getChildren().add(newBullet.getImageView());
+    }
+
+    private void updateEnemyPlayerBullets(){
+        enemyShip.getBullets().forEach(Bullet::moveUp);
     }
 
     /**
