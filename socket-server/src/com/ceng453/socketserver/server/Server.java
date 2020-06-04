@@ -15,7 +15,7 @@ public class Server {
     private Socket socket;
     private Queue<Gamer> players;
 
-    public void startServer(int port) throws IOException {
+    public void startServer(int port) throws IOException, InterruptedException {
         System.out.println("Starting server....");
         serverSocket = new ServerSocket(port);
         System.out.println("Server started.");
@@ -31,13 +31,14 @@ public class Server {
         }
     }
 
-    private void matchMaker()  {
+    private void matchMaker() throws InterruptedException {
         while(players.size() > 1){
             Gamer gamer1 = players.poll();
             Gamer gamer2 = players.poll();
             Match match = new Match(gamer1, gamer2);
             Thread matchThread = new Thread(match);
             matchThread.start();
+            matchThread.join();
         }
     }
 }

@@ -166,6 +166,12 @@ public class GameView {
         gameScene.setCursor(Cursor.DEFAULT);
         anchorPane.getChildren().remove(playerShip.getShipImage());
         animationTimer1.stop();
+        //bonus added
+        if(score > enemyScore){
+            score += 20;
+        }else{
+            enemyScore += 20;
+        }
         System.out.println("*****score set ******score: " + score);
         GameController.setScore(score);
         //GameController.addGame();
