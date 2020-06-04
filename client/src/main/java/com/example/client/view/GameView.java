@@ -94,6 +94,7 @@ public class GameView {
      * label which shows player ship's health with small ship images
      */
     private void createPlayerShipHealthInfo(int xLayout, String who, int health, List<ImageView> shipHealthImages){
+        shipHealthImages = new ArrayList<>();
         for(int i=0; i< health; i++){
             ImageView imageView = new ImageView(who);
             imageView.setFitWidth(20);
@@ -245,7 +246,7 @@ public class GameView {
         if(enemyShip.getHealth() <=0 ){
             gameFinished("ENEMY DIED...GAME OVER!");
         }
-        if(levels.get(level).getAliens().size() == 0){
+        if(levels.get(4).getAliens().size() == 0){
             gameFinished("CONGRATS...");
         }
     }
@@ -334,6 +335,7 @@ public class GameView {
         if(enemyHealth<currentEnemyHealth && enemyHealth>=0 ){
             System.out.println("**********removing enemy health**********");
             anchorPane.getChildren().remove(enemyShipHealthImages.get(currentEnemyHealth-1));
+            enemyShipHealthImages.remove(currentEnemyHealth-1);
         }
     }
 
@@ -528,6 +530,7 @@ public class GameView {
                 playerShip.setHealth(playerShip.getHealth()-1);
                 int shipHealth = playerShip.getHealth();
                 if(shipHealth>=ZERO_HEALTH){
+                    System.out.println("******** removing health *******");
                     anchorPane.getChildren().remove(shipHealthImages.get(shipHealth));
                 }
             }
