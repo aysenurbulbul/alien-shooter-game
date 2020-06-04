@@ -13,6 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>server</name>
 	<description>Server Side</description>
+	<packaging>war</packaging>
 
 	<properties>
 		<java.version>13</java.version>
@@ -71,6 +72,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>server_program21</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

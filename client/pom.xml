@@ -13,7 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>client</name>
 	<description>Client Side</description>
-
+	<packaging>jar</packaging>
 	<properties>
 		<java.version>13</java.version>
 	</properties>
@@ -52,6 +52,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>client_program21</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
