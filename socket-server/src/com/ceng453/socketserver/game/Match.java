@@ -97,6 +97,13 @@ public class Match implements Runnable {
         }
     }
 
+    /**
+     * sends coordinates of players
+     * @param gamer1 gamer1 sends
+     * @param gamer2 gamer2 takes
+     * @param gamer1Coords gamer1's coordinates
+     * @throws IOException IOException
+     */
     private void sendData(Gamer gamer1, Gamer gamer2, Double[] gamer1Coords) throws IOException {
         in = new DataInputStream(gamer1.getSocket().getInputStream());
         for(int i=0; i<2; i++){
@@ -108,24 +115,47 @@ public class Match implements Runnable {
         }
     }
 
+    /**
+     * get scores of players
+     * @param gamer to get score
+     * @return score of player
+     * @throws IOException IOException
+     */
     private int getScores(Gamer gamer) throws IOException {
         in = new DataInputStream(gamer.getSocket().getInputStream());
         int score = in.readInt();
         return score;
     }
 
+    /**
+     * send score
+     * @param gamer to send score
+     * @param score score
+     * @throws IOException IOException
+     */
     private void sendScores(Gamer gamer, int score) throws IOException {
         out = new DataOutputStream(gamer.getSocket().getOutputStream());
         out.writeInt(score);
     }
 
+    /**
+     * move alien
+     * @param gamer send to who
+     * @return should alien move
+     * @throws IOException IOException
+     */
     private boolean moveAlien(Gamer gamer) throws IOException {
         in = new DataInputStream(gamer.getSocket().getInputStream());
         boolean status = in.readBoolean();
         return status;
     }
 
-
+    /**
+     * send username
+     * @param gamer1 gamer1
+     * @param gamer2 gamer2
+     * @throws IOException IOException
+     */
     private void sendUsername(Gamer gamer1, Gamer gamer2) throws IOException {
         in = new DataInputStream(gamer1.getSocket().getInputStream());
         String gamer1Username = in.readUTF();
@@ -133,11 +163,23 @@ public class Match implements Runnable {
         out.writeUTF(gamer1Username);
     }
 
+    /**
+     * send game status
+     * @param gamer to send
+     * @param status status to send
+     * @throws IOException IOException
+     */
     private void sendGameStatus(Gamer gamer, boolean status) throws IOException {
         out = new DataOutputStream(gamer.getSocket().getOutputStream());
         out.writeBoolean(status);
     }
 
+    /**
+     * send health
+     * @param gamer1 gamer1
+     * @param gamer2 gamer2
+     * @throws IOException IOException
+     */
     private void sendHealth(Gamer gamer1, Gamer gamer2) throws IOException {
         in = new DataInputStream(gamer1.getSocket().getInputStream());
         int gamer1Health = in.readInt();
@@ -145,19 +187,9 @@ public class Match implements Runnable {
         out.writeInt(gamer1Health);
     }
 
-    private void setGameControllerPlayer(Gamer gamer1, Gamer gamer2) throws IOException{
-        out = new DataOutputStream(gamer1.getSocket().getOutputStream());
-        out.writeInt(1);
-        out = new DataOutputStream(gamer2.getSocket().getOutputStream());
-        out.writeInt(0);
-    }
-    public void sendAlienShootRandom(Gamer gamer1, Gamer gamer2) throws IOException{
-        in = new DataInputStream(gamer1.getSocket().getInputStream());
-        double alienShootRandom = in.readDouble();
-        out = new DataOutputStream(gamer2.getSocket().getOutputStream());
-        out.writeDouble(alienShootRandom);
-    }
-
+    /**
+     * creates random alien coordinates
+     */
     private void alienCoordinates() {
         Double randomX = -50 + (Math.random() * ((50 - (-50)) + 1));
         Double randomY = -50 + (Math.random() * ((50 - (-50)) + 1));
@@ -169,6 +201,12 @@ public class Match implements Runnable {
         alienCoords[1] = alienY;
     }
 
+    /**
+     * sends alien coordinates
+     * @param gamer1 to gamer1
+     * @param gamer2 to gamer2
+     * @throws IOException IOException
+     */
     private void sendAlienCoords(Gamer gamer1, Gamer gamer2) throws IOException {
         boolean gamer1Move = moveAlien(gamer1);
         boolean gamer2Move = moveAlien(gamer2);
@@ -184,11 +222,23 @@ public class Match implements Runnable {
         }
     }
 
+    /**
+     * should alien shoot
+     * @param gamer gamer
+     * @param status should shoot
+     * @throws IOException IOException
+     */
     private void sendCanAlienShoot(Gamer gamer, boolean status) throws IOException {
         out = new DataOutputStream(gamer.getSocket().getOutputStream());
         out.writeBoolean(status);
     }
 
+    /**
+     * get game status
+     * @param gamer gamer
+     * @return is end
+     * @throws IOException IOException
+     */
     private boolean getGameStatus(Gamer gamer) throws IOException {
         in = new DataInputStream(gamer.getSocket().getInputStream());
         boolean status = in.readBoolean();
